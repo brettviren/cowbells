@@ -23,7 +23,11 @@ Thumbs.db
 .root_hist
 geofile.txt
 
+
 # tmp directories#
 ###################
 tmp/
 .svn/
+images/
+objects/
+root_files/
