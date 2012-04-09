@@ -1,0 +1,221 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/repos/neutrino/!svn/ver/944/dusel/WCSim/branches/dev/MergedLCs/src
+END
+WCSimTuningParameters.cc
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimTuningParameters.cc
+END
+WCSimRootDict.h
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/repos/neutrino/!svn/ver/561/dusel/WCSim/branches/dev/MergedLCs/src/WCSimRootDict.h
+END
+WCSimRandomMessenger.cc
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/repos/neutrino/!svn/ver/564/dusel/WCSim/branches/dev/MergedLCs/src/WCSimRandomMessenger.cc
+END
+WCSimRootGeom.cc
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimRootGeom.cc
+END
+WCSimPhysicsMessenger.cc
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimPhysicsMessenger.cc
+END
+WCSimVisManager.cc
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimVisManager.cc
+END
+WCSimRootDict_w.h_bak
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimRootDict_w.h_bak
+END
+WCSimWCSD.cc
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/repos/neutrino/!svn/ver/944/dusel/WCSim/branches/dev/MergedLCs/src/WCSimWCSD.cc
+END
+WCSimPhysicsListFactory.cc
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimPhysicsListFactory.cc
+END
+WCSimRunActionMessenger.cc
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimRunActionMessenger.cc
+END
+WCSimConstructWC.cc
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/repos/neutrino/!svn/ver/932/dusel/WCSim/branches/dev/MergedLCs/src/WCSimConstructWC.cc
+END
+WCSimPhysicsList.cc
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/repos/neutrino/!svn/ver/941/dusel/WCSim/branches/dev/MergedLCs/src/WCSimPhysicsList.cc
+END
+WCSimWCDigitizer.cc
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/repos/neutrino/!svn/ver/944/dusel/WCSim/branches/dev/MergedLCs/src/WCSimWCDigitizer.cc
+END
+WCSimRootEvent.cc
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/repos/neutrino/!svn/ver/930/dusel/WCSim/branches/dev/MergedLCs/src/WCSimRootEvent.cc
+END
+WCSimConstructMaterials.cc
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/repos/neutrino/!svn/ver/718/dusel/WCSim/branches/dev/MergedLCs/src/WCSimConstructMaterials.cc
+END
+WCSimRootDict.cc
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/repos/neutrino/!svn/ver/565/dusel/WCSim/branches/dev/MergedLCs/src/WCSimRootDict.cc
+END
+WCSimSteppingAction.cc
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimSteppingAction.cc
+END
+WCSimPrimaryGeneratorAction.cc
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/repos/neutrino/!svn/ver/561/dusel/WCSim/branches/dev/MergedLCs/src/WCSimPrimaryGeneratorAction.cc
+END
+WCSimRootDict_w.cc_bak
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimRootDict_w.cc_bak
+END
+WCSimConstructGeometryTables.cc
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/repos/neutrino/!svn/ver/561/dusel/WCSim/branches/dev/MergedLCs/src/WCSimConstructGeometryTables.cc
+END
+WCSimLC.cc
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/repos/neutrino/!svn/ver/932/dusel/WCSim/branches/dev/MergedLCs/src/WCSimLC.cc
+END
+WCSimTrackingAction.cc
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimTrackingAction.cc
+END
+WCSimStackingAction.cc
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimStackingAction.cc
+END
+WCSimRunAction.cc
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimRunAction.cc
+END
+WCSimPrimaryGeneratorMessenger.cc
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/repos/neutrino/!svn/ver/561/dusel/WCSim/branches/dev/MergedLCs/src/WCSimPrimaryGeneratorMessenger.cc
+END
+WCSimWCDigi.cc
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimWCDigi.cc
+END
+WCSimTrackInformation.cc
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimTrackInformation.cc
+END
+WCSimPmtInfo.cc
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimPmtInfo.cc
+END
+WCSimTuningMessenger.cc
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimTuningMessenger.cc
+END
+WCSimWCHit.cc
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/repos/neutrino/!svn/ver/561/dusel/WCSim/branches/dev/MergedLCs/src/WCSimWCHit.cc
+END
+WCSimPhysicsListFactoryMessenger.cc
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimPhysicsListFactoryMessenger.cc
+END
+WCSimEventAction.cc
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/repos/neutrino/!svn/ver/944/dusel/WCSim/branches/dev/MergedLCs/src/WCSimEventAction.cc
+END
+WCSimDetectorMessenger.cc
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/repos/neutrino/!svn/ver/932/dusel/WCSim/branches/dev/MergedLCs/src/WCSimDetectorMessenger.cc
+END
+WCSimDetectorConstruction.cc
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/repos/neutrino/!svn/ver/932/dusel/WCSim/branches/dev/MergedLCs/src/WCSimDetectorConstruction.cc
+END
+WCSimWLSP.cc
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/repos/neutrino/!svn/ver/929/dusel/WCSim/branches/dev/MergedLCs/src/WCSimWLSP.cc
+END
+WCSimTrajectory.cc
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/src/WCSimTrajectory.cc
+END

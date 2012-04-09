@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/sample-root-scripts
+END
+read_number_of_PMTs.C
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/sample-root-scripts/read_number_of_PMTs.C
+END
+testgeo.C
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/sample-root-scripts/testgeo.C
+END
+read_PMT.C
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/sample-root-scripts/read_PMT.C
+END
+sample_readfile.C
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/repos/neutrino/!svn/ver/450/dusel/WCSim/branches/dev/MergedLCs/sample-root-scripts/sample_readfile.C
+END
