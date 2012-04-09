@@ -45,4 +45,4 @@ the event_display.C or just drag it, since it is a GUI. (XQ)
 Some relevant complie info (By Pooja) XQ 
 08/30/2010/
 1) Make soft links
- libWCSimRoot.so -> ../WCSim/libWCSimRoot.so
+ libWCSimRoot.so -> ../WCSim_WbLS/libWCSimRoot.so
