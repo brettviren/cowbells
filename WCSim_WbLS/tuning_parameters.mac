@@ -1,4 +1,5 @@
 # Set tuning parameters
+# absorption, rayleigh, cathode reflectivity, blacksheet reflectivity
 /WCSim/tuning/abwff 1.0
 /WCSim/tuning/rayff 1.0
 /WCSim/tuning/rgcff 0.24
@@ -9,5 +10,8 @@
 /WCSim/tuning/topveto 0
 # Set top veto PMT spacing in cm.
 /WCSim/tuning/tvspacing 100
+
+# Parameters fo Scintillation - Chao Zhang
+/WCSim/tuning/photonYield 90
 
 

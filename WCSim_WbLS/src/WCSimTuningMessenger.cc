@@ -43,6 +43,12 @@ WCSimTuningMessenger::WCSimTuningMessenger(WCSimTuningParameters* WCTuningPars):
   TopVeto->SetParameterName("TopVeto",true);
   TopVeto->SetDefaultValue(0);
 
+  //for Scintillation - Chao Zhang
+  PhotonYield = new G4UIcmdWithADouble("/WCSim/tuning/photonYield",this);
+  PhotonYield->SetGuidance("Set the photon yield [photons / MeV]");
+  PhotonYield->SetParameterName("PhotonYield", true);
+  PhotonYield->SetDefaultValue(90.0);
+
 }
 
 WCSimTuningMessenger::~WCSimTuningMessenger()
@@ -55,7 +61,10 @@ WCSimTuningMessenger::~WCSimTuningMessenger()
   //jl145 - for Top Veto
   delete TVSpacing;
   delete TopVeto;
-
+  
+  //for Scintillation - Chao Zhang
+  delete PhotonYield;
+  
   delete WCSimDir;
 }
 
@@ -120,5 +129,11 @@ void WCSimTuningMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       printf("Setting Top Veto Off\n");
   }
 
+  //for Scintillation - Chao Zhang
+  else if(command == PhotonYield) {
+    WCSimTuningParams->SetPhotonYield(PhotonYield->GetNewDoubleValue(newValue));
+    printf("Setting Photon Yield %f\n", PhotonYield->GetNewDoubleValue(newValue));
+  }
+  
 
 }
