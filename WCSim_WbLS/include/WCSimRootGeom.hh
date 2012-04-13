@@ -106,7 +106,7 @@ public:
   Float_t GetWCOffset(Int_t i) const {return (i<3) ? fWCOffset[i] : 0.;}
   Int_t GetOrientation() { return fOrientation; }
   //WCSimRootPMT GetPMT(Int_t i){return *(new WCSimRootPMT());}
-  WCSimRootPMT GetPMT(Int_t i){return *(WCSimRootPMT*)(*fPMTArray)[i];}
+  WCSimRootPMT& GetPMT(Int_t i){return *(WCSimRootPMT*)(*fPMTArray)[i];}
 
   ClassDef(WCSimRootGeom,1)  //WCSimRootEvent structure
 };
