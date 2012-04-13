@@ -1,0 +1,26 @@
+Water Based Liquid Scintilator code.
+
+* Basic installation
+
+The script =inst.sh= will install Geant4, ROOT and other basic
+packages and can be used to setup the environment.  Run =inst.sh help=
+for info.
+
+* WCSim_WbLS based simulation
+
+** Installation
+
+Install and setup the basics as above.
+
+#+begin_src 
+export WBLSBASE=/path/to/somewhere # just for reference in this example
+cd $WBLSBASE
+git clone git@github.com:brettviren/WbLS.git
+mkdir wcsim-wbls-build
+cd wcsim-wbls-build
+cmake -DGeant4_dir=$INSTBASE/geant4/lib64/Geant4-9.5.1 \
+      -DROOT_DIR=/data3/lbne/bv/wbls/opt/root \
+       $WBLSBASE/WbLS/WCSim_WbLS/
+make
+#+end_src
+
