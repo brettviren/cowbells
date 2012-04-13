@@ -35,6 +35,9 @@ private:
   //For Top Veto - jl145
   G4UIcmdWithADouble* TVSpacing;
   G4UIcmdWithABool* TopVeto;
+  
+  // For Scintillation - Chao Zhang
+  G4UIcmdWithADouble* PhotonYield;
 
 };
 

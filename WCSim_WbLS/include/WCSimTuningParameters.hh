@@ -30,6 +30,10 @@ class WCSimTuningParameters
   G4bool GetTopVeto() {return topveto;}
   void SetTopVeto(G4double tparam) {topveto=tparam;}
 
+  // For Scintillation - Chao Zhang
+  G4double GetPhotonYield() { return photonYield; }
+  void SetPhotonYield(G4double tparam) { photonYield = tparam; }
+  
   private:
 
   // The messenger
@@ -46,6 +50,9 @@ class WCSimTuningParameters
   //For Top Veto - jl145
   G4double tvspacing;
   G4bool topveto;
+  
+  // For Scintillation - Chao Zhang
+  G4double photonYield; // photons per MeV
 
 };
 

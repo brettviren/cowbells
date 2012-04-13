@@ -72,9 +72,11 @@
 
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
-/gun/particle kaon+
+/gun/particle muon-
+# /gun/particle kaon+
 #/gun/particle pi0
-/gun/energy 105 MeV
+# /gun/energy 105 MeV
+/gun/energy 100 MeV
 /gun/direction 0 1 0 
 /gun/position 0 0 0  
 
@@ -85,7 +87,8 @@
 #/WCSim/WLSPSHAPE square
 /WCSim/WLSPSHAPE clover
 
-/WCSim/PMTCollEff on
+# PMT angular eff. PMT off
+/WCSim/PMTCollEff off
 /WCSim/PMT_Timing_Var on
 /WCSim/PMTCollEff_Method 2
 

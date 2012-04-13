@@ -18,6 +18,7 @@ WCSimTuningParameters::WCSimTuningParameters()
  tvspacing = 100.0;
  topveto = false;
 
+ photonYield = 90;
 }
 
 WCSimTuningParameters::~WCSimTuningParameters()

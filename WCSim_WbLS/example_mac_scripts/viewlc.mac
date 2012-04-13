@@ -1,6 +1,6 @@
-/vis/viewer/select viewer-0
+# /vis/viewer/select viewer-0
 
-#/vis/open OGLSX
+/vis/open OGLSX
 
 /vis/drawVolume WCBarrelCell
 #/vis/drawVolume WCLC

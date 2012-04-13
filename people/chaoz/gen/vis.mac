@@ -50,8 +50,8 @@
 /vis/scene/create
 /vis/open OGLSX
 /vis/viewer/set/upVector 0 0 1
-/vis/viewer/set/viewpointThetaPhi 45 45 deg
-#/vis/viewer/set/viewpointThetaPhi 120 90 deg
+# /vis/viewer/set/viewpointThetaPhi 45 45 deg
+/vis/viewer/set/viewpointThetaPhi 120 90 deg
 
 #/vis/open RayTracer 
 #/vis/viewer/set/upVector 0 0 1
@@ -72,6 +72,7 @@
 
 # Or you can use the G4 Particle Gun
 /mygen/generator normal
+# /gun/particle muon-
 /gun/particle kaon+
 #/gun/particle pi0
 /gun/energy 105 MeV
@@ -85,7 +86,8 @@
 #/WCSim/WLSPSHAPE square
 /WCSim/WLSPSHAPE clover
 
-/WCSim/PMTCollEff on
+# PMT angular eff. PMT off
+/WCSim/PMTCollEff off
 /WCSim/PMT_Timing_Var on
 /WCSim/PMTCollEff_Method 2
 
@@ -110,5 +112,5 @@
 ## change the name of the output root file, default = wcsim.root
 /WCSimIO/RootFile wcsim.root
 /gun/direction 0 1 0 
-/run/beamOn 1
+/run/beamOn 10
 #exit
