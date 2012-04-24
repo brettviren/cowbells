@@ -3,13 +3,18 @@
 Main entry to the cowbells (COsmic WB(el)LS) simulation modules
 '''
 
+import boot
+boot.everything()               # boot all the things!
+
+import app
+app = app.app()
+
 import ROOT
-import boot, app
-boot.all()
-
-geo = ROOT.TGeoManager("geo","Geo Manager")
-print geo
-
-mcapp = app.mcapp()
-
 mc = ROOT.gMC
+mc.Init()
+mc.BuildPhysics()
+
+#import ROOT
+#geo = ROOT.TGeoManager("geo","Geo Manager")
+_geometry_name = "E06_geometry" # fixme: change 
+geo = ROOT.gROOT.GetGeometry(_geometry_name)

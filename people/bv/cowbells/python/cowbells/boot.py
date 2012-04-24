@@ -15,7 +15,7 @@ def root_load_lib(lib):
     ok = ROOT.gSystem.Load(lib)
     if ok < 0:
         raise RuntimeError, 'Failed to load "%s"' % lib
-    print 'Loaded "%s"' % lib
+    #print 'Loaded "%s"' % lib
     return
 
 # boot ROOT and load extra libs
@@ -58,13 +58,14 @@ def geant4():
 # load g4root, geant4vmc and maybe geant4vmc_gui
 _g4vmc_loaded = None
 def g4vmc():
-    'Load Geant4VMC libraries'
+    'Load Geant4VMC (and VGM) libraries'
     global _g4vmc_loaded
     if _g4vmc_loaded: return
+
     root()
     geant4()
-    # first one is actually from geant4
-    for lib in ['G3toG4','g4root','geant4vmc']:
+
+    for lib in ['ClhepVGM','BaseVGM','Geant4GM','RootGM','XmlVGM','G3toG4','g4root','geant4vmc']:
         root_load_lib(lib)
         continue
     _g4vmc_loaded = True
