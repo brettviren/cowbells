@@ -28,8 +28,8 @@ include(${ROOT_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/inc)
 
 # Some file lists
-file(GLOB sources src/*.cxx)
-file(GLOB headers inc/*.h)
+file(GLOB sources src/Cow*.cxx)
+file(GLOB headers inc/Cow*.h)
 
 # Copy over the python 
 file(COPY python/ DESTINATION python/ FILES_MATCHING PATTERN "*.py")
