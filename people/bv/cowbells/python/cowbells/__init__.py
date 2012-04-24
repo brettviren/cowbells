@@ -11,8 +11,7 @@ mcapp = app.app()
 
 import ROOT
 mc = ROOT.gMC
-mc.Init()
-mc.BuildPhysics()
+g4vmc = app._geant4
 
 #import ROOT
 #geo = ROOT.TGeoManager("geo","Geo Manager")
