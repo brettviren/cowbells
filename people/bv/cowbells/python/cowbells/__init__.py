@@ -7,7 +7,7 @@ import boot
 boot.everything()               # boot all the things!
 
 import app
-app = app.app()
+mcapp = app.app()
 
 import ROOT
 mc = ROOT.gMC
@@ -16,5 +16,5 @@ mc.BuildPhysics()
 
 #import ROOT
 #geo = ROOT.TGeoManager("geo","Geo Manager")
-_geometry_name = "E06_geometry" # fixme: change 
+_geometry_name = "E06_geometry" # fixme: change to something relevant
 geo = ROOT.gROOT.GetGeometry(_geometry_name)
