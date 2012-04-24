@@ -368,7 +368,6 @@ build_all () {
 }
 
 setup_all () {
-    setup_base
     setup_inst
     setup_cmake
     setup_python
