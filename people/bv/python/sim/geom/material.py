@@ -2,6 +2,7 @@
 '''
 Get materials
 '''
+
 import ROOT
 
 def make_mixture(name, parts, density):
@@ -17,25 +18,31 @@ def make_mixture(name, parts, density):
         mix.AddElement(ele, part[1])
         print '\telement: %s %s' % (part[0],str(part[1]))
         continue
-    return
+    return mix
 
-_numed = 0
-def allocate_numed():
-    'Return the next numed'
-    global _numed
-    _numed += 1
-    return _numed
-
-def make_medium(mat, name = None, numed = None, params = None):
+# Allocate media so we can make sure to provide a unique number.
+_media = []
+def make_medium(mat, name = None, params = None):
     'Make a medium from a material'
-    if numed is None: numed = allocate_numed()
-    if name is None: name = mat.GetName()
+    geo = ROOT.gGeoManager
+
+    if name is None: 
+        name = mat.GetName()
+
+    med = geo.GetMedium(name)
+    if med: return med
+
+    global _media
+    numed = len(_media)
+
     if params:
         med = ROOT.TGeoMedium(name, numed, mat, params)
     else:
         med = ROOT.TGeoMedium(name, numed, mat)
-    #med.SetOwnership(med,0)
+
+    _media.append(med)
     return med
+
 
 def init():
     'Called on import'
@@ -48,9 +55,13 @@ def init():
     wbls_parts = [('Hydrogen',0.659),('Oxygen',0.309),('Sulfur',0.0009),
                   ('Nitrogen', 0.000058),('Carbon', 0.031),]
     make_mixture('WBLS', wbls_parts, 0.9945)
+
     return
 
 if __name__ == '__main__':
-    geo = ROOT.TGeoManager("geo","Geo Manager")
-    init()
+    from sim import geo
+
+    import water
+    water.register(ROOT.gMC)
+
     

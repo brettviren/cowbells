@@ -7,6 +7,11 @@ import ROOT
 
 import material
 
+# cylinder 2" ID, 1/4" wall thickness x 70cm long, acrylic
+# either black or reflective (aluminum foil) covering the tube
+# 2" PMT on either end
+# muon telescope fibers
+
 def top():
     'Return top volume'
 
