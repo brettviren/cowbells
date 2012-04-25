@@ -9,6 +9,7 @@ using namespace std;
 
 CowMCapp::CowMCapp()
     : TVirtualMCApplication()
+    , m_propertiesfile("")
 {
 }
 CowMCapp::CowMCapp(const char* name,  const char *title)
@@ -41,6 +42,18 @@ void CowMCapp::ConstructGeometry()
 void CowMCapp::ConstructOpGeometry()
 {
     cout << "moo: ConstructOpGeometry" << endl;
+    this->DefineProperties();
+    
+}
+
+void CowMCapp::DefineProperties()
+{
+    if (! m_propertiesfile.size()) { 
+        cout << "moo: no properties file given, this is probably not what you want" << endl;
+        return; 
+    }
+
+    TFile fp(m_propertiesfile);
 }
 
 void CowMCapp::GeneratePrimaries()

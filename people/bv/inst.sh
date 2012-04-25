@@ -221,6 +221,69 @@ export G4REALSURFACEDATA="$geant4_data/RealSurface1.0"
 EOF
 }
 
+build_boost () {
+    eval $(setup_python)
+    local boost_build=$build_area/boost
+    local boost_prefix=$install_area/boost
+    local python_prefix=$install_area/python
+
+    assuredir $boost_build
+    pushd $boost_build
+    
+    download http://downloads.sourceforge.net/project/boost/boost/1.49.0/boost_1_49_0.tar.gz
+    tar -xzf boost_1_49_0.tar.gz 
+    cd boost_1_49_0
+    ./bootstrap.sh --prefix=$boost_prefix --with-python-root=$python_prefix
+    ./b2 install
+}
+
+build_g4py () {
+    eval $(setup_python)
+    eval $(setup_geant4)
+    local geant4_build=$build_area/geant4
+    local g4py_build=$geant4_build/geant4.9.5.p01/environments/g4py
+    local g4py_prefix=$install_area/g4py
+
+    local geant4_prefix=$install_area/geant4
+    local boost_prefix=$install_area/boost
+    local python_prefix=$install_area/python
+    
+    pushd $g4py_build
+    ./configure linux64 \
+	--prefix=$g4py_prefix \
+	--with-boost-incdir=$boost_prefix/include \
+	--with-boost-libdir=$boost_prefix/lib \
+	--with-python-incdir=$python_prefix/include/python2.7 \
+	--with-python-libdir=$python_prefix/lib \
+	--with-g4-incdir=$geant4_prefix/include/Geant4 \
+	--with-g4-libdir=$geant4_prefix/lib64 \
+	--with-clhep-incdir=$geant4_prefix/include/Geant4 \
+	--with-clhep-libdir=$geant4_prefix/lib64 \
+	--with-clhep-lib=G4clhep
+
+    # Kludge warning: need to first comment out the private copy
+    # constructor in G4Run.hh and G4Event.hh in the installed Geant4
+    # headers in order to make successfully.
+
+    make
+    make install
+
+}
+
+setup_g4py () {
+    eval $(setup_python)
+    eval $(setup_geant4)
+    setup_python
+    setup_geant4
+    
+    local g4py_prefix=$install_area/g4py
+
+    PYTHONPATH=$(pathadd $g4py_prefix/lib $PYTHONPATH)
+    cat <<EOF
+export PYTHONPATH=$PYTHONPATH
+EOF
+}
+
 build_root_oldfashioned () {
     eval $(setup_python)
     local root_build=$build_area/root
@@ -348,6 +411,7 @@ setup_geant4_vmc () {
     LD_LIBRARY_PATH=$(pathadd $g4vmc_prefix/lib/tgt_linuxx8664gcc $LD_LIBRARY_PATH)
     echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
 }
+
 
 log () {
     local logfile=$1 ; shift

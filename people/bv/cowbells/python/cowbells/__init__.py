@@ -29,6 +29,14 @@ def geo():
     return _geo
 _geo = geo()
 
+
+def app(propertiesfile = 'cowbells_properties.root'):
+    'Make a Cowbells MC application with an optional properties file'
+    app = ROOT.CowMCapp('cowbells','COsmic WB(el)LS simulation')
+    app.SetPropertiesFile(propertiesfile)
+    ROOT.SetOwnership(app,0)
+    return app
+
 def do_not_call():
     import app
     mcapp = app.app()

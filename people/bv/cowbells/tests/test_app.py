@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 
 import ROOT
-import sample as cs
+import sample
 
 def test_app():
 
     print 'Making geometry'
-    top = cs.topvol()
+    top = sample.topvol()
 
     print 'Making app'
-    app = cs.app()
+    app = sample.app()
+
+    app.Start()
 
     print 'Initialize MC, triggers C++ detector construction'
     ROOT.gMC.Init()

@@ -19,6 +19,13 @@ public:
     CowMCapp(const char* name,  const char *title);
     virtual ~CowMCapp();
 
+    // My interface
+
+    /// Set a file from which to get material property data
+    void SetPropertiesFile(const char* propertiesfile) {
+        m_propertiesfile = propertiesfile;
+    }
+
     // Required TVirtualMCApplication API
     virtual void ConstructGeometry();
     virtual void GeneratePrimaries();
@@ -33,6 +40,10 @@ public:
     // Optional TVirtualMCApplication API
     virtual void ConstructOpGeometry();
     virtual void InitGeometry();
+
+private:
+    void DefineProperties();
+    std::string m_propertiesfile;
 
 };
 #endif  // COWMCAPP_H
