@@ -1,20 +1,25 @@
 #!/usr/bin/env python
 
 from array import array
-from util import make_medium, make_mixture
-from cowbells.units import eV, cm, m
+import cowbells
+import util
+
+
+eV = cowbells.units.eV
+cm = cowbells.units.cm
+gram = cowbells.units.gram
 
 parts = [
     ('Hydrogen',2),
     ('Oxygen',1),
     ]
-density = 1.0
+density = 1.0*gram/cm
 
 # properties
 energy = [
     1.56962*eV, 1.58974*eV, 1.61039*eV, 1.63157*eV, 
     1.65333*eV, 1.67567*eV, 1.69863*eV, 1.72222*eV, 
-    1.74647*eV, 1.77142*eV, 1.7971*eV, 1.82352*eV, 
+    1.74647*eV, 1.77142*eV,  1.7971*eV, 1.82352*eV, 
     1.85074*eV, 1.87878*eV, 1.90769*eV, 1.93749*eV, 
     1.96825*eV, 1.99999*eV, 2.03278*eV, 2.06666*eV,
     2.10169*eV, 2.13793*eV, 2.17543*eV, 2.21428*eV, 
@@ -79,9 +84,9 @@ rayleigh = [
 
 def medium():
     'Return the water medium'
-    mat = make_mixture("Water", parts, density)
+    mat = util.make_mixture("Water", parts, density)
     if not mat: return None
-    return make_medium(mat)
+    return util.make_medium(mat)
 
 def register(mc):
     'Register water with the Monte Carlo'
@@ -93,18 +98,14 @@ def register(mc):
 
     nentries = len(energy)
     array_type = 'd'
-    efficiency = array(array_type,[0.0]*nentries)
-    print 'energy:',energy
-    print 'abs:',absorption
-    print 'eff:',efficiency
-    print 'rind:',rindex
-    mc.SetCerenkov(wid, nentries, 
-                   array(array_type,energy), 
-                   array(array_type,absorption),
-                   efficiency, 
-                   array(array_type,rindex))
-                   
-    mc.SetMaterialProperty(wid, "RAYLEIGH", nentries, energy, rayleigh)
+
+    en_arr = array(array_type,energy)
+    abs_arr = array(array_type,absorption)
+    eff_arr = array(array_type,[0.0]*nentries)
+    rind_arr = array(array_type,rindex)
+    ray_arr = array(array_type,rayleigh)
+    mc.SetCerenkov(wid, nentries, en_arr, abs_arr, eff_arr, rind_arr)
+    mc.SetMaterialProperty(wid, "RAYLEIGH", nentries, en_arr, ray_arr)
 
     # gMC->SetMaterialProperty(fImedWater, 
     #                          "FASTCOMPONENT", nEntries, photonEnergy, scintilFast);
@@ -116,7 +117,7 @@ def register(mc):
     # gMC->SetMaterialProperty(fImedWater, "FASTTIMECONSTANT",  1.0e-09);  // 1.*ns
     # gMC->SetMaterialProperty(fImedWater, "SLOWTIMECONSTANT", 10.0e-09); // 10.*ns
     # gMC->SetMaterialProperty(fImedWater, "YIELDRATIO", 0.8);
-    
+  
     return
 
 def test():

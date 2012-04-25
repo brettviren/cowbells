@@ -4,6 +4,7 @@ Water-based Liquid Scintilator stuff
 '''
 
 import water
+import util
 
 parts =   [('Hydrogen', 0.659),
            ('Oxygen', 0.309),
@@ -50,5 +51,6 @@ rayleigh = [
     1422.71*cm, 1200*cm, 1004.53*cm, 830*cm, 686.106*cm
     ]
 
-
+def medium = util.generic_medium
+def register = util.generic_register
 
