@@ -9,6 +9,8 @@ import ROOT
 import boot
 boot.everything()               # boot all the things!
 
+units = ROOT.units
+
 
 _geo = None
 def geo():

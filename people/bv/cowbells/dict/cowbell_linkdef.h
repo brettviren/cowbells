@@ -6,6 +6,9 @@
  
 #pragma link C++ class  CowMCapp+;
 
+#pragma link C++ namespace units;
+
+
 #endif
 
 

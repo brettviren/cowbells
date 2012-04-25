@@ -29,13 +29,13 @@ include_directories(${PROJECT_SOURCE_DIR}/inc)
 
 # Some file lists
 file(GLOB sources src/Cow*.cxx)
-file(GLOB headers inc/Cow*.h)
+file(GLOB headers inc/Cow*.h inc/units.h)
 
 # Copy over the python 
 file(COPY python/ DESTINATION python/ FILES_MATCHING PATTERN "*.py")
 
 # Generate dictionary
-ROOT_GENERATE_DICTIONARY(cowbellsdict ${headers} LINKDEF dict/cowbell_linkdef.h)
+ROOT_GENERATE_DICTIONARY(cowbellsdict ${headers} LINKDEF dict/cowbell_linkdef.h OPTIONS -p)
 
 # build library
 add_library(cowbells MODULE ${sources} cowbellsdict.cxx)
