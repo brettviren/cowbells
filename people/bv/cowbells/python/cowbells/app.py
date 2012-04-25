@@ -43,9 +43,3 @@ def app():
     ROOT.SetOwnership(_geant4,0)
 
     return _app
-
-if __name__ == '__main__':
-    import boot
-    boot.everything()
-    print app()
-

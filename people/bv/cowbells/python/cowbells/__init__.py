@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 '''
 Main entry to the cowbells (COsmic WB(el)LS) simulation modules
+
 '''
 
 import ROOT
@@ -11,13 +12,20 @@ boot.everything()               # boot all the things!
 
 _geo = None
 def geo():
-    'Get the geo manager'
+    '''
+    Get the geo manager.
+
+    You can get this from ROOT.gROOT.GetGeometry("cowbells_geometry")
+    but this function needs to be called before that (or the cowbells
+    module imported somewhere).
+    '''
     global _geo
     if _geo: return _geo
     _geo = ROOT.TGeoManager('cowbells_geometry', 
                            'Geometry for COsmic WB(el)LS detector')
     ROOT.SetOwnership(_geo,0)
     return _geo
+_geo = geo()
 
 def do_not_call():
     import app
@@ -39,3 +47,6 @@ def do_not_call():
 
 
 
+if __name__ == '__main__':
+    print geo()
+    print geo()
