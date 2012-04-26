@@ -83,11 +83,13 @@ class PropertyFile:
             mdir = self.propdir.mkdir(matname)
         mdir.cd()
         g = ROOT.TGraph()
-        g.SetName(propname)
-        if axis: self.set_axis(g,*axis)
         for i,(x,y) in enumerate(data):
             g.SetPoint(i,x,y)
             continue
+        if axis: 
+            self.set_axis(g,*axis)
+        g.SetName(propname)
+        g.SetTitle(propname)
         nbytes = g.Write()
         return nbytes
         
@@ -96,6 +98,7 @@ class PropertyFile:
         return self.add(matname, propname, FileParser(filename), axis)
 
     def close(self):
+        self.fp.Write()
         self.fp.Close()
         return
     pass
