@@ -10,14 +10,14 @@ for info.
 
 This is the COsmic WB(el)LS simulation.  It builds with cmake.
 
-#+begin_example
+#+begin_src shell
 mkdir cowbells-build
 cmake -DGeant4_DIR=/path/to/geant4/lib/geant4-9.5.1 \
       -DROOT_DIR=/path/to/root \
       /path/to/cowbells
 make
 python python/cowbells/prep/gen.py properties.root
-#+end_example
+#+end_src
 
 
 * WCSim_WbLS based simulation
@@ -26,7 +26,7 @@ python python/cowbells/prep/gen.py properties.root
 
 Install and setup the basics as above.
 
-#+begin_example
+#+begin_src shell
 export WBLSBASE=/path/to/somewhere # just for reference in this example
 cd $WBLSBASE
 git clone git@github.com:brettviren/WbLS.git
@@ -36,5 +36,5 @@ cmake -DGeant4_dir=$INSTBASE/geant4/lib64/Geant4-9.5.1 \
       -DROOT_DIR=/data3/lbne/bv/wbls/opt/root \
        $WBLSBASE/WbLS/WCSim_WbLS/
 make
-#+end_example
+#+end_src
 
