@@ -53,7 +53,7 @@ void CowMCapp::DefineProperties()
         return; 
     }
 
-    TFile fp(m_propertiesfile);
+    //TFile fp(m_propertiesfile);
 }
 
 void CowMCapp::GeneratePrimaries()

@@ -91,7 +91,6 @@ if __name__ == '__main__':
     prop = sys.argv[3]
     infile = sys.argv[4]
 
-
     pf = PropertyFile(outfile)
     pf.add_file(mat,prop,infile)
     pf.close()
