@@ -52,11 +52,3 @@ def properties(pf):
     pf.add(name, 'ABSLENGTH', zip(abslength_energy,abslength))
     pf.add(name, 'RAYLEIGH',  zip(rayleigh_energy,rayleigh))
     return
-    
-if __name__ == '__main__':
-    import sys
-    import propfile
-    pfname = sys.argv[1]
-    pf = propfile.PropertyFile(pfname)
-    properties(pf)
-    pf.close()

@@ -137,7 +137,7 @@ ppo_emm = [
 
 
 # collect everything together for easier bulk processing
-properties = {
+_properties = {
     'BIRKS_CONSTANT':0.124*mm/MeV,
     'WLSTIMECONSTANT': 1.5*ns,
     'SCINTILLATIONYIELD': 90/MeV,
@@ -163,19 +163,10 @@ def properties(pf):
     '''
     Save data into a properties file
     '''
-    for pname, pval in properties.iteritems():
+    for pname, pval in _properties.iteritems():
         if isinstance(pval, tuple): # vector type
             pf.add(name,pname,zip(*pval))
         else:                   # scalar type
             pf.add(name,pname,[(0,pval)])
         continue
     return
-
-if __name__ == '__main__':
-    import sys
-    import propfile
-    pfname = sys.argv[1]
-    pf = propfile.PropertyFile(pfname)
-    properties(pf)
-    pf.close()
-    

@@ -13,7 +13,10 @@ for mod in water, wbls, acrylic:
 
 if __name__ == '__main__':
     import sys
+    import ROOT
     out = sys.argv[1]
-    geo.Export(out,"g")
+    fp = ROOT.TFile.Open(out, "update")
+    geo.Write("geometry")
+    fp.Close()
 
     
