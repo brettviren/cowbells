@@ -43,6 +43,7 @@ def make_medium(mat, name = None, params = None):
         med = ROOT.TGeoMedium(name, numed, mat)
 
     ROOT.SetOwnership(med,0)
+    print 'Medium: %s #%d' % (name,numed)
     return med
 
 # Set to module's medium method if generic

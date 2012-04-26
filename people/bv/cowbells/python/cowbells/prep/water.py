@@ -2,13 +2,21 @@
 '''
 Add water properties to a prop file
 '''
+name = 'Water'                  # I yam what I yam
 
 import cowbells
+import util
 
 cm = cowbells.units.cm
 eV = cowbells.units.eV
+gram = cowbells.units.gram
+cm3 = cowbells.units.cm3
 
-name = 'Water'                  # I yam what I yam
+parts = [
+    ('Hydrogen',2),
+    ('Oxygen',1),
+    ]
+density = 1.0*gram/cm3
 
 # These properties are taken from WCSim.
 # http://svn.phy.duke.edu/repos/neutrino/dusel/WCSim/trunk/src/WCSimConstructMaterials.cc
@@ -80,10 +88,14 @@ rayleigh = [x*cm for x in [
      1309.55, 1043.03, 821.016,  637.97, 488.754,
       ]]
 
-def register(pf):
-    '''
-    Save data into a properties file
-    '''
+def materials(geo):
+    'Make any materials'
+    mat = util.make_mixture(name, parts, density)
+    med = util.make_medium(mat)
+    
+
+def properties(pf):
+    'Save data into a properties file'
     pf.add(name, 'RINDEX',    zip(energy,rindex), ('Energy (MeV)',None))
     pf.add(name, 'ABSLENGTH', zip(energy,absorption), ('Energy (MeV)', 'Absorption Length (mm)'))
     pf.add(name, 'RAYLEIGH',  zip(energy,rayleigh), ('Energy (MeV)', 'Rayleigh Scattering (mm)'))
@@ -94,5 +106,5 @@ if __name__ == '__main__':
     import propfile
     pfname = sys.argv[1]
     pf = propfile.PropertyFile(pfname)
-    register(pf)
+    properties(pf)
     pf.close()

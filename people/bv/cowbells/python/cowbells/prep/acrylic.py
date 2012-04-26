@@ -6,11 +6,21 @@ Acrylic optical propteries
 name = 'Acrylic'
 
 import cowbells
+import util
 
 mm = cowbells.units.mm
 eV = cowbells.units.eV
 meter = cowbells.units.meter
+gram = cowbells.units.gram
+cm3 = cowbells.units.cm3
 
+
+parts = [
+    ("Carbon",  0.59984),
+    ("Hydrogen",0.08055),
+    ("Oxygen",  0.31961),
+    ]
+density = 1.18*gram/cm3
 
 # from Daya Bay
 abslength = [x*mm for x in [8.0e3, 8.0e3,]]
@@ -29,7 +39,12 @@ rindex_energy = [x*eV for x in [
         9.538, 10.33, 15.5 ]]
 
 
-def register(pf):
+def materials(geo):
+    'Make any materials'
+    mat = util.make_mixture(name, parts, density)
+    med = util.make_medium(mat)
+
+def properties(pf):
     '''
     Save data into a properties file
     '''
@@ -43,5 +58,5 @@ if __name__ == '__main__':
     import propfile
     pfname = sys.argv[1]
     pf = propfile.PropertyFile(pfname)
-    register(pf)
+    properties(pf)
     pf.close()

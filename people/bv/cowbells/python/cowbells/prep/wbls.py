@@ -5,14 +5,24 @@ WBLS properties
 name = 'WBLS'
 
 import water
-
 import cowbells
+import util
 
 cm = cowbells.units.cm
 mm = cowbells.units.mm
 eV = cowbells.units.eV
 MeV = cowbells.units.MeV
 ns = cowbells.units.ns
+gram = cowbells.units.gram
+cm3 = cowbells.units.cm3
+
+parts =   [('Hydrogen', 0.659),
+           ('Oxygen', 0.309),
+           ('Sulfur', 0.0009),
+           ('Nitrogen', 0.000058),
+           ('Carbon', 0.031)]
+density = 0.9945
+
 
 # Use some same as water
 energy = water.energy
@@ -144,7 +154,12 @@ properties = {
     'WLSABSLENGTH':(energy,wls_abs),
 }
 
-def register(pf):
+def materials(geo):
+    'Make any materials'
+    mat = util.make_mixture(name, parts, density)
+    med = util.make_medium(mat)
+
+def properties(pf):
     '''
     Save data into a properties file
     '''
@@ -161,6 +176,6 @@ if __name__ == '__main__':
     import propfile
     pfname = sys.argv[1]
     pf = propfile.PropertyFile(pfname)
-    register(pf)
+    properties(pf)
     pf.close()
     
