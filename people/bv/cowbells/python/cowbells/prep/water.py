@@ -84,9 +84,9 @@ def register(pf):
     '''
     Save data into a properties file
     '''
-    pf.add(name, 'RINDEX',    zip(energy,rindex))
-    pf.add(name, 'ABSLENGTH', zip(energy,absorption))
-    pf.add(name, 'RAYLEIGH',  zip(energy,rayleigh))
+    pf.add(name, 'RINDEX',    zip(energy,rindex), ('Energy (MeV)',None))
+    pf.add(name, 'ABSLENGTH', zip(energy,absorption), ('Energy (MeV)', 'Absorption Length (mm)'))
+    pf.add(name, 'RAYLEIGH',  zip(energy,rayleigh), ('Energy (MeV)', 'Rayleigh Scattering (mm)'))
     return
 
 if __name__ == '__main__':

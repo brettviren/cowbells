@@ -56,27 +56,44 @@ class FileParser:
         return [cast(x) for x in line.split()]
 
 class PropertyFile:
+
+    # The sub-directory holding properties.
+    propdirname = "properties"
+
     def __init__(self,filename):
         self.fp = ROOT.TFile.Open(filename,'update')
+        pd = self.fp.Get(PropertyFile.propdirname)
+        if not pd:
+            pd = self.fp.mkdir(PropertyFile.propdirname)
+        self.propdir = pd
         return
 
-    def add(self,matname,propname,data):
+    def set_axis(self, graph, xaxis, yaxis):
+        print 'Setting axis to "%s"/"%s"' % (xaxis, yaxis)
+        if xaxis:
+            graph.GetXaxis().SetTitle(xaxis)
+        if yaxis:
+            graph.GetYaxis().SetTitle(yaxis)
+        return
+
+    def add(self, matname, propname, data, axis = None):
         'Add from list-of-tuple-like data'
-        mdir = self.fp.Get(matname)
+        mdir = self.propdir.Get(matname)
         if not mdir:
-            mdir = self.fp.mkdir(matname)
+            mdir = self.propdir.mkdir(matname)
         mdir.cd()
         g = ROOT.TGraph()
         g.SetName(propname)
+        if axis: self.set_axis(g,*axis)
         for i,(x,y) in enumerate(data):
             g.SetPoint(i,x,y)
             continue
         nbytes = g.Write()
         return nbytes
         
-    def add_file(self,matname,propname,filename):
+    def add_file(self,matname, propname, filename, axis = None):
         'Add material based on text file with two columns of numbers'
-        return self.add(matname,propname,FileParser(filename))
+        return self.add(matname, propname, FileParser(filename), axis)
 
     def close(self):
         self.fp.Close()

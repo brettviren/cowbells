@@ -24,12 +24,14 @@ def topvol():
     worldboxsize = array('f',[10.0]*3)
     world = geo.Volume("World","BOX", med.GetId(), worldboxsize,3)
     geo.SetTopVolume(world)
-    print 'Set top volume for "%s"' % geo.GetName()
+    print 'Set top volume "%s" (id:%d") for "%s"' % \
+        (med.GetName(), med.GetId(), geo.GetName())
     return world
 
 def app():
-    '''Make and return the Cowbells VMC application, this needs to
-    follow creation of some geometry'''
-    import cowbells.app
-    return cowbells.app.app()
+    import cowbells
+    return cowbells.app()
 
+def mc():
+    import cowbells
+    return cowbells.mc()

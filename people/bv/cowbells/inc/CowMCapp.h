@@ -11,6 +11,7 @@
 #define COWMCAPP_H
 
 #include <TVirtualMCApplication.h>
+#include <TGraph.h>
 
 class CowMCapp : public TVirtualMCApplication
 {
@@ -22,9 +23,7 @@ public:
     // My interface
 
     /// Set a file from which to get material property data
-    void SetPropertiesFile(const char* propertiesfile) {
-        m_propertiesfile = propertiesfile;
-    }
+    void SetPropertiesFile(const char* propertiesfile);
 
     // Required TVirtualMCApplication API
     virtual void ConstructGeometry();
@@ -41,8 +40,11 @@ public:
     virtual void ConstructOpGeometry();
     virtual void InitGeometry();
 
+    void DefineProperty(int matid, TGraph& prop);
+
 private:
     void DefineProperties();
+
     std::string m_propertiesfile;
 
 };

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import ROOT
 import sample
 
 def test_app():
@@ -11,16 +10,21 @@ def test_app():
     print 'Making app'
     app = sample.app()
 
-    app.Start()
+    # fixme: run prep/gen.py to make an example
+    propfile = "prop.root"
+    print 'Setting properties file "%s"' % propfile 
+    app.SetPropertiesFile(propfile)
+
+    mc = sample.mc()
 
     print 'Initialize MC, triggers C++ detector construction'
-    ROOT.gMC.Init()
+    mc.Init()
 
     print 'Build MC physics'
-    ROOT.gMC.BuildPhysics()
+    mc.BuildPhysics()
 
     print 'Running 10'
-    ROOT.gMC.ProcessRun(10)
+    mc.ProcessRun(10)
 
     print 'And, I am out'
     return

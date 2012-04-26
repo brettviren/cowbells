@@ -8,7 +8,11 @@ for info.
 
 * Cowbells
 
-This is the COsmic WB(el)LS simulation.  It builds with cmake.
+This is the COsmic WB(el)LS simulation.  
+
+** Ring the bell
+
+It builds with cmake.
 
 #+begin_src shell
 mkdir cowbells-build
@@ -19,6 +23,39 @@ make
 python python/cowbells/prep/gen.py properties.root
 #+end_src
 
+** Input data
+
+Input data describing what the simulation should model is specified
+via one or more ROOT files.  These files must follow the conventions
+described below.  Each type of input data must be located in a
+sub-(t)directory of the file.  These sub-directories may be spread
+across multiple files or be combined into one.  There is Python code
+to assist in generating the input data at
+=cowbells/python/cowbells/prep/=.
+
+*** Geometry
+
+The geometry consists of a collection of TGeo classes saved under
+=geometry/=.
+
+Details t.b.d.
+
+*** Material Properties
+
+Any optical properties are specified separately from the above They
+are specified by adding a TGraph for each property under a
+=properties/= sub-(t)directory in the ROOT file following these rules:
+
+ - Must have one directory per material, named the same as the
+   material given in the geometry.
+
+ - Must have one TGraph for each property.  It must be named with the
+   canonical G4 property name (including capitalization).
+
+ - All TGraphs with exactly one entry are considered scalar properties
+   and their X value is ignored.
+
+ - All property values must be converted into native G4 units.  
 
 * WCSim_WbLS based simulation
 

@@ -128,7 +128,7 @@ ppo_emm = [
 
 # collect everything together for easier bulk processing
 properties = {
-    'birks':0.124*mm/MeV,
+    'BIRKS_CONSTANT':0.124*mm/MeV,
     'WLSTIMECONSTANT': 1.5*ns,
     'SCINTILLATIONYIELD': 90/MeV,
     'RESOLUTIONSCALE': 1.0,

@@ -30,31 +30,46 @@ def geo():
 _geo = geo()
 
 
-def app(propertiesfile = 'cowbells_properties.root'):
-    'Make a Cowbells MC application with an optional properties file'
-    app = ROOT.CowMCapp('cowbells','COsmic WB(el)LS simulation')
-    app.SetPropertiesFile(propertiesfile)
-    ROOT.SetOwnership(app,0)
-    return app
+_app = None
+def app():
+    'Make a Cowbells MC application'
+    global _app
+    if _app: return _app
+    _app = ROOT.CowMCapp('cowbells','COsmic WB(el)LS simulation')
+    ROOT.SetOwnership(_app,0)
+    return _app
 
-def do_not_call():
-    import app
-    mcapp = app.app()
+_geant4 = None
+def mc():
+    global _geant4
+    if _geant4: return geant4
 
-    import ROOT
-    mc = ROOT.gMC
-    g4vmc = app._geant4
+    # http://root.cern.ch/root/vmc/Geant4VMC.html
+    # 
+    # options for first argument
+    # - geomVMCtoGeant4 - geometry defined via VMC, G4 native navigation
+    # - geomVMCtoRoot - geometry defined via VMC, Root navigation
+    # - geomRoot - geometry defined via Root, Root navigation
+    # - geomRootToGeant4 - geometry defined via Root, G4 native navigation
+    # - geomGeant4 - geometry defined via Geant4, G4 native navigation
+    #
+    # options for second argument
+    # - emStandard - standard em physics (default)
+    # - emStandard+optical - standard em physics + optical physics
+    # - XYZ - selected hadron physics list ( XYZ = LHEP, QGSP, ...)
+    # - XYZ+optical - selected hadron physics list + optical physics
 
-   #import ROOT
-   #geo = ROOT.TGeoManager("geo","Geo Manager")
-   # _geometry_name = "E06_geometry" # fixme: change to something relevant
-   #geo = ROOT.gROOT.GetGeometry(_geometry_name)
-    geo = ROOT.TGeoManager(mcapp.GetName() + '_geometry', 
-                           'Geometry for ' + mcapp.GetTitle())
-    ROOT.SetOwnership(geo,0)
-    return
+    #geom_style = "geomRootToGeant4"
+    geom_style = "geomRoot"
+    print 'Setting runconfig to geometry style "%s"' % geom_style
+    run_config = ROOT.TG4RunConfiguration(geom_style, "emStandard+optical")
+    ROOT.SetOwnership(run_config,0)
 
+    print 'Making the TGeant4'
+    _geant4 = ROOT.TGeant4("TGeant4", "The Geant4 Monte Carlo", run_config)
+    ROOT.SetOwnership(_geant4,0)
 
+    return _geant4
 
 
 if __name__ == '__main__':

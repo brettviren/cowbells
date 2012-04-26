@@ -34,14 +34,14 @@ def make_medium(mat, name = None, params = None):
     if med: return med
 
     global _media
-    numed = len(_media)
+    _media.append(med)          # let no ID 
+    numed = len(_media)         # be zero!
 
     if params:
         med = ROOT.TGeoMedium(name, numed, mat, params)
     else:
         med = ROOT.TGeoMedium(name, numed, mat)
 
-    _media.append(med)
     ROOT.SetOwnership(med,0)
     return med
 
