@@ -157,13 +157,16 @@ void CowMCapp::GeneratePrimaries()
 
 
     double energy = 3.0e-09;    // 3 eV
-    int track_id = -1;
-    m_stack->PushTrack(1, -1, op_id, 
-                       0.0, 0.0, energy, energy,
-                       0, 0, 0, 0, // x,y,z,t
-                       polar.X(), polar.Y(), polar.Z(),                        
-                       kPPrimary, track_id, 1., 0);
-    cout << "moo: pushed track id " << track_id << endl;
+
+    for (int count=0; count < 10; ++count) {
+        int track_id = -1;
+        m_stack->PushTrack(1, -1, op_id, 
+                           0.0, 0.0, energy, energy,
+                           0, 0, 0, 0, // x,y,z,t
+                           polar.X(), polar.Y(), polar.Z(),                        
+                           kPPrimary, track_id, 1., 0);
+        cout << "moo: pushed track id " << track_id << endl;
+    }
 }
 
 void CowMCapp::BeginEvent()
@@ -199,5 +202,6 @@ void CowMCapp::FinishPrimary()
 void CowMCapp::FinishEvent()
 {
     cout << "moo: FinishEvent" << endl;
+    m_stack->Reset();
 }
 
