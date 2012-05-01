@@ -5,6 +5,7 @@
 #pragma link off all functions;
  
 #pragma link C++ class  CowMCapp+;
+#pragma link C++ class  CowPatty+;
 
 #pragma link C++ namespace units;
 

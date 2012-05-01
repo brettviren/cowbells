@@ -10,7 +10,10 @@
 #ifndef COWMCAPP_H
 #define COWMCAPP_H
 
+#include "CowPatty.h"
+
 #include <TVirtualMCApplication.h>
+#include <TVirtualMC.h>
 #include <TGraph.h>
 
 class CowMCapp : public TVirtualMCApplication
@@ -24,6 +27,9 @@ public:
 
     /// Set a file from which to get material property data
     void SetPropertiesFile(const char* propertiesfile);
+    TVirtualMCStack* GetStack();
+    void InitMC(TVirtualMC* mc);
+    void RunMC(Int_t nofEvents);
 
     // Required TVirtualMCApplication API
     virtual void ConstructGeometry();
@@ -46,6 +52,8 @@ private:
     void DefineProperties();
 
     std::string m_propertiesfile;
+    CowPatty* m_stack;
 
+    ClassDef(CowMCapp,1)  //Interface to MonteCarlo application
 };
 #endif  // COWMCAPP_H

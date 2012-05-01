@@ -41,8 +41,11 @@ rindex_energy = [x*eV for x in [
 
 def materials(geo):
     'Make any materials'
-    mat = util.make_mixture(name, parts, density)
-    med = util.make_medium(mat)
+    for modifier in ['','Black']:
+        mat = util.make_mixture(modifier+name, parts, density)
+        med = util.make_medium(mat)
+        continue
+    return
 
 def properties(pf):
     '''
@@ -51,4 +54,5 @@ def properties(pf):
     pf.add(name, 'RINDEX',    zip(rindex_energy,rindex))
     pf.add(name, 'ABSLENGTH', zip(abslength_energy,abslength))
     pf.add(name, 'RAYLEIGH',  zip(rayleigh_energy,rayleigh))
+
     return

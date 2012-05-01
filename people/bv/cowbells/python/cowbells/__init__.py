@@ -13,22 +13,29 @@ units = ROOT.units
 
 
 _geo = None
-def geo():
+def geo(filename = None):
     '''
     Get the geo manager.
 
-    You can get this from ROOT.gROOT.GetGeometry("cowbells_geometry")
-    but this function needs to be called before that (or the cowbells
-    module imported somewhere).
+    If a filename is given the geometry is imported from the file,
+    potentially overriding any prior geometry.
+
+    Otherwise, if a prior geometry exists it is returned or a new,
+    empty one is created.
+
     '''
     global _geo
-    if _geo: return _geo
+
+    if filename:
+        _geo = ROOT.TGeoManager.Import(filename)
+
+    if _geo: 
+        return _geo
+
     _geo = ROOT.TGeoManager('cowbells_geometry', 
-                           'Geometry for COsmic WB(el)LS detector')
+                            'Geometry for COsmic WB(el)LS detector')
     ROOT.SetOwnership(_geo,0)
     return _geo
-_geo = geo()
-
 
 _app = None
 def app():
@@ -42,7 +49,7 @@ def app():
 _geant4 = None
 def mc():
     global _geant4
-    if _geant4: return geant4
+    if _geant4: return _geant4
 
     # http://root.cern.ch/root/vmc/Geant4VMC.html
     # 

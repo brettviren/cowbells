@@ -3,18 +3,30 @@
 Generate the properties file
 '''
 
-import sys
-import propfile
-import water, wbls, acrylic
+import cowbells
+import geometry, properties
 
-pfname = sys.argv[1]
-pf = propfile.PropertyFile(pfname)
+geo = cowbells.geo()
 
-print 'Dumping materials:'
-for mod in [water, wbls, acrylic]:
-    print '\t',mod.__name__
-    mod.properties(pf)
-    continue
+def fill(filename):
+    import water, wbls, acrylic, glass
+    for mod in water, wbls, acrylic, glass:
+        mod.materials(geo)
 
-pf.close()
+    cbgb = geometry.CowbellGeometryBuilder()
+    top = cbgb.top(geo)
+    geo.SetTopVolume(top)
 
+    print 'Writing geometry'
+    import ROOT
+    fp = ROOT.TFile.Open(filename, "update")
+    geo.Write("geometry")       # fixme, this probably collides once geometry.py is written....
+    fp.Close()
+
+    properties.fill(filename)
+
+    return
+
+if __name__ == '__main__':
+    import sys
+    fill(sys.argv[1])

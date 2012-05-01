@@ -2,19 +2,20 @@
 '''
 Generate the properties file
 '''
-
-import sys
 import propfile
-import water, wbls, acrylic
+import water, wbls, acrylic, glass
 
-pfname = sys.argv[1]
-pf = propfile.PropertyFile(pfname)
+def fill(filename):
+    pf = propfile.PropertyFile(filename)
+    print 'Dumping properties:'
+    for mod in [water, wbls, acrylic, glass]:
+        print '\t',mod.__name__
+        mod.properties(pf)
+        continue
+    pf.close()
 
-print 'Dumping materials:'
-for mod in [water, wbls, acrylic]:
-    print '\t',mod.__name__
-    mod.properties(pf)
-    continue
-
-pf.close()
+if __name__ == '__main__':
+    import sys
+    print 'Dumping materials:'
+    fill(sys.argv[1])
 

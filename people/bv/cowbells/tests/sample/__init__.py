@@ -9,6 +9,11 @@ def geom():
     'Make some trivial geometry'
     return cowbells.geo()
 
+def load_geom(filename):
+    'Import geometry from given file name and TDirectory name'
+    geo = geom()
+    geo.Import(filename)
+
 def medium():
     'Return sample medium (water)'
     import cowbells.material.util as util

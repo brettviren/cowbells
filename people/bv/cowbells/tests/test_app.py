@@ -5,7 +5,7 @@ import sample
 def test_app():
 
     print 'Making geometry'
-    top = sample.topvol()
+    geo = sample.load_geom("geo.root","geometry")
 
     print 'Making app'
     app = sample.app()

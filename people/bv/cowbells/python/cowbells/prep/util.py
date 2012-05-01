@@ -9,6 +9,16 @@ import cowbells
 
 geo = cowbells.geo()
 
+def get_stuff(stuff):
+    'Try to return element or material'
+    ele = geo.GetElementTable().FindElement(stuff)
+    if ele: return ele
+
+    mat = geo.GetMaterial(stuff)
+    if mat: return mat
+
+    return None
+
 def make_mixture(name, parts, density):
     'Make a mixture'
 
@@ -16,9 +26,12 @@ def make_mixture(name, parts, density):
     ROOT.SetOwnership(mix,0)
     print 'Mixture: %s' % name
     for part in parts:
-        ele = geo.GetElementTable().FindElement(part[0])
-        mix.AddElement(ele, part[1])
-        print '\telement: %s %s' % (part[0],str(part[1]))
+        stuff = get_stuff(part[0])
+        if not stuff:
+            raise ValueError,'No such stuff: "%s"' % part[0]
+        print '\twith stuff: (%s)%s %s' % (type(stuff), part[0], str(part[1]))
+        mix.AddElement(stuff, part[1])
+
         continue
     return mix
 
@@ -46,51 +59,16 @@ def make_medium(mat, name = None, params = None):
     print 'Medium: %s #%d' % (name,numed)
     return med
 
-# Set to module's medium method if generic
-def generic_medium():
-    'Return the WBLS medium'
-    mat = make_mixture("WBLS", parts, density)
-    if not mat: return None
-    return make_medium(mat)
+def make_translation(x,y,z):
+    tran = ROOT.TGeoTranslation(x,y,z)
+    ROOT.SetOwnership(tran,0)
+    return tran
 
-
-
-# Set to module's register method if generic
-def generic_register(mc):
-    "Register material with MC"
-
-    assert mc, 'Null MC passed'
-
-    med = medium()
-    wid = med.GetId()           # Must. Love. The. Interface.
-
-    nentries = len(energy)
-    array_type = 'd'
-    efficiency = array(array_type,[0.0]*nentries)
-    print 'energy:',energy
-    print 'abs:',absorption
-    print 'eff:',efficiency
-    print 'rind:',rindex
-    mc.SetCerenkov(wid, nentries, 
-                   array(array_type,energy), 
-                   array(array_type,absorption),
-                   efficiency, 
-                   array(array_type,rindex))
-                   
-    mc.SetMaterialProperty(wid, "RAYLEIGH", nentries, energy, rayleigh)
-
-    # gMC->SetMaterialProperty(fImedWater, 
-    #                          "FASTCOMPONENT", nEntries, photonEnergy, scintilFast);
-    # gMC->SetMaterialProperty(fImedWater, 
-    #                          "SLOWCOMPONENT", nEntries, photonEnergy, scintilSlow);
-
-    # gMC->SetMaterialProperty(fImedWater, "SCINTILLATIONYIELD", 50.e03);  // 50./MeV
-    # gMC->SetMaterialProperty(fImedWater, "RESOLUTIONSCALE",  1.0);
-    # gMC->SetMaterialProperty(fImedWater, "FASTTIMECONSTANT",  1.0e-09);  // 1.*ns
-    # gMC->SetMaterialProperty(fImedWater, "SLOWTIMECONSTANT", 10.0e-09); // 10.*ns
-    # gMC->SetMaterialProperty(fImedWater, "YIELDRATIO", 0.8);
-    
-    return
+def make_rotation(phi,theta,psi):
+    rot = ROOT.TGeoRotation()   # avoid having to give a name
+    rot.SetAngles(phi,theta,psi) # what new level of hell?
+    ROOT.SetOwnership(rot,0)
+    return rot
 
 
 def test():

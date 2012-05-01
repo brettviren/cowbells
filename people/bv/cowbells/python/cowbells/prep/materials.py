@@ -8,15 +8,16 @@ import water, wbls, acrylic
 
 geo = cowbells.geo()
 
-for mod in water, wbls, acrylic:
-    mod.materials(geo)
+def fill(filename):
+    for mod in water, wbls, acrylic:
+        mod.materials(geo)
+
+    import ROOT
+    fp = ROOT.TFile.Open(filename, "update")
+    geo.Write("geometry")       # fixme, this probably collides once geometry.py is written....
+    fp.Close()
 
 if __name__ == '__main__':
     import sys
-    import ROOT
-    out = sys.argv[1]
-    fp = ROOT.TFile.Open(out, "update")
-    geo.Write("geometry")
-    fp.Close()
-
+    fill(sys.argv[1])
     

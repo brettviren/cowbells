@@ -1,5 +1,7 @@
 #include "CowMCapp.h"
 
+#include <TDatabasePDG.h>
+#include <TParticlePDG.h>
 #include <TVirtualMC.h>         // for gMC
 #include <TGeoManager.h>
 #include <TFile.h>
@@ -9,19 +11,39 @@
 #include <iostream>
 using namespace std;
 
+ClassImp(CowMCapp)
+
 CowMCapp::CowMCapp()
     : TVirtualMCApplication()
     , m_propertiesfile("")
+    , m_stack(0)
 {
 }
 CowMCapp::CowMCapp(const char* name,  const char *title)
     : TVirtualMCApplication(name,title)
+    , m_propertiesfile("")
+    , m_stack(new CowPatty(1000))
 {
 }
 CowMCapp:: ~CowMCapp()
 {
+    delete m_stack;
+
     delete gMC;
     gMC = 0;
+}
+
+void CowMCapp::InitMC(TVirtualMC* mc)
+{    
+    mc->SetStack(m_stack);
+    //gMC->SetMagField(fMagField);
+    //gMC->Init();
+    //gMC->BuildPhysics(); 
+}
+
+void CowMCapp::RunMC(Int_t nofEvents)
+{    
+    gMC->ProcessRun(nofEvents);
 }
 
 void CowMCapp::InitGeometry()
@@ -68,6 +90,11 @@ void CowMCapp::SetPropertiesFile(const char* propertiesfile)
     m_propertiesfile = propertiesfile;
 }
 
+TVirtualMCStack* CowMCapp::GetStack()
+{
+    return m_stack;
+}
+
 void CowMCapp::DefineProperties()
 {
     if (! m_propertiesfile.size()) { 
@@ -96,7 +123,7 @@ void CowMCapp::DefineProperties()
         for (int prop_ind=0; prop_ind<prop_lok->GetSize(); ++prop_ind) {
             TKey* prop_key = dynamic_cast<TKey*>(prop_lok->At(prop_ind));
             TGraph* prop = dynamic_cast< TGraph*>(prop_key->ReadObj());
-            cout << "\tproperty " << prop->GetName() << endl;
+            cout << "moo:\tproperty " << prop->GetName() << endl;
             this->DefineProperty(mat_id,*prop);
         }
     }
@@ -105,6 +132,24 @@ void CowMCapp::DefineProperties()
 void CowMCapp::GeneratePrimaries()
 {
     cout << "moo: GeneratePrimaries" << endl;
+
+    //  Fixme: Here we just slam a muon to get something
+
+    int pdgid = 13;
+    TParticlePDG* particlePDG = TDatabasePDG::Instance()->GetParticle(pdgid);
+    double vtx[]={-1.0,0.0,0.0};
+    Double_t mass = particlePDG->Mass(); 
+    Double_t energy  = mass + 1.0/*GeV*/;
+    double p0 = sqrt(energy*energy - mass*mass); 
+    double mom[]={p0, 0.0, 0.0};
+
+    int track_id=0;
+    m_stack->PushTrack(1, -1, pdgid, 
+                       mom[0], mom[1], mom[2], energy,
+                       vtx[0], vtx[1], vtx[2], 0.0,
+                       0.0, 0.0, 0.0,
+                       kPPrimary, track_id, 1., 0);
+    cout << "moo: pushed track id " << track_id << endl;
 }
 
 void CowMCapp::BeginEvent()
