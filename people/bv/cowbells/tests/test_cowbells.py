@@ -33,6 +33,10 @@ def test_init_mc():
     app = cowbells.app()
     mc = cowbells.mc()
     assert app and mc,'Got null app/MC'
+
+    mc.ProcessGeantCommand("/mcVerbose/all 1")
+    mc.ProcessGeantCommand("/mcVerbose/geometryManager 1")
+
     app.InitMC(mc)
     mc.Init()
     mc.BuildPhysics()

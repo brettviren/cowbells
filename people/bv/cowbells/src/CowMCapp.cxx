@@ -135,19 +135,33 @@ void CowMCapp::GeneratePrimaries()
 
     //  Fixme: Here we just slam a muon to get something
 
-    int pdgid = 13;
-    TParticlePDG* particlePDG = TDatabasePDG::Instance()->GetParticle(pdgid);
-    double vtx[]={-1.0,0.0,0.0};
-    Double_t mass = particlePDG->Mass(); 
-    Double_t energy  = mass + 1.0/*GeV*/;
-    double p0 = sqrt(energy*energy - mass*mass); 
-    double mom[]={p0, 0.0, 0.0};
+    int op_id = 50000050;
 
-    int track_id=0;
-    m_stack->PushTrack(1, -1, pdgid, 
-                       mom[0], mom[1], mom[2], energy,
-                       vtx[0], vtx[1], vtx[2], 0.0,
-                       0.0, 0.0, 0.0,
+    double dir[3] = {1.0, 0.0, 0.0};
+    double polang = 90.0;       // deg
+
+    TVector3 polar;
+    if ( op_id == 50000050 ) {
+        TVector3 normal (1., 0., 0.);
+        TVector3 kphoton = TVector3(dir[0], dir[1], dir[2]);
+        TVector3 product = normal.Cross(kphoton); 
+        Double_t modul2  = product*product;
+ 
+        TVector3 e_perpend (0., 0., 1.);
+        if (modul2 > 0.) e_perpend = (1./sqrt(modul2))*product; 
+        TVector3 e_paralle = e_perpend.Cross(kphoton);
+        
+        polar =   TMath::Cos(polang*TMath::DegToRad())*e_paralle 
+            + TMath::Sin(polang*TMath::DegToRad())*e_perpend;
+    }	
+
+
+    double energy = 3.0e-09;    // 3 eV
+    int track_id = -1;
+    m_stack->PushTrack(1, -1, op_id, 
+                       0.0, 0.0, energy, energy,
+                       0, 0, 0, 0, // x,y,z,t
+                       polar.X(), polar.Y(), polar.Z(),                        
                        kPPrimary, track_id, 1., 0);
     cout << "moo: pushed track id " << track_id << endl;
 }
@@ -159,27 +173,27 @@ void CowMCapp::BeginEvent()
 
 void CowMCapp::BeginPrimary()
 {
-    cout << "moo: BeginPrimary" << endl;
+    //cout << "moo: BeginPrimary" << endl;
 }
 
 void CowMCapp::PreTrack()
 {
-    cout << "moo: PreTrack" << endl;
+    //cout << "moo: PreTrack" << endl;
 }
 
 void CowMCapp::Stepping()
 {
-    cout << "moo: Stepping" << endl;
+    //cout << "moo: Stepping" << endl;
 }
 
 void CowMCapp::PostTrack()
 {
-    cout << "moo: PostTrack" << endl;
+    //cout << "moo: PostTrack" << endl;
 }
 
 void CowMCapp::FinishPrimary()
 {
-    cout << "moo: FinishPrimary" << endl;
+    //cout << "moo: FinishPrimary" << endl;
 }
 
 void CowMCapp::FinishEvent()

@@ -3,12 +3,13 @@
 Generate the properties file
 '''
 import propfile
-import water, wbls, acrylic, glass
+
+from cowbells.prep import propmods
 
 def fill(filename):
     pf = propfile.PropertyFile(filename)
     print 'Dumping properties:'
-    for mod in [water, wbls, acrylic, glass]:
+    for mod in propmods:
         print '\t',mod.__name__
         mod.properties(pf)
         continue

@@ -7,15 +7,24 @@ import cowbells
 import geometry, properties
 
 geo = cowbells.geo()
+meter = cowbells.units.meter
+
+def make_world(size = 10*meter):
+    'Make the world volume'
+    vac = geo.GetMedium("Vacuum")
+    return geo.MakeBox("World",vac,size,size,size)
 
 def fill(filename):
-    import water, wbls, acrylic, glass
-    for mod in water, wbls, acrylic, glass:
+    from cowbells.prep import propmods
+    for mod in propmods:
         mod.materials(geo)
 
     cbgb = geometry.CowbellGeometryBuilder()
     top = cbgb.top(geo)
-    geo.SetTopVolume(top)
+
+    world = make_world()
+    world.AddNode(top,1)
+    geo.SetTopVolume(world)
 
     print 'Writing geometry'
     import ROOT

@@ -4,12 +4,13 @@ Generate and dump out materials
 '''
 
 import cowbells
-import water, wbls, acrylic
+from cowbells.prep import propmods
+
 
 geo = cowbells.geo()
 
 def fill(filename):
-    for mod in water, wbls, acrylic:
+    for mod in propmods:
         mod.materials(geo)
 
     import ROOT
