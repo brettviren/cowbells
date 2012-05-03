@@ -67,8 +67,8 @@ def mc():
     # - XYZ - selected hadron physics list ( XYZ = LHEP, QGSP, ...)
     # - XYZ+optical - selected hadron physics list + optical physics
 
-    #geom_style = "geomRootToGeant4"
-    geom_style = "geomRoot"
+    geom_style = "geomRootToGeant4"
+    #geom_style = "geomRoot"
     print 'Setting runconfig to geometry style "%s"' % geom_style
     run_config = ROOT.TG4RunConfiguration(geom_style, "emStandard+optical")
     ROOT.SetOwnership(run_config,0)

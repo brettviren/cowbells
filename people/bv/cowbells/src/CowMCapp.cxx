@@ -6,6 +6,8 @@
 #include <TGeoManager.h>
 #include <TFile.h>
 #include <TKey.h>
+#include <TROOT.h>
+#include <TInterpreter.h>
 
 #include <string>
 #include <iostream>
@@ -33,12 +35,17 @@ CowMCapp:: ~CowMCapp()
     gMC = 0;
 }
 
-void CowMCapp::InitMC(TVirtualMC* mc)
+void CowMCapp::InitMC(const char* cintfile)
 {    
-    mc->SetStack(m_stack);
+    if (cintfile) {
+        gROOT->LoadMacro(cintfile);
+        gInterpreter->ProcessLine("Config()");
+    }
+        
+    gMC->SetStack(m_stack);
     //gMC->SetMagField(fMagField);
-    //gMC->Init();
-    //gMC->BuildPhysics(); 
+    gMC->Init();
+    gMC->BuildPhysics(); 
 }
 
 void CowMCapp::RunMC(Int_t nofEvents)
@@ -56,7 +63,7 @@ void CowMCapp::ConstructGeometry()
     cout << "moo: ConstructGeometry" << endl;
     
     // close geometry
-    gGeoManager->CloseGeometry();
+    //gGeoManager->CloseGeometry();
 
     // notify VMC about Root geometry
     gMC->SetRootGeometry();
@@ -162,7 +169,7 @@ void CowMCapp::GeneratePrimaries()
         int track_id = -1;
         m_stack->PushTrack(1, -1, op_id, 
                            0.0, 0.0, energy, energy,
-                           0, 0, 0, 0, // x,y,z,t
+                           0, 0, 300.0, 0, // x,y,z,t
                            polar.X(), polar.Y(), polar.Z(),                        
                            kPPrimary, track_id, 1., 0);
         cout << "moo: pushed track id " << track_id << endl;
@@ -176,27 +183,48 @@ void CowMCapp::BeginEvent()
 
 void CowMCapp::BeginPrimary()
 {
-    //cout << "moo: BeginPrimary" << endl;
+    cout << "moo: BeginPrimary" << endl;
 }
 
 void CowMCapp::PreTrack()
 {
-    //cout << "moo: PreTrack" << endl;
+    cout << "moo: PreTrack" << endl;
 }
 
 void CowMCapp::Stepping()
 {
-    //cout << "moo: Stepping" << endl;
+    int copyno=0;
+    int vid = gMC->CurrentVolID(copyno);
+    double edep = gMC->Edep(), etot = gMC->Etot();
+    int nstacked = m_stack->GetNtrack();
+    TParticle* part = m_stack->GetCurrentTrack();
+    double x=0,y=0,z=0;
+    gMC->TrackPosition(x,y,z);
+    cout << "moo: Stepping: "
+         << vid << "/" << copyno << ":" << gMC->CurrentVolPath() << " "
+         << "E: " << edep << "/" << etot << " "
+         << "Step: " << gMC->TrackStep() << " "
+         << "PID: " << part->GetPdgCode() << "/" << part->GetName() << " "
+         << "@ (" << x << "," << y << "," << z << ") "
+         << endl;
+
 }
 
 void CowMCapp::PostTrack()
 {
-    //cout << "moo: PostTrack" << endl;
+    TParticle* part = m_stack->GetCurrentTrack();
+    double x=0,y=0,z=0;
+    gMC->TrackPosition(x,y,z);
+    cout << "moo: PostTrack " 
+         << "in: " << gMC->CurrentVolPath() << " "
+         << "PID: " << part->GetPdgCode() << "/" << part->GetName() << " "
+         << "@ (" << x << "," << y << "," << z << ") "
+         << endl;
 }
 
 void CowMCapp::FinishPrimary()
 {
-    //cout << "moo: FinishPrimary" << endl;
+    cout << "moo: FinishPrimary" << endl;
 }
 
 void CowMCapp::FinishEvent()

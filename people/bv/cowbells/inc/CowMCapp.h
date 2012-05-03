@@ -28,7 +28,10 @@ public:
     /// Set a file from which to get material property data
     void SetPropertiesFile(const char* propertiesfile);
     TVirtualMCStack* GetStack();
-    void InitMC(TVirtualMC* mc);
+
+    // If a cintfile is given it is loaded and the function "Config()"
+    // is called
+    void InitMC(const char* cintfile = 0);
     void RunMC(Int_t nofEvents);
 
     // Required TVirtualMCApplication API

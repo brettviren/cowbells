@@ -34,8 +34,35 @@ def test_init_mc():
     mc = cowbells.mc()
     assert app and mc,'Got null app/MC'
 
-    mc.ProcessGeantCommand("/mcVerbose/all 1")
-    mc.ProcessGeantCommand("/mcVerbose/geometryManager 1")
+    cmdlines = '''
+/mcVerbose/all 9
+/mcVerbose/geometryManager 9
+/mcVerbose/trackingAction 9
+
+/optics_engine/selectOpProcess Scintillation
+/optics_engine/setOpProcessUse true
+# /optics_engine/setScintillationYieldFactor 90.0
+
+/optics_engine/selectOpProcess OpWLS
+/optics_engine/setOpProcessUse true
+
+# /optics_engine/setWLSTimeProfile ...
+# /optics_engine/setTrackSecondariesFirst ...
+
+/optics_engine/setOpticalSurfaceModel unified
+
+/mcDet/printMaterials
+/mcDet/printMaterialsProperties
+
+
+'''
+    for cmdline in cmdlines.split('\n'):
+        cmdline = cmdline.strip()
+        if not cmdline or cmdline[0] == '#': 
+            continue
+        print cmdline
+        mc.ProcessGeantCommand(cmdline)
+        continue
 
     app.InitMC(mc)
     mc.Init()

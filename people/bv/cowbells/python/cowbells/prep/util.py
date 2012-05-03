@@ -12,7 +12,9 @@ geo = cowbells.geo()
 def get_stuff(stuff):
     'Try to return element or material'
     ele = geo.GetElementTable().FindElement(stuff)
-    if ele: return ele
+    if ele: 
+        ROOT.SetOwnership(ele,0)
+        return ele
 
     mat = geo.GetMaterial(stuff)
     if mat: return mat
