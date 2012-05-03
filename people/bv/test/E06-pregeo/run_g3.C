@@ -11,11 +11,11 @@
 
 /// \ingroup E06
 /// \file E06/run_g3.C
-/// \brief Macro for running Example06 with Geant3 
+/// \brief Macro for running Example06pregeo with Geant3 
 
 void run_g3(const TString& configMacro = "g3tgeoConfig.C") 
 {
-/// Macro function for running Example06 with Geant3 from
+/// Macro function for running Example06pregeo with Geant3 from
 /// Root interactive session
 /// \param configMacro configuration macro name, default \ref E06/g3Config.C 
 
@@ -28,11 +28,11 @@ void run_g3(const TString& configMacro = "g3tgeoConfig.C")
   g3libs();
   
   // Load this example library
-  gSystem->Load("libexample06");
+  gSystem->Load("libexample06pregeo");
 
   // MC application
   Ex06MCApplication* appl 
-    = new Ex06MCApplication("Example06", "The example06 MC application");
+    = new Ex06MCApplication("Example06pregeo", "The example06pregeo MC application");
     
   appl->GetPrimaryGenerator()->SetNofPrimaries(100);  
   //appl->SetVerboseLevel(3);  

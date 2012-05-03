@@ -11,11 +11,11 @@
 
 /// \ingroup E06
 /// \file E06/run_g4.C
-/// \brief Macro for running Example06 with Geant4. 
+/// \brief Macro for running Example06pregeo with Geant4. 
 
 void run_g4(const TString& configMacro = "g4Config.C") 
 {
-/// Macro function for running Example06 with Geant4 from
+/// Macro function for running Example06pregeo with Geant4 from
 /// Root interactive session
 /// \param configMacro configuration macro name, default \ref E06/g4Config.C 
 
@@ -28,11 +28,11 @@ void run_g4(const TString& configMacro = "g4Config.C")
   g4libs();
 
   // Load this example libraries
-   gSystem->Load("libexample06");
+   gSystem->Load("libexample06pregeo");
 
   // MC application
   Ex06MCApplication* appl 
-    = new Ex06MCApplication("Example06", "The example06 MC application");
+    = new Ex06MCApplication("Example06pregeo", "The example06pregeo MC application");
     
   appl->GetPrimaryGenerator()->SetNofPrimaries(100);  
   //appl->SetVerboseLevel(3);  

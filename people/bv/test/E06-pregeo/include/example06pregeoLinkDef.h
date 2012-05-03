@@ -1,4 +1,4 @@
-// $Id: example06LinkDef.h 341 2008-05-26 11:04:57Z ivana $
+// $Id: example06pregeoLinkDef.h 341 2008-05-26 11:04:57Z ivana $
 
 //------------------------------------------------
 // The Virtual Monte Carlo examples
@@ -9,7 +9,7 @@
 // Contact: vmc@pcroot.cern.ch
 //-------------------------------------------------
 
-/// \file  example06LinkDef.h
+/// \file  example06pregeoLinkDef.h
 /// \brief The CINT link definitions for example E06 classes
 
 #ifdef __CINT__

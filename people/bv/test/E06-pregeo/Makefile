@@ -14,7 +14,7 @@
 
 ############################### geant4vmc Makefile ###########################
 
-PACKAGE   = example06
+PACKAGE   = example06pregeo
 
 ifeq ($(PLATFORM),)
 PLATFORM = $(shell root-config --arch)
