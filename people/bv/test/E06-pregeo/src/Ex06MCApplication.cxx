@@ -37,7 +37,7 @@ ClassImp(Ex06MCApplication)
 /// \endcond
 
 //_____________________________________________________________________________
-Ex06MCApplication::Ex06MCApplication(const char *name, const char *title) 
+Ex06MCApplication::Ex06MCApplication(const char *name, const char *title, const char* geofile) 
   : TVirtualMCApplication(name,title),
     fEventNo(0),
     fGammaCounter(0),
@@ -59,7 +59,7 @@ Ex06MCApplication::Ex06MCApplication(const char *name, const char *title)
   fMagField = new TGeoUniformMagField(); 
 
   // Create detector construction
-  fDetConstruction = new Ex06DetectorConstruction();
+  fDetConstruction = new Ex06DetectorConstruction(geofile);
   
   // Create a primary generator
   fPrimaryGenerator = new Ex06PrimaryGenerator(fStack);

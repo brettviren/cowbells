@@ -13,7 +13,8 @@
 /// \file E06/run_g4.C
 /// \brief Macro for running Example06pregeo with Geant4. 
 
-void run_g4(const TString& configMacro = "g4Config.C") 
+void run_g4(const TString& configMacro = "g4Config.C",
+            const char* geomfile = 0) 
 {
 /// Macro function for running Example06pregeo with Geant4 from
 /// Root interactive session
@@ -32,7 +33,7 @@ void run_g4(const TString& configMacro = "g4Config.C")
 
   // MC application
   Ex06MCApplication* appl 
-    = new Ex06MCApplication("Example06pregeo", "The example06pregeo MC application");
+      = new Ex06MCApplication("Example06pregeo", "The example06pregeo MC application", geomfile);
     
   appl->GetPrimaryGenerator()->SetNofPrimaries(100);  
   //appl->SetVerboseLevel(3);  

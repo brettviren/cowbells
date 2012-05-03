@@ -20,7 +20,7 @@ ifeq ($(PLATFORM),)
 PLATFORM = $(shell root-config --arch)
 endif
 
-TOPDIR  = $(shell pwd)/../..
+TOPDIR  = $(shell pwd)
 BINDIR  = $(TOPDIR)/tmp/tgt_$(PLATFORM)/$(PACKAGE)
 LIBDIR  = $(TOPDIR)/lib/tgt_$(PLATFORM)
 

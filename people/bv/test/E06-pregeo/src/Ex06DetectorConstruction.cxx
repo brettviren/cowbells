@@ -30,13 +30,14 @@ ClassImp(Ex06DetectorConstruction)
 /// \endcond
 
 //_____________________________________________________________________________
-Ex06DetectorConstruction::Ex06DetectorConstruction()
+Ex06DetectorConstruction::Ex06DetectorConstruction(const char* geofile)
   : TObject(),
     fExpHallSize(1000),  // 10*m
     fTankSize(500),      // 5*m
     fBubbleSize(50),     // 0.5*m
-    fImedAir(-1),
-    fImedWater(-1)
+    fImedAir(1),
+    fImedWater(2),
+    fGeoFileToLoad(geofile)
 {
 /// Default constuctor
 }
@@ -55,6 +56,13 @@ Ex06DetectorConstruction::~Ex06DetectorConstruction()
 void Ex06DetectorConstruction::ConstructMaterials()
 {
 /// Construct materials using TGeo modeller
+
+    // If given a file to load, import the geometry from there and bail
+    if (fGeoFileToLoad) {
+        TGeoManager::Import(fGeoFileToLoad);
+        return;
+    }
+    // otherwise, build it from scratch
 
   // Create Root geometry manager 
   new TGeoManager("E06_geometry", "E06 VMC example geometry");
@@ -94,10 +102,8 @@ void Ex06DetectorConstruction::ConstructMaterials()
   param[7] = -.8;   // stmin
   for ( Int_t i=8; i<20; ++i) param[i] = 0.;
 
-  fImedAir = 1;
   new TGeoMedium("Air", fImedAir, matAir, param);
   
-  fImedWater = 2;
   new TGeoMedium("Water", fImedWater, matH2O, param);
 }    
 
@@ -105,6 +111,13 @@ void Ex06DetectorConstruction::ConstructMaterials()
 void Ex06DetectorConstruction::ConstructGeometry()
 {
 /// Contruct volumes using TGeo modeller
+
+    // If given a file to load, already constructed so, 
+    if (fGeoFileToLoad) {
+        // just notify VMC about Root geometry and bail
+        gMC->SetRootGeometry();
+        return;
+    }
 
 // The experimental Hall
 //

@@ -36,7 +36,7 @@
 class Ex06DetectorConstruction : public TObject
 {
   public:  
-    Ex06DetectorConstruction();
+    Ex06DetectorConstruction(const char* geofile = 0);
     virtual ~Ex06DetectorConstruction();
 
   public:
@@ -52,6 +52,8 @@ class Ex06DetectorConstruction : public TObject
      Int_t    fImedAir;     ///< The Air medium Id
      Int_t    fImedWater;   ///< The Water medium Id
      
+     const char* fGeoFileToLoad; ///< Optional filename of geometry file to load
+
   ClassDef(Ex06DetectorConstruction,1) //Ex06DetectorConstruction
 };
 

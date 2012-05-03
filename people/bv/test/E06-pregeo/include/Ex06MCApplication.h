@@ -38,7 +38,7 @@ class Ex06PrimaryGenerator;
 class Ex06MCApplication : public TVirtualMCApplication
 {
   public:
-    Ex06MCApplication(const char* name,  const char *title);
+    Ex06MCApplication(const char* name,  const char *title, const char* geofile = 0);
     Ex06MCApplication();
     virtual ~Ex06MCApplication();
   

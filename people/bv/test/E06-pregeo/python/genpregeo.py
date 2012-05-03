@@ -2,14 +2,15 @@
 '''
 Generate the geometry for the E06pregeo example.
 
-usage from the command line:
+usage from the command line as run from E06-pregeo/:
 
-  genpregeo.py filename.root
+  python python/genpregeo.py ex06pregeo.root
 
 In E06 proper, this is done inside the VMC app.  Here we make an
 intermediate ROOT file which will be loaded by the E06pregeo app.
+run_g4.C will assume this named file is in the CWD.
 
-This is largely a straight-forward copy of code from
+The code below a straight-forward translation to PyROOT of code from
 Ex06DetectorConstruction.
 '''
 
@@ -36,19 +37,24 @@ def make_element(name, sym, z, a):
 
 def make_mixture(name, density, parts):
     'Helper to make a mixture'
+    print 'Making mixture "%s"' % name
     mix = ROOT.TGeoMixture(name, len(parts), density)
     for ele, frac in parts:
+        print '\tadd element: %s %s' %(ele,str(frac))
         mix.AddElement(ele, frac)
         continue
+    assert ROOT.gGeoManager.GetMaterial(name), 'Failed to get newly made material "%s"' % name
     return disown(mix)
 
 def make_medium(name, numed, mat, params = None):
     'Helper to make a medium'
+    imat = ROOT.gGeoManager.GetMaterialIndex(mat.GetName())
+    print 'Making medium #%d "%s" from mat #%d "%s"' % (numed,name,imat,mat.GetName())
     if params:
-        imat = ROOT.gGeoManager.GetMaterialIndex(mat.GetName())
         med = ROOT.TGeoMedium(name, numed, imat, *params)
     else:
         med = ROOT.TGeoMedium(name, numed, mat)
+    assert ROOT.gGeoManager.GetMedium(name), 'Failed to get newly made medium "%s"' % name
     return disown(med)
 
 def construct_materials():
@@ -88,6 +94,18 @@ def construct_materials():
 
     return
 
+def dump_geo(geo):
+    print 'GeoManager: %s (%s)' % (geo.GetName(), geo.GetTitle())
+    print 'Materials:'
+    for matname in ['Air','Water']:
+        mat = geo.GetMaterial(matname)
+        print '\t%d %s' % (mat.GetIndex(), mat.GetName())
+    print 'Media:'
+    for medname in ['Air','Water']:
+        med = geo.GetMedium(medname)
+        print '\t%d %s' % (med.GetId(), med.GetName())
+    return
+
 def construct_geometry():
     'Contruct volumes using TGeo modeller'
 
@@ -95,6 +113,7 @@ def construct_geometry():
     ubuf = array('d',[0]*20)    # ?
 
     geo = ROOT.gGeoManager      # short hand
+    dump_geo(geo)
 
     expHall = array('d',[fExpHallSize, fExpHallSize, fExpHallSize])
     expHallV = geo.Volume("WRLD","BOX", fImedAir, expHall, 3)
@@ -103,7 +122,6 @@ def construct_geometry():
     # The Water Tank
     waterTank = array('d',[fTankSize, fTankSize, fTankSize])
     geo.Volume("TANK","BOX", fImedWater, waterTank, 3)
-   
     geo.Node("TANK", 1 ,"WRLD", 0.0, 0.0, 0.0, 0, True, ubuf)
   
     # The Air Bubble 
@@ -112,7 +130,6 @@ def construct_geometry():
     geo.Node("BUBL", 1 ,"TANK", 0.0, 250.0, 0.0, 0, True, ubuf)
 
     geo.CloseGeometry()
-
     return
     
 if __name__ == '__main__':
@@ -121,5 +138,5 @@ if __name__ == '__main__':
 
     construct_materials()
     construct_geometry()
-    geo = ROOT.gGeoManager
-    geo.Export(output)
+    ROOT.gGeoManager.Export(output)
+
