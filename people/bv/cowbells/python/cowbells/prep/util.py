@@ -24,7 +24,10 @@ def get_stuff(stuff):
 def make_mixture(name, parts, density):
     'Make a mixture'
 
-    mix = ROOT.TGeoMixture(name, len(parts), density)
+    if not parts:
+        mix = ROOT.TGeoMaterial(name, 0, 0, density)
+    else:
+        mix = ROOT.TGeoMixture(name, len(parts), density)
     ROOT.SetOwnership(mix,0)
     print 'Mixture: %s' % name
     for part in parts:

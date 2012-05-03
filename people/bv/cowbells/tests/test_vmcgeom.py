@@ -59,9 +59,9 @@ if __name__ == '__main__':
 
     load_libs([which])
 
-    # geomRoot or geomRootToGeant4
     geo = make_geom()
 
+    # geomRoot or geomRootToGeant4
     app = make_app(which)
 
     mc = make_mc(sys.argv[2])
