@@ -23,20 +23,24 @@ fBubbleSize = 50.0   # 0.5*m
 fImedAir = 1
 fImedWater = 2
 
+def disown(obj):
+    'Disown object created by an implicit ROOT constructor'
+    ROOT.SetOwnership(obj,0)
+    return obj
+
 def make_element(name, sym, z, a):
     'Helper to make an element'
     ele  = ROOT.TGeoElement(name, sym, z, a)
-    ROOT.SetOwnership(ele, 0)
-    return ele
+    return disown(ele)
+
 
 def make_mixture(name, density, parts):
     'Helper to make a mixture'
     mix = ROOT.TGeoMixture(name, len(parts), density)
-    ROOT.SetOwnership(mix,0)
     for ele, frac in parts:
         mix.AddElement(ele, frac)
         continue
-    return mix
+    return disown(mix)
 
 def make_medium(name, numed, mat, params = None):
     'Helper to make a medium'
@@ -45,8 +49,7 @@ def make_medium(name, numed, mat, params = None):
         med = ROOT.TGeoMedium(name, numed, imat, *params)
     else:
         med = ROOT.TGeoMedium(name, numed, mat)
-    ROOT.SetOwnership(med, 0)
-    return med
+    return disown(med)
 
 def construct_materials():
     'Construct materials using TGeo modeller'
@@ -54,7 +57,7 @@ def construct_materials():
     # Create Root geometry manager 
 
     geo = ROOT.TGeoManager("E06_geometry", "E06 VMC example geometry")
-    ROOT.SetOwnership(geo, 0)
+    disown(geo)
 
     # Elements
 
