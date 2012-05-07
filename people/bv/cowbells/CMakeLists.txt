@@ -46,6 +46,7 @@ file(GLOB headers inc/Cowbells/*.h inc/units.h)
 
 # Generate dictionary
 #ROOT_GENERATE_DICTIONARY(cowbellsdict ${headers} LINKDEF dict/cowbell_linkdef.h OPTIONS -p)
+REFLEX_GENERATE_DICTIONARY(cowbellsdict ${headers} SELECTION dict/selection.xml )
 
 # build library
 #add_library(cowbells MODULE ${sources} cowbellsdict.cxx)

@@ -1,0 +1,45 @@
+Cowbells simulation
+
+* Blah Blah
+
+* Building
+
+** Prereq
+
+Need Geant4, ROOT, VGM and a recent Python.  This project can be used
+to pre-build all the necessary code:
+
+  https://github.com/brettviren/grinst
+
+** Build Cowbells
+
+#+begin_example
+cmake -DGeant4_DIR=/path/to/geant4/lib64/Geant4-9.5.1 \
+      -DROOT_DIR=/path/to/root/5.32.02 \
+      -DVGM_DIR=$VGM_INSTALL \
+      ../cowbells
+make 
+#+end_example
+
+* Configuration 
+
+** Geant4 configuration
+
+*** Physics Lists
+
+Optical physics use the standard G4OpticalPhysics constructor.  It
+takes these G4 macro commands:
+
+#+begin_example
+/optics_engine/selectOpProcess  processName
+/optics_engine/setOpProcessUse  true|false
+/optics_engine/setOpProcessVerbose  verboseLevel
+/optics_engine/setCerenkovMaxPhotons maxNofPhotons
+/optics_engine/setCerenkovMaxBetaChange maxBetaChange
+/optics_engine/setScintillationYieldFactor yieldFactor
+/optics_engine/setScintillationByParticleType true|false
+/optics_engine/setOpticalSurfaceModel glisur|unified
+/optics_engine/setWLSTimeProfile delta|exponential
+/optics_engine/setTrackSecondariesFirst true|false
+/optics_engine/setFiniteRiseTime true|false
+#+end_example

@@ -8,13 +8,25 @@
 Cowbells::PhysicsList::PhysicsList()
     : G4VModularPhysicsList()
 {
-       defaultCutValue = 1.0*mm;
+    defaultCutValue = 1.0*mm;
 
-       RegisterPhysics(new G4DecayPhysics());
-       RegisterPhysics(new G4RadioactiveDecayPhysics());
-       RegisterPhysics(new G4EmStandardPhysics());
-       RegisterPhysics(new G4OpticalPhysics());
+    // fixme: need to extend hooks to configure the underlying
+    // processes.
+
+    // fixme: G4EmStandardPhysics does not do MuonMinusCaptureAtRest
+    RegisterPhysics(new G4EmStandardPhysics());
+
+    RegisterPhysics(new G4DecayPhysics());
+
+    // fixme: should be okay, but needs proper configuration:
+    RegisterPhysics(new G4OpticalPhysics());
+
+    RegisterPhysics(new G4RadioactiveDecayPhysics());
+
+    // fixme: 
+    //RegisterPhysics(new hadronic physics...);
 }
+
 
 Cowbells::PhysicsList::~PhysicsList()
 {
