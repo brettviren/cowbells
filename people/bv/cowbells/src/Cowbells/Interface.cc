@@ -19,3 +19,7 @@ void Cowbells::Interface::configure(const char* geofile)
     m_runmgr->SetUserInitialization(new Cowbells::PhysicsList());
 }
         
+Cowbells::Interface* make_cowbells()
+{
+    return new Cowbells::Interface();;
+}

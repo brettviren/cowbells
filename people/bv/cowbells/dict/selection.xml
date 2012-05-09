@@ -1,6 +1,8 @@
 <lcgdict>
+  <selection>
 
-  <class name="Cowbells::Interface"/>
-  <class name="G4RunManager"/>
-
+    <class pattern="Cowbells::Interface"/>
+    <class name="G4RunManager"/>
+    <function name="make_cowbells"/>
+  </selection>
 </lcgdict>

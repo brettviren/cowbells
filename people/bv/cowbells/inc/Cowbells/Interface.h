@@ -16,6 +16,7 @@
 
 #include <G4RunManager.hh>
 
+
 namespace Cowbells {
 
     class Interface {
@@ -33,5 +34,7 @@ namespace Cowbells {
         G4RunManager* m_runmgr;
     };
 }
+
+Cowbells::Interface* make_cowbells();
 
 #endif  // INTERFACE_H

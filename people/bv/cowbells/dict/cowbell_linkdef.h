@@ -4,11 +4,9 @@
 #pragma link off all classes;
 #pragma link off all functions;
  
-#pragma link C++ class  CowMCapp+;
-#pragma link C++ class  CowPatty+;
-
 #pragma link C++ namespace units;
-
+#pragma link C++ namespace Cowbells;
+#pragma link C++ class  Cowbells::Interface+;
 
 #endif
 

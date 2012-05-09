@@ -39,16 +39,30 @@ include_directories(${PROJECT_SOURCE_DIR}/inc)
 
 # Some file lists
 file(GLOB sources src/Cowbells/*.cc)
-file(GLOB headers inc/Cowbells/*.h inc/units.h)
+#file(GLOB headers inc/Cowbells/*.h inc/units.h)
+file(GLOB headers inc/Cowbells/*.h)
 
 # Copy over the python 
 #file(COPY python/ DESTINATION python/ FILES_MATCHING PATTERN "*.py")
 
-# Generate dictionary
-#ROOT_GENERATE_DICTIONARY(cowbellsdict ${headers} LINKDEF dict/cowbell_linkdef.h OPTIONS -p)
-REFLEX_GENERATE_DICTIONARY(cowbellsdict ${headers} SELECTION dict/selection.xml )
-
 # build library
 #add_library(cowbells MODULE ${sources} cowbellsdict.cxx)
-add_library(cowbells MODULE ${sources} )
+add_library(cowbells MODULE ${sources})
 target_link_libraries(cowbells ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree)
+
+### Generate dictionary
+
+# rootcint dictionary - has trouble with G4 classes
+#ROOT_GENERATE_DICTIONARY(cowbellsdict ${headers} LINKDEF dict/cowbell_linkdef.h OPTIONS -p)
+#add_library(cowbellsDict MODULE cowbellsdict.cxx)
+#target_link_libraries(cowbellsDict )
+
+# reflex dictionary - handles C++ but don't forget an initial 
+# import PyCintex
+# somewhere early in your Python code
+REFLEX_GENERATE_DICTIONARY(cowbells ${headers} SELECTION dict/selection.xml )
+add_library(cowbellsDict MODULE cowbells_dict.cpp)
+target_link_libraries(cowbellsDict ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Reflex)
+
+
+
