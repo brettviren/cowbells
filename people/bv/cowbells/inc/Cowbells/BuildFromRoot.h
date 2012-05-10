@@ -10,8 +10,8 @@
 
 
 
-#ifndef BUILDFROMROOT_H
-#define BUILDFROMROOT_H
+#ifndef COWBELLS_BUILDFROMROOT_H
+#define COWBELLS_BUILDFROMROOT_H
 
 #include <G4VUserDetectorConstruction.hh>
 
@@ -32,4 +32,4 @@ namespace Cowbells {
 
 }
 
-#endif  // BUILDFROMROOT_H
+#endif  // COWBELLS_BUILDFROMROOT_H

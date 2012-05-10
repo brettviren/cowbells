@@ -54,21 +54,20 @@ def geant4():
     _geant4_loaded = True
     return
 
-# Load G4VMC libs
-# load g4root, geant4vmc and maybe geant4vmc_gui
-_g4vmc_loaded = None
-def g4vmc():
-    'Load Geant4VMC (and VGM) libraries'
-    global _g4vmc_loaded
-    if _g4vmc_loaded: return
+# Load VGM libs
+_various_loaded = None
+def load_various():
+    'Load various libraries'
+    global _various_loaded
+    if _various_loaded: return
 
     root()
     geant4()
 
-    for lib in ['ClhepVGM','BaseVGM','Geant4GM','RootGM','XmlVGM','G3toG4']:
+    for lib in ['ClhepVGM','BaseVGM','Geant4GM','RootGM','XmlVGM','G3toG4','HepMC']:
         root_load_lib(lib)
         continue
-    _g4vmc_loaded = True
+    _various_loaded = True
     return
 
 _everything_loaded = None
@@ -76,8 +75,10 @@ def everything():
     'Load all libraries including cowbells'
     global _everything_loaded
     if _everything_loaded: return
-    g4vmc()
+    load_various()
     root_load_lib('cowbells')
+    root_load_lib("cowbellsDict")
+
     _everything_loaded = True
     return
 

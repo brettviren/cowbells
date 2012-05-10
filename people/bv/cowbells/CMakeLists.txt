@@ -30,9 +30,8 @@ include_directories(${VGM_DIR}/packages/Geant4GM/include)
 include_directories(${VGM_DIR}/packages/RootGM/include)
 include_directories(${VGM_DIR}/packages/XmlVGM/include)
 
-#VGM_SYSTEM=Linux-g++
-#VGM_INSTALL=/data3/lbne/bv/wbls/install/vgm/3-05
-
+# -DHEPMC_DIR:STRING=/path/to/hepmc
+include_directories(${HEPMC_DIR}/include)
 
 # this package
 include_directories(${PROJECT_SOURCE_DIR}/inc)

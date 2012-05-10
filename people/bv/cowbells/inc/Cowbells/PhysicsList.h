@@ -9,8 +9,8 @@
 
 
 
-#ifndef PHYSICSLIST_H
-#define PHYSICSLIST_H
+#ifndef COWBELLS_PHYSICSLIST_H
+#define COWBELLS_PHYSICSLIST_H
 
 #include <G4VModularPhysicsList.hh>
 
@@ -22,7 +22,12 @@ namespace Cowbells {
         virtual ~PhysicsList();
 
         void SetCuts();
+
+    private:
+        PhysicsList(const PhysicsList& rhs);
+        PhysicsList& operator=(const PhysicsList& rhs);
+        
     };
 
 }
-#endif  // PHYSICSLIST_H
+#endif  // COWBELLS_PHYSICSLIST_H

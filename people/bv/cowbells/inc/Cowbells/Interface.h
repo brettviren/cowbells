@@ -11,13 +11,17 @@
 
 
 
-#ifndef INTERFACE_H
-#define INTERFACE_H
+#ifndef COWBELLS_INTERFACE_H
+#define COWBELLS_INTERFACE_H
 
-#include <G4RunManager.hh>
+#include <Cowbells/Event.h>
+
+class G4RunManager;
 
 
 namespace Cowbells {
+
+    class PrimaryGenerator;
 
     class Interface {
     public:
@@ -30,11 +34,19 @@ namespace Cowbells {
         /// Access the G4RunManager
         G4RunManager* runMgr() { return m_runmgr; }
 
+        /// Initialize the simulation
+        void initialize();
+
+        /// Simulate the event kinematics
+        void simulate();
+        //void simulate(const Cowbells::EventKinematics* event = 0);
+
     private:
         G4RunManager* m_runmgr;
+        Cowbells::PrimaryGenerator *m_primgen;
     };
+
+Cowbells::Interface* interface();
 }
 
-Cowbells::Interface* make_cowbells();
-
-#endif  // INTERFACE_H
+#endif  // COWBELLS_INTERFACE_H

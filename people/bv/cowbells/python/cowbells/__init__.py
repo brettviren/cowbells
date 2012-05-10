@@ -10,12 +10,11 @@ import ROOT
 import boot
 boot.everything()               # boot all the things!
 
-PyCintex.loadDict("cowbellsDict")
+#PyCintex.loadDict("cowbellsDict")
 
 units = PyCintex.Namespace("units").CLHEP
 
-def interface():
-    return ROOT.Cowbells.Interface()
+interface = ROOT.Cowbells.interface
 
 
 _geo = None

@@ -20,14 +20,16 @@ G4VPhysicalVolume* Cowbells::BuildFromRoot::Construct()
 {
     TGeoManager* geo = TGeoManager::Import(m_geomfilename);
 
+    int debug_level = 0;        // 0=shut up, 1=info, 2=verbose
+
     // Import geometry from Root to VGM
     RootGM::Factory rtFactory;
-    rtFactory.SetDebug(1);
+    rtFactory.SetDebug(0);
     rtFactory.Import(geo->GetTopNode());
 
     // Export VGM geometry to Geant4
     Geant4GM::Factory g4Factory;
-    g4Factory.SetDebug(1);
+    g4Factory.SetDebug(0);
     rtFactory.Export(&g4Factory);
     return g4Factory.World();
 }

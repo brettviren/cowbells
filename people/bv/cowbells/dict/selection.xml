@@ -3,8 +3,10 @@
 
     <variable pattern="units::*"/>
     <variable pattern="units::CLHEP::*"/>
-    <function name="make_cowbells"/>
-    <class pattern="Cowbells::Interface"/>
-    <class name="G4RunManager"/>
+    <function name="Cowbells::interface"/>
+    <class name="Cowbells::Interface"/>
+
+    <class pattern="HepMC::Gen*"/>
+    <class name="std::deque<HepMC::GenEvent*>"/>
   </selection>
 </lcgdict>
