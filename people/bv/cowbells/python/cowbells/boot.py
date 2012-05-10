@@ -24,7 +24,7 @@ def root():
     'Load extra ROOT libs'
     global _root_loaded
     if _root_loaded: return
-    for lib in ["RIO","Geom", "VMC", "Physics"]:
+    for lib in ["RIO","Geom"]:
         root_load_lib(lib)
         continue
     _root_loaded = True
@@ -65,7 +65,7 @@ def g4vmc():
     root()
     geant4()
 
-    for lib in ['ClhepVGM','BaseVGM','Geant4GM','RootGM','XmlVGM','G3toG4','g4root','geant4vmc']:
+    for lib in ['ClhepVGM','BaseVGM','Geant4GM','RootGM','XmlVGM','G3toG4']:
         root_load_lib(lib)
         continue
     _g4vmc_loaded = True

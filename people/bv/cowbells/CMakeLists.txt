@@ -39,11 +39,9 @@ include_directories(${PROJECT_SOURCE_DIR}/inc)
 
 # Some file lists
 file(GLOB sources src/Cowbells/*.cc)
-#file(GLOB headers inc/Cowbells/*.h inc/units.h)
-file(GLOB headers inc/Cowbells/*.h)
 
 # Copy over the python 
-#file(COPY python/ DESTINATION python/ FILES_MATCHING PATTERN "*.py")
+file(COPY python/ DESTINATION python/ FILES_MATCHING PATTERN "*.py")
 
 # build library
 #add_library(cowbells MODULE ${sources} cowbellsdict.cxx)
@@ -60,7 +58,7 @@ target_link_libraries(cowbells ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree)
 # reflex dictionary - handles C++ but don't forget an initial 
 # import PyCintex
 # somewhere early in your Python code
-REFLEX_GENERATE_DICTIONARY(cowbells ${headers} SELECTION dict/selection.xml )
+REFLEX_GENERATE_DICTIONARY(cowbells ${PROJECT_SOURCE_DIR}/dict/selection.h SELECTION dict/selection.xml )
 add_library(cowbellsDict MODULE cowbells_dict.cpp)
 target_link_libraries(cowbellsDict ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Reflex)
 

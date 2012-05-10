@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import math
-from cowbells import units
+import cowbells
+units = cowbells.units
 
 def test_angles():
     '''Make sure this bug is not with us:

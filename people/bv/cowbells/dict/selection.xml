@@ -1,8 +1,10 @@
 <lcgdict>
   <selection>
 
+    <variable pattern="units::*"/>
+    <variable pattern="units::CLHEP::*"/>
+    <function name="make_cowbells"/>
     <class pattern="Cowbells::Interface"/>
     <class name="G4RunManager"/>
-    <function name="make_cowbells"/>
   </selection>
 </lcgdict>

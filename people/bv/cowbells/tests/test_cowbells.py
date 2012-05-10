@@ -5,20 +5,31 @@ same job.
 '''
 
 
+import PyCintex
 import ROOT
-import PyCintex                 # turns on using REFLEX dictionaries
+ROOT.gSystem.Load("libcowbells")
+ROOT.gSystem.Load("libcowbellsDict")
+
+interface = None
 
 def test_create():
     'Create the Cowbells::Interface'
-    # ROOT.gSystem.Load("libcowbellsDict")
-    ROOT.gSystem.Load("libcowbells")
 
     print ROOT.Cowbells
     print ROOT.Cowbells.Interface
     print 'Making Cowbells.Interface'
     inter = ROOT.Cowbells.Interface()
     print inter
+    global interface
+    interface = inter
+    return
 
+def test_configure():
+    'Initialize the geometry/mc'
+
+    global interface
+    interface.configure('geo.root')
+    
     
 
 if __name__ == '__main__':

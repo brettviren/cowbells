@@ -4,12 +4,18 @@ Main entry to the cowbells (COsmic WB(el)LS) simulation modules
 
 '''
 
+import PyCintex
 import ROOT
 
 import boot
 boot.everything()               # boot all the things!
 
-units = ROOT.units
+PyCintex.loadDict("cowbellsDict")
+
+units = PyCintex.Namespace("units").CLHEP
+
+def interface():
+    return ROOT.Cowbells.Interface()
 
 
 _geo = None
