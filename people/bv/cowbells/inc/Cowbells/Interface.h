@@ -30,6 +30,10 @@ namespace Cowbells {
 
         /// Configure the simulation with a (ROOT) geometry file.
         void configure(const char* geofile);
+
+        /// Register a sensitive detector to handle hits in a logical
+        /// volume
+        void register_lvsd(const char* logvol, const char* sensdet = "SensitiveDetector");
         
         /// Access the G4RunManager
         G4RunManager* runMgr() { return m_runmgr; }

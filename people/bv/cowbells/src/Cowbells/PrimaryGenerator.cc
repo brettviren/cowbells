@@ -22,7 +22,7 @@ Cowbells::PrimaryGenerator::~PrimaryGenerator()
 
 void Cowbells::PrimaryGenerator::GeneratePrimaries(G4Event* gevt)
 {
-    cerr << "Cowbells::PrimaryGenerator::GeneratePrimaries" << endl;
+    cerr << "Cowbells::PrimaryGenerator::GeneratePrimaries with G4Event*(" << (void*)gevt << ")" << endl;
 
     // fixme: for now just make *something* to get the ball rolling
     G4ThreeVector zero;
