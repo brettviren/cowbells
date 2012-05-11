@@ -55,8 +55,9 @@ void Cowbells::Interface::register_lvsd(const char* logvol, const char* sensdet)
         string hcname = lvname+"HC";
         Cowbells::SensitiveDetector* csd = new Cowbells::SensitiveDetector(sdname.c_str(), hcname.c_str());
         G4SDManager::GetSDMpointer()->AddNewDetector(csd);
-
         lv->SetSensitiveDetector(csd);
+        cout << "Cowbells::Interface::register_lvsd(\""<<logvol
+             <<"\",\"" <<sensdet<<"\")" << endl;
     }
     // else if ( some other SD called for) {...}
     else {

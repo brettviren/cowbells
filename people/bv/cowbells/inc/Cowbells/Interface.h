@@ -31,16 +31,16 @@ namespace Cowbells {
         /// Configure the simulation with a (ROOT) geometry file.
         void configure(const char* geofile);
 
-        /// Register a sensitive detector to handle hits in a logical
-        /// volume
-        void register_lvsd(const char* logvol, const char* sensdet = "SensitiveDetector");
-        
         /// Access the G4RunManager
         G4RunManager* runMgr() { return m_runmgr; }
 
         /// Initialize the simulation
         void initialize();
 
+        /// Register a sensitive detector to handle hits in a logical
+        /// volume.  Note, this MUST be done after initalize()
+        void register_lvsd(const char* logvol, const char* sensdet = "SensitiveDetector");
+        
         /// Simulate the event kinematics
         void simulate();
         //void simulate(const Cowbells::EventKinematics* event = 0);

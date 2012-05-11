@@ -43,3 +43,16 @@ takes these G4 macro commands:
 /optics_engine/setTrackSecondariesFirst true|false
 /optics_engine/setFiniteRiseTime true|false
 #+end_example
+
+** Sensitive Detectors
+
+A sensitive detector produces hits when certain particles deposit
+energy in certain volumes.  A sensitive detector is assigned to a
+particular volume via
+
+#+begin_src Python
+interface.register_lvsd(logvol_name, sensdet_name)
+#+end_src
+
+Where =logvol_name= is the name of a logical volume defined in the
+geometry and =sensdet_name= is the name of a sensitive detector class.

@@ -36,6 +36,7 @@ def test_initialize():
     global interface    
     print 'Initializing Cowbells'
     interface.initialize()
+    interface.register_lvsd("PC")
     return
 
 def test_run():
