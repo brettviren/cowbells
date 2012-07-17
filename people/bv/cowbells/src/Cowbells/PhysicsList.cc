@@ -22,7 +22,7 @@ Cowbells::PhysicsList::PhysicsList()
 
     // These three classes are copied from extended/optical/LXe example
 
-    RegisterPhysics( new Cowbells::PhysicsConsGeneral("general") );
+    //RegisterPhysics( new Cowbells::PhysicsConsGeneral("general") );
     RegisterPhysics( new Cowbells::PhysicsConsEM("standard EM"));
     RegisterPhysics( new Cowbells::PhysicsConsMuon("muon"));
 
