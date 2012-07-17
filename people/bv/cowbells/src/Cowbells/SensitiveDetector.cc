@@ -30,6 +30,9 @@ void Cowbells::SensitiveDetector::Initialize(G4HCofThisEvent* hce)
                                       this->collectionName[0]);
     int hcid = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
     hce->AddHitsCollection(hcid, fHC);
+    cerr << "SensitiveDetector::Initialize() with " 
+         << this->SensitiveDetectorName << ", " <<  this->collectionName[0] << endl;
+
 }
 
 void Cowbells::SensitiveDetector::EndOfEvent(G4HCofThisEvent*)
@@ -72,6 +75,8 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     hit->setPos(pos.x(),pos.y(),pos.z());
     hit->setVolId(touch->GetCopyNumber());
     fHC->insert(hit);
+
+    cerr << "Hit: @ " << hit->time() << ", " << pos.x() << ", " << pos.y() << ", " << pos.z() << endl;
 
     return true;
 }

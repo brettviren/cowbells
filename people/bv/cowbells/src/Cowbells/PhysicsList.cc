@@ -14,6 +14,8 @@ using namespace std;
 Cowbells::PhysicsList::PhysicsList()
     : G4VModularPhysicsList()
 {
+    cerr << "Creating Cowbells::PhysicsList" << endl;
+
     defaultCutValue = 1.0*mm;
 
     // fixme: need to extend hooks to configure the underlying
@@ -55,6 +57,7 @@ Cowbells::PhysicsList::PhysicsList()
 
 Cowbells::PhysicsList::~PhysicsList()
 {
+    cerr << "Destructing Cowbells::PhysicsList" << endl;
 }
 
 void Cowbells::PhysicsList::SetCuts()

@@ -18,7 +18,12 @@ def test_spew():
     print type(units.parsec)
     print units.angstrom
 
+def test_density():
+    'Print some densities'
+    water = units.gram/units.cm3
+    print 'Density of water is %f g/cm3, gram=%f, cm3=%f' % (water, units.gram, units.cm3)
+
 if __name__ == '__main__':
     test_angles()
-
     test_spew()
+    test_density()

@@ -20,7 +20,7 @@ parts = [
     ("Hydrogen",0.08055),
     ("Oxygen",  0.31961),
     ]
-density = 1.18*gram/cm3
+density = 1.18 # *gram/cm3, don't use units here! vmc?
 
 # from Daya Bay
 abslength = [x*mm for x in [8.0e3, 8.0e3,]]

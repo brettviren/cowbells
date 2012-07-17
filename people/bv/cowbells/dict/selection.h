@@ -1,8 +1,25 @@
 
 #include "Cowbells/Interface.h"
-//#include "Cowbells/BuildFromRoot.h"
+#include "Cowbells/BuildFromRoot.h"
+#include "Cowbells/PrimaryGenerator.h"
+// can't export physics list, causes creation-on-load, confuses G4
 //#include "Cowbells/PhysicsList.h"
 #include "Cowbells/Event.h"
+
+#include "Cowbells/TestDetectorConstruction.h"
+#include "Cowbells/TestPhysicsList.h"
+#include "Cowbells/TestPrimaryGeneratorAction.h"
+#include "Cowbells/TestRunAction.h"
+#include "Cowbells/TestStackingAction.h"
+#include "Cowbells/TestSteppingVerbose.h"
+#include "Cowbells/TestMain.h"
+
+// Exposed Geant4 classes
+#include <G4RunManager.hh>
+#include <G4VUserPhysicsList.hh>
+#include <G4VUserPrimaryGeneratorAction.hh>
+#include <G4VUserDetectorConstruction.hh>
+#include <G4UImanager.hh>
 
 #include "HepMC/GenRanges.h"
 

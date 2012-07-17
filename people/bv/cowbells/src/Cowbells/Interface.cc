@@ -1,5 +1,6 @@
 #include "Cowbells/Interface.h"
 #include "Cowbells/BuildFromRoot.h"
+#include "Cowbells/TestDetectorConstruction.h"
 #include "Cowbells/PhysicsList.h"
 #include "Cowbells/PrimaryGenerator.h"
 #include "Cowbells/SensitiveDetector.h"
@@ -7,14 +8,18 @@
 #include <G4RunManager.hh>
 #include <G4LogicalVolumeStore.hh>
 #include <G4SDManager.hh>
+#include <G4UImanager.hh> 
+#include <G4Material.hh> 
 
 #include <iostream>
+#include <string>
 using namespace std;
 
 Cowbells::Interface::Interface()
     : m_runmgr(new G4RunManager())
     , m_primgen(0)
 {
+    cerr << "Creating Cowbells::Interface" << endl;
 }
 
 Cowbells::Interface::~Interface()
@@ -23,10 +28,25 @@ Cowbells::Interface::~Interface()
     delete(m_primgen);          // fixme: or does G4 do it?
 }
 
+
+void Cowbells::Interface::activate_physics_list()
+{
+    cerr << "Cowbells::Interface::configure initialize PhysicsList" << endl;
+    m_runmgr->SetUserInitialization(new Cowbells::PhysicsList());
+}
+
 void Cowbells::Interface::configure(const char* geofile)
 {
-    cerr << "Cowbells::Interface::configure initialize BuildFromRoot(\"" << geofile << "\")" << endl;
-    m_runmgr->SetUserInitialization(new Cowbells::BuildFromRoot(geofile));
+    cerr << "Running Cowbells::configure(\"" << geofile << "\")" << endl;
+
+    if (!geofile || string("") == geofile || string("test") == geofile) {
+        cerr << "Cowbells::Interface::configure initialize TestDetectorConstruction" << endl;
+        m_runmgr->SetUserInitialization(new Cowbells::TestDetectorConstruction());
+    }
+    else {
+        cerr << "Cowbells::Interface::configure initialize BuildFromRoot(\"" << geofile << "\")" << endl;
+        m_runmgr->SetUserInitialization(new Cowbells::BuildFromRoot(geofile));
+    }
 
     cerr << "Cowbells::Interface::configure initialize PhysicsList" << endl;
     m_runmgr->SetUserInitialization(new Cowbells::PhysicsList());
@@ -38,6 +58,11 @@ void Cowbells::Interface::configure(const char* geofile)
     m_runmgr->SetUserAction(m_primgen);
 }
         
+void Cowbells::Interface::dump_geometry()
+{
+    cerr << "Materials:\n" << *(G4Material::GetMaterialTable()) << endl;
+}
+
 
 void Cowbells::Interface::register_lvsd(const char* logvol, const char* sensdet)
 {
@@ -73,6 +98,11 @@ void Cowbells::Interface::initialize()
 {
     cerr << "Cowbells::Interface::initialize" << endl;
     m_runmgr->Initialize();
+
+    G4UImanager* UI = G4UImanager::GetUIpointer();
+    UI->ApplyCommand("/run/verbose 1");
+    UI->ApplyCommand("/event/verbose 1");
+    UI->ApplyCommand("/tracking/verbose 1");
 }
 
 //void Cowbells::Interface::simulate(const Cowbells::EventKinematics* kin)

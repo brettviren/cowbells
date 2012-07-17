@@ -16,7 +16,7 @@ parts = [
     ('Hydrogen',2),
     ('Oxygen',1),
     ]
-density = 1.0*gram/cm3
+density = 1.0 # don't use units here!  vmc?
 
 # These properties are taken from WCSim.
 # http://svn.phy.duke.edu/repos/neutrino/dusel/WCSim/trunk/src/WCSimConstructMaterials.cc

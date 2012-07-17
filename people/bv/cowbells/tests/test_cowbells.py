@@ -28,7 +28,10 @@ def test_configure():
     print 'Configuring cowbells'
     geofile = 'geo.root'
     assert os.path.exists(geofile), 'File does not exist: "%s" (run cowbells/prep/gen.py?)' % geofile
+    geofile = ""
     interface.configure(geofile)
+
+    # fixme: inject g4 macro lines, turn up the verbosity.
     return
 
 def test_initialize():
@@ -36,6 +39,7 @@ def test_initialize():
     global interface    
     print 'Initializing Cowbells'
     interface.initialize()
+    interface.dump_geometry()
     interface.register_lvsd("PC")
     return
 

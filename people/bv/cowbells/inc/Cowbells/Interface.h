@@ -28,8 +28,11 @@ namespace Cowbells {
         Interface();
         ~Interface();
 
+        void activate_physics_list();
+
         /// Configure the simulation with a (ROOT) geometry file.
         void configure(const char* geofile);
+        void dump_geometry(void);
 
         /// Access the G4RunManager
         G4RunManager* runMgr() { return m_runmgr; }
