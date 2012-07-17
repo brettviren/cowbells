@@ -1,8 +1,10 @@
 #include "Cowbells/PhysicsList.h"
+#include "Cowbells/PhysicsConsGeneral.h"
+#include "Cowbells/PhysicsConsEM.h"
+#include "Cowbells/PhysicsConsMuon.h"
 
 #include <G4DecayPhysics.hh>
 #include <G4RadioactiveDecayPhysics.hh>
-#include <G4EmStandardPhysics.hh>
 #include <G4OpticalPhysics.hh>
 
 #include "G4Electron.hh"
@@ -18,36 +20,28 @@ Cowbells::PhysicsList::PhysicsList()
 
     defaultCutValue = 1.0*mm;
 
-    // fixme: need to extend hooks to configure the underlying
-    // processes.
+    // These three classes are copied from extended/optical/LXe example
 
-    // Fixme: G4EmStandardPhysics::ConstructParticle has the following:
-    ////G4Electron::Electron();
-    ////G4Positron::Positron();
-    // but I get the error:
-    // physicsList->CheckParticleList() start.
-    // G4PhysicsListHelper::CheckParticleList: e-  do not exist 
-    //  These particle are necessary for basic EM processes
-    //
-    // If I add these two here then I get:
-    ///G4PhysicsListHelper::CheckParticleList: e- e+  do not exist 
-    // wtf ?!?
+    RegisterPhysics( new Cowbells::PhysicsConsGeneral("general") );
+    RegisterPhysics( new Cowbells::PhysicsConsEM("standard EM"));
+    RegisterPhysics( new Cowbells::PhysicsConsMuon("muon"));
 
-    // G4Electron * ele = G4Electron::Electron();
-    // G4Positron * pos = G4Positron::Positron();
-    // cerr << "Cowbells::PhysicsList::PhysicsList"
-    //      << " G4Electron at " << (void*)ele 
-    //      << " G4Positron at " << (void*)pos << endl;
-    SetVerboseLevel(9);
+    // Standard G4 physics constructors:
+
+    G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
+    RegisterPhysics( opticalPhysics );
+
+    opticalPhysics->SetWLSTimeProfile("delta");
+    opticalPhysics->SetScintillationYieldFactor(1.0);
+    opticalPhysics->SetScintillationExcitationRatio(0.0);
+    opticalPhysics->SetMaxNumPhotonsPerStep(100);
+    opticalPhysics->SetMaxBetaChangePerStep(10.0);
+    opticalPhysics->SetTrackSecondariesFirst(kCerenkov,true);
+    opticalPhysics->SetTrackSecondariesFirst(kScintillation,true);
+
 
     RegisterPhysics(new G4DecayPhysics());
     RegisterPhysics(new G4RadioactiveDecayPhysics());
-
-    // fixme: G4EmStandardPhysics does not do MuonMinusCaptureAtRest
-    RegisterPhysics(new G4EmStandardPhysics());
-
-    // fixme: should be okay, but needs proper configuration:
-    RegisterPhysics(new G4OpticalPhysics());
 
 
     // fixme: 

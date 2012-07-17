@@ -1,57 +1,49 @@
 #!/usr/bin/env python
 '''
-A test cowbells application.  Each test should be run in order in the
-same job.
+A test cowbells application.  
 '''
 
 
-import os
+import ROOT
 import cowbells
+Cowbells = ROOT.Cowbells        # namespace
 
-interface = None
+geofile = "geo.root"
 
-def test_create():
-    'Create the Cowbells::Interface'
+def test_cowbells():
 
-    print 'Making Cowbells.Interface'
-    inter = cowbells.interface()
-    print inter
+    rm = ROOT.G4RunManager()
 
-    global interface
-    interface = inter
-    return
+    pl = ROOT.Cowbells.PhysicsList()
+    ROOT.SetOwnership(pl,0)
+    rm.SetUserInitialization(pl)
 
-def test_configure():
-    'Initialize the geometry/mc'
+    pg = Cowbells.PrimaryGenerator()
+    ROOT.SetOwnership(pg,0)
+    rm.SetUserAction(pg)
 
-    global interface
-    print 'Configuring cowbells'
-    geofile = 'geo.root'
-    assert os.path.exists(geofile), 'File does not exist: "%s" (run cowbells/prep/gen.py?)' % geofile
-    geofile = ""
-    interface.configure(geofile)
+    dc = Cowbells.BuildFromRoot(geofile)
+    ROOT.SetOwnership(dc,0)
+    rm.SetUserInitialization(dc)
 
-    # fixme: inject g4 macro lines, turn up the verbosity.
-    return
+    ura = ROOT.Cowbells.TestRunAction()
+    ROOT.SetOwnership(ura,0)
+    rm.SetUserAction(ura)
 
-def test_initialize():
-    'Initialize'
-    global interface    
-    print 'Initializing Cowbells'
-    interface.initialize()
-    interface.dump_geometry()
-    interface.register_lvsd("PC")
-    return
+    usa = ROOT.Cowbells.TestStackingAction()
+    ROOT.SetOwnership(usa,0)
+    rm.SetUserAction(usa)
 
-def test_run():
-    'Run some events'
-    global interface    
-    print 'Running some events'
-    interface.simulate()
-    return
-    
+    rm.Initialize()
+
+    UI = ROOT.G4UImanager.GetUIpointer()
+    UI.ApplyCommand("/run/verbose 1");
+    UI.ApplyCommand("/event/verbose 1");
+    UI.ApplyCommand("/tracking/verbose 1");
+
+    rm.BeamOn(3)
+
+    del (rm)
+
 if __name__ == '__main__':
-    test_create()
-    test_configure()
-    test_initialize()
-    test_run()
+    test_cowbells()

@@ -6,6 +6,12 @@
     <function name="Cowbells::interface"/>
     <class name="Cowbells::Interface"/>
 
+    <!-- Cowbells Geant4 user classes -->
+    <class name="Cowbells::BuildFromRoot"/>
+    <class name="Cowbells::PrimaryGenerator"/>
+    <class name="Cowbells::PhysicsList"/>
+
+    <!-- test geant4 user classes -->
     <class name="Cowbells::TestDetectorConstruction"/>
     <class name="Cowbells::TestPhysicsList"/>
     <class name="Cowbells::TestPrimaryGeneratorAction"/>
@@ -13,18 +19,14 @@
     <class name="Cowbells::TestStackingAction"/>
     <class name="Cowbells::TestSteppingVerbose"/>
     <class name="Cowbells::TestMain"/>
+    <class name="Cowbells::TestCB"/>
     <function name="Cowbells::test_main"/>
     <function name="Cowbells::test_run_manager"/>
 
-    <class name="Cowbells::BuildFromRoot"/>
-    <class name="Cowbells::PrimaryGenerator"/>
-
-    <!-- this causes a creation-on-load which confuses g4
-    <class name="Cowbells::PhysicsList"/>
-    -->
     <!-- Geant4 exposed classes -->
     <class name="G4RunManager"/>
     <class name="G4VUserPhysicsList"/>
+    <class name="G4VModularPhysicsList"/>
     <class name="G4VUserPrimaryGeneratorAction"/>
     <class name="G4VUserDetectorConstruction"/>
     <class name="G4UserStackingAction"/>
