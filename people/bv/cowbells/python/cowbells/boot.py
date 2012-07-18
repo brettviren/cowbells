@@ -54,6 +54,7 @@ def geant4():
     _geant4_loaded = True
     return
 
+# Load VGM libs
 _various_loaded = None
 def load_various():
     'Load various libraries'
@@ -62,6 +63,10 @@ def load_various():
 
     root()
     geant4()
+
+    for lib in ['ClhepVGM','BaseVGM','Geant4GM','RootGM','XmlVGM','G3toG4']:
+        root_load_lib(lib)
+        continue
 
     root_load_lib('HepMC')
 
