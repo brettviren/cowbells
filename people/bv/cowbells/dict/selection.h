@@ -3,6 +3,7 @@
 #include "Cowbells/BuildFromRoot.h"
 #include "Cowbells/PrimaryGenerator.h"
 #include "Cowbells/PhysicsList.h"
+#include "Cowbells/SensitiveDetector.h"
 #include "Cowbells/Event.h"
 
 #include "Cowbells/TestDetectorConstruction.h"
@@ -21,6 +22,7 @@
 #include <G4VUserPrimaryGeneratorAction.hh>
 #include <G4VUserDetectorConstruction.hh>
 #include <G4UImanager.hh>
+
 
 #include "HepMC/GenRanges.h"
 

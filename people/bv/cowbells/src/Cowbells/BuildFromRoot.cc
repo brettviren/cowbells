@@ -1,4 +1,5 @@
 #include "Cowbells/BuildFromRoot.h"
+#include "Cowbells/SensitiveDetector.h"
 
 #include <RootGM/volumes/Factory.h>
 #include <Geant4GM/volumes/Factory.h>
@@ -13,13 +14,18 @@
 #include <G4MaterialTable.hh>
 #include <G4Material.hh>
 
+// for registering sensitive detectors
+#include <G4LogicalVolume.hh>
+#include <G4LogicalVolumeStore.hh>
+#include <G4SDManager.hh>
+
 #include <vector>
 
 #include <iostream>
 using namespace std;
 
-Cowbells::BuildFromRoot::BuildFromRoot(const char* root_geom_filename)
- : m_geomfilename(root_geom_filename)
+Cowbells::BuildFromRoot::BuildFromRoot(std::string filename)
+    : m_filename(filename)
 {
 }
 
@@ -41,7 +47,15 @@ static G4Material* get_mat(const G4MaterialTable& mattab, std::string matname)
 
 G4VPhysicalVolume* Cowbells::BuildFromRoot::Construct()
 {
-    TGeoManager* geo = TGeoManager::Import(m_geomfilename);
+    G4VPhysicalVolume* world = this->ConstructGeometry();
+    this->AddMaterialProperties();
+    this->RegisterSensDets();
+    return world;
+}
+
+G4VPhysicalVolume* Cowbells::BuildFromRoot::ConstructGeometry()
+{
+    TGeoManager* geo = TGeoManager::Import(m_filename.c_str());
 
     // Import geometry from Root to VGM
     RootGM::Factory rtFactory;
@@ -56,6 +70,11 @@ G4VPhysicalVolume* Cowbells::BuildFromRoot::Construct()
     G4VPhysicalVolume * world = g4Factory.World();
     cerr << "Converted to Geant4 geometry" << endl;
 
+    return world;
+}
+
+void Cowbells::BuildFromRoot::AddMaterialProperties()
+{
     // Tack on any properties.  
 
     // This is a vector<G4Material*>
@@ -64,10 +83,11 @@ G4VPhysicalVolume* Cowbells::BuildFromRoot::Construct()
     // Expect TDirectory hiearchy like
     // properties/MATERIALNAME/PROPERTYNAME where properties are
     // expressed as TGraphs.
-    TFile* propfile = TFile::Open(m_geomfilename);
+    TFile* propfile = TFile::Open(m_filename.c_str());
 
     // FIXME: make the property directory configurable
-    TDirectory* propdir = dynamic_cast<TDirectory*>(propfile->Get("properties"));
+    const char* prop_dir_name = "properties";
+    TDirectory* propdir = dynamic_cast<TDirectory*>(propfile->Get(prop_dir_name));
 
     TList* lom = propdir->GetListOfKeys();
     int nmats = lom->GetSize();
@@ -112,5 +132,42 @@ G4VPhysicalVolume* Cowbells::BuildFromRoot::Construct()
         
     } // loop over materials
 
-    return world;
+}
+
+void Cowbells::BuildFromRoot::add_sensdet(std::string lvname,
+                                          std::string hcname,
+                                          std::string sdname)
+{
+    if (hcname.empty()) {
+        hcname = lvname + "HC";
+    }
+
+    if (sdname.empty()) {
+        sdname = "SensitiveDetector";
+    }
+
+    if (sdname != "SensitiveDetector") {
+        cerr << "Cowbells::BuildFromRoot::add_sensdet currently only supports Cowbells::SensitiveDetector" << endl;
+        return;
+    }
+
+    Cowbells::SensitiveDetector* csd = new Cowbells::SensitiveDetector(sdname.c_str(), hcname.c_str());
+    m_lvsd[lvname] = csd;
+}
+
+void Cowbells::BuildFromRoot::RegisterSensDets()
+{
+
+
+    LVSDMap_t::iterator it, done = m_lvsd.end();
+
+    for (it = m_lvsd.begin(); it != done; ++it) {
+        string lvname = it->first;
+        G4VSensitiveDetector* sd = it->second;
+        G4SDManager::GetSDMpointer()->AddNewDetector(sd);
+        G4LogicalVolume* lv = G4LogicalVolumeStore::GetInstance()->GetVolume(lvname.c_str());
+        lv->SetSensitiveDetector(sd);
+        cerr << "Registered SD " << sd->GetName() << " with " << lvname << endl;
+    }
+        
 }

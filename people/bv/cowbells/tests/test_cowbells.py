@@ -22,9 +22,10 @@ def test_cowbells():
     ROOT.SetOwnership(pg,0)
     rm.SetUserAction(pg)
 
-    dc = Cowbells.BuildFromRoot(geofile)
-    ROOT.SetOwnership(dc,0)
-    rm.SetUserInitialization(dc)
+    bfr = Cowbells.BuildFromRoot(geofile)
+    ROOT.SetOwnership(bfr,0)
+    rm.SetUserInitialization(bfr)
+    bfr.add_sensdet("PC")
 
     ura = ROOT.Cowbells.TestRunAction()
     ROOT.SetOwnership(ura,0)

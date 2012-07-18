@@ -10,6 +10,7 @@
     <class name="Cowbells::BuildFromRoot"/>
     <class name="Cowbells::PrimaryGenerator"/>
     <class name="Cowbells::PhysicsList"/>
+    <class name="Cowbells::SensitiveDetector"/>
 
     <!-- test geant4 user classes -->
     <class name="Cowbells::TestDetectorConstruction"/>
