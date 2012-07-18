@@ -22,14 +22,6 @@ find_package(ROOT REQUIRED)
 include(${ROOT_USE_FILE})
 #include_directories(${ROOT_INCLUDE_DIRS})
 
-# Q: What about G4VMC? A: DIY
-include_directories(${VGM_DIR}/packages/VGM/include)
-include_directories(${VGM_DIR}/packages/ClhepVGM/include)
-include_directories(${VGM_DIR}/packages/BaseVGM/include)
-include_directories(${VGM_DIR}/packages/Geant4GM/include)
-include_directories(${VGM_DIR}/packages/RootGM/include)
-include_directories(${VGM_DIR}/packages/XmlVGM/include)
-
 # -DHEPMC_DIR:STRING=/path/to/hepmc
 include_directories(${HEPMC_DIR}/include)
 

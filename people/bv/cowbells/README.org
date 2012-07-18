@@ -6,7 +6,7 @@ Cowbells simulation
 
 ** Prereq
 
-Need Geant4, ROOT, VGM and a recent Python.  This project can be used
+Need Geant4, ROOT and a recent Python.  This project can be used
 to pre-build all the necessary code:
 
   https://github.com/brettviren/grinst
@@ -16,7 +16,6 @@ to pre-build all the necessary code:
 #+begin_example
 cmake -DGeant4_DIR=/path/to/geant4/lib64/Geant4-9.5.1 \
       -DROOT_DIR=/path/to/root/5.32.02 \
-      -DVGM_DIR=$VGM_INSTALL \
       ../cowbells
 make 
 #+end_example

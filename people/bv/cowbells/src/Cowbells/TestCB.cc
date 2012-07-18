@@ -6,6 +6,9 @@
 #include "Cowbells/TestRunAction.h"
 #include "Cowbells/TestStackingAction.h"
 
+#include <iostream>
+using namespace std;
+
 Cowbells::TestCB::TestCB()
     : m_runMgr(0)
 {
@@ -46,6 +49,21 @@ G4RunManager* Cowbells::TestCB::main(std::string geofile)
     UI->ApplyCommand("/run/verbose 1");
     UI->ApplyCommand("/event/verbose 1");
     UI->ApplyCommand("/tracking/verbose 1");
+
+    const G4MaterialTable& matv = *G4Material::GetMaterialTable();
+    //cerr << "Materials:\n" << *(G4Material::GetMaterialTable()) << endl;
+    size_t nmat = matv.size();
+    for (size_t imat = 0; imat<nmat; ++imat) {
+        G4Material* mat = matv[imat];
+        cerr << mat->GetName() << " dens=" << mat->GetDensity() << " radlen=" << mat->GetRadlen() << " intlen=" << mat->GetNuclearInterLength() << endl;
+        G4MaterialPropertiesTable* mattab = mat->GetMaterialPropertiesTable();
+        if (mattab) {
+            mattab->DumpTable();
+        }
+        else {
+            cerr << "No MaterialPropertiesTable for " << mat->GetName() << endl;
+        }
+    }
 
     return m_runMgr;
 }
