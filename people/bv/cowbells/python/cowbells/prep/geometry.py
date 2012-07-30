@@ -109,7 +109,7 @@ class CowbellGeometryBuilder(object):
             print '%d: Making %s offset = %f+%f' %(ind+1,name,offset,0.5*width)
             trans = make_translation(0,0,offset+0.5*width)
             offset += width
-            puc_ass.AddNode(puc,ind+1,trans)
+            puc_ass.AddNode(puc,1,trans)
             continue        
 
         top = geo.MakeVolumeAssembly("cowbells")

@@ -8,6 +8,7 @@
 
     <!-- Cowbells Geant4 user classes -->
     <class name="Cowbells::BuildFromRoot"/>
+    <class name="Cowbells::BuildFromGdml"/>
     <class name="Cowbells::PrimaryGenerator"/>
     <class name="Cowbells::PhysicsList"/>
     <class name="Cowbells::SensitiveDetector"/>

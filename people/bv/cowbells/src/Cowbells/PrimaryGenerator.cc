@@ -26,6 +26,9 @@ void Cowbells::PrimaryGenerator::GeneratePrimaries(G4Event* gevt)
 {
     cerr << "Cowbells::PrimaryGenerator::GeneratePrimaries("<<(void*)this<<") with G4Event*(" << (void*)gevt << ")" << endl;
 
+    static int count = 0;
+    ++count;
+
     // fixme: for now just make *something* to get the ball rolling
     G4ThreeVector zero;
     G4PrimaryVertex* origin = new G4PrimaryVertex(zero,0.0);
@@ -33,7 +36,9 @@ void Cowbells::PrimaryGenerator::GeneratePrimaries(G4Event* gevt)
     int pdg = 11;               // electron
     G4PrimaryParticle* particle = new G4PrimaryParticle(pdg);
     particle->SetMass(0.0);
-    particle->SetMomentum(0.0,0.0,10.0*MeV);
+    double momz = 10.0*MeV;
+    if (count/2) momz *= -1.0;
+    particle->SetMomentum(0.0,0.0,momz);
     origin->SetPrimary(particle);
     gevt->AddPrimaryVertex(origin);
     return;

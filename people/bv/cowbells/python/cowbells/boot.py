@@ -41,7 +41,7 @@ def geant4():
     from subprocess import check_output
     chunks = check_output(['geant4-config','--libs']).split('\n')[0].split()
     ldir = None
-    libs = []
+    root_load_lib("xerces-c-3.1")
     for chunk in chunks:
         if '-L' == chunk[:2]: # if geant4-config is in our path, 
             continue          # assume LD_LIBRARY_PATH is okay too

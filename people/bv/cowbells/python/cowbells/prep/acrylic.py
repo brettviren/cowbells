@@ -42,8 +42,8 @@ rindex_energy = [x*eV for x in [
 def materials(geo):
     'Make any materials'
     for modifier in ['','Black']:
-        mat = util.make_mixture(modifier+name, parts, density)
-        med = util.make_medium(mat)
+        mat = util.make_mixture(geo, modifier+name, parts, density)
+        med = util.make_medium(geo, mat)
         continue
     return
 

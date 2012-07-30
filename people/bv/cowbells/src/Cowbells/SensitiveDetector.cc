@@ -20,7 +20,6 @@ Cowbells::SensitiveDetector::~SensitiveDetector()
 }
 
 
-
 //  These two methods are invoked at the begining and at the end of each
 // event. The hits collection(s) created by this sensitive detector must
 // be set to the G4HCofThisEvent object at one of these two methods.
@@ -60,7 +59,7 @@ void Cowbells::SensitiveDetector::clear()
 //  "ROhist" will be given only is a Readout geometry is defined to this
 // sensitive detector. The G4TouchableHistory object of the tracking geometry
 // is stored in the PreStepPoint object of G4Step.
-G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory* /*ROhist*/)
+G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory* /*nada*/)
 {
     // fixme: don't accept all particles, return false for the losers
 
@@ -76,7 +75,31 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     hit->setVolId(touch->GetCopyNumber());
     fHC->insert(hit);
 
-    cerr << "Hit: @ " << hit->time() << ", " << pos.x() << ", " << pos.y() << ", " << pos.z() << endl;
+
+    int depth = touch->GetHistoryDepth();
+    G4VPhysicalVolume* pv = touch->GetVolume();
+
+    cerr << "Hit: in \"" << pv->GetName() << "\"" << " @ " << hit->time() << ", " << pos.x() << ", " << pos.y() << ", " << pos.z() << endl;
+
+    for (int ind = touch->GetHistoryDepth(); ind >= 0; --ind) {
+      pv = touch->GetVolume(ind);
+      cerr << "touch: #" << ind << " " << pv->GetName() <<  " " << pv->GetCopyNo() << " " << pv->GetMultiplicity()
+	   << ", " << touch->GetCopyNumber(ind) 
+	   << ", " << touch->GetReplicaNumber(ind)
+	   << endl;
+    }
+
+    // do {
+    //     cerr << "\t" << pv->GetName() 
+    //          << " depth:" << depth
+    //          << " copy:" << touch->GetCopyNumber() 
+    //          << " repl:" << touch->GetReplicaNumber() 
+    //          << " hist:" << touch->GetHistoryDepth()
+    //          << endl;
+    //     touch->MoveUpHistory(1);
+    //     pv = touch->GetVolume();
+    //     --depth;
+    // } while (depth >= 0);
 
     return true;
 }

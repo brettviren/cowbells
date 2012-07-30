@@ -7,9 +7,8 @@ import ROOT
 
 import cowbells
 
-geo = cowbells.geo()
 
-def get_stuff(stuff):
+def get_stuff(geo,stuff):
     'Try to return element or material'
     ele = geo.GetElementTable().FindElement(stuff)
     if ele: 
@@ -21,7 +20,7 @@ def get_stuff(stuff):
 
     return None
 
-def make_mixture(name, parts, density):
+def make_mixture(geo, name, parts, density):
     'Make a mixture'
 
     if not parts:
@@ -31,7 +30,7 @@ def make_mixture(name, parts, density):
     ROOT.SetOwnership(mix,0)
     print 'Mixture: %s' % name
     for part in parts:
-        stuff = get_stuff(part[0])
+        stuff = get_stuff(geo, part[0])
         if not stuff:
             raise ValueError,'No such stuff: "%s"' % part[0]
         print '\twith stuff: (%s)%s %s' % (type(stuff), part[0], str(part[1]))
@@ -42,7 +41,7 @@ def make_mixture(name, parts, density):
 
 # Allocate media so we can make sure to provide a unique number.
 _media = []
-def make_medium(mat, name = None, params = None):
+def make_medium(geo, mat, name = None, params = None):
     'Make a medium from a material'
 
     if name is None: 

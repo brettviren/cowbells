@@ -19,7 +19,6 @@ public:
                       const std::string& hitsname);
     virtual ~SensitiveDetector();
 
-
     // optional interface
     virtual void Initialize(G4HCofThisEvent* hce);
     virtual void EndOfEvent(G4HCofThisEvent* hce);

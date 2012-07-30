@@ -3,18 +3,18 @@
 Generate the properties file
 '''
 
+import os
 import cowbells
 import geometry, properties
 
-geo = cowbells.geo()
 meter = cowbells.units.meter
 
-def make_world(size = 10*meter):
+def make_world(geo, size = 10*meter):
     'Make the world volume'
     vac = geo.GetMedium("Vacuum")
     return geo.MakeBox("World",vac,size,size,size)
 
-def fill(filename):
+def fill(geo, filename):
     from cowbells.prep import propmods
     for mod in propmods:
         mod.materials(geo)
@@ -22,7 +22,7 @@ def fill(filename):
     cbgb = geometry.CowbellGeometryBuilder()
     top = cbgb.top(geo)
 
-    world = make_world()
+    world = make_world(geo)
     world.AddNode(top,1)
     geo.SetTopVolume(world)
 
@@ -34,8 +34,14 @@ def fill(filename):
 
     properties.fill(filename)
 
+    gdmlfile = os.path.splitext(filename)[0] + '.gdml'
+    geo.Export(gdmlfile)
+
     return
 
 if __name__ == '__main__':
     import sys
-    fill(sys.argv[1])
+    import ROOT
+    geo = ROOT.TGeoManager('cowbells_geometry', 
+                           'Geometry for COsmic WB(el)LS detector')
+    fill(geo, sys.argv[1])

@@ -1,4 +1,6 @@
 #include "Cowbells/TestDetectorConstruction.h"
+#include "Cowbells/SensitiveDetector.h"
+
 #include <G4VPhysicalVolume.hh>
 
 #include "G4Material.hh"
@@ -10,6 +12,8 @@
 #include "G4LogicalVolume.hh"
 #include "G4ThreeVector.hh"
 #include "G4PVPlacement.hh"
+#include <G4LogicalVolumeStore.hh>
+#include <G4SDManager.hh>
 
 #include <iostream>
 using namespace std;
@@ -237,8 +241,10 @@ G4VPhysicalVolume* Cowbells::TestDetectorConstruction::Construct()
     = new G4LogicalVolume(bubbleAir_box,Air,"Bubble",0,0,0);
 
 //G4VPhysicalVolume* bubbleAir_phys =
-      new G4PVPlacement(0,G4ThreeVector(0,2.5*m,0),bubbleAir_log,"Bubble",
+      new G4PVPlacement(0,G4ThreeVector(0,2.5*m,0),bubbleAir_log,"Bubble0",
                         waterTank_log,false,0);
+      new G4PVPlacement(0,G4ThreeVector(0,-2.5*m,0),bubbleAir_log,"Bubble1",
+                        waterTank_log,false,1);
 
 //	------------- Surfaces --------------
 //
@@ -299,6 +305,46 @@ G4VPhysicalVolume* Cowbells::TestDetectorConstruction::Construct()
 
   OpAirSurface->SetMaterialPropertiesTable(myST2);
 
+
+  this->RegisterSensDets();
+
 //always return the physical World
   return expHall_phys;
 }        
+
+
+void Cowbells::TestDetectorConstruction::add_sensdet(std::string lvname,
+						     std::string hcname,
+						     std::string sdname)
+{
+    if (hcname.empty()) {
+        hcname = lvname + "HC";
+    }
+
+    if (sdname.empty()) {
+        sdname = "SensitiveDetector";
+    }
+
+    if (sdname != "SensitiveDetector") {
+        cerr << "Cowbells::BuildFromRoot::add_sensdet currently only supports Cowbells::SensitiveDetector" << endl;
+        return;
+    }
+
+    Cowbells::SensitiveDetector* csd = new Cowbells::SensitiveDetector(sdname.c_str(), hcname.c_str());
+    m_lvsd[lvname] = csd;
+}
+
+void Cowbells::TestDetectorConstruction::RegisterSensDets()
+{
+    LVSDMap_t::iterator it, done = m_lvsd.end();
+
+    for (it = m_lvsd.begin(); it != done; ++it) {
+        string lvname = it->first;
+        G4VSensitiveDetector* sd = it->second;
+        G4SDManager::GetSDMpointer()->AddNewDetector(sd);
+        G4LogicalVolume* lv = G4LogicalVolumeStore::GetInstance()->GetVolume(lvname.c_str());
+        lv->SetSensitiveDetector(sd);
+        cerr << "Registered SD " << sd->GetName() << " with " << lvname << endl;
+    }
+        
+}

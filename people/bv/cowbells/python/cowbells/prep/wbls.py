@@ -156,8 +156,8 @@ _properties = {
 
 def materials(geo):
     'Make any materials'
-    mat = util.make_mixture(name, parts, density)
-    med = util.make_medium(mat)
+    mat = util.make_mixture(geo, name, parts, density)
+    med = util.make_medium(geo, mat)
 
 def properties(pf):
     '''
