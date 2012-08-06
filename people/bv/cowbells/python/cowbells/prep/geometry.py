@@ -19,6 +19,9 @@ from util import make_translation, make_rotation
 units = cowbells.units
 inch = 2.45 * units.cm
 
+
+
+
 class CowbellGeometryBuilder(object):
     
     default_dimensions = {
@@ -101,6 +104,7 @@ class CowbellGeometryBuilder(object):
                                                    # cylinders
         puc_ass = geo.MakeVolumeAssembly('endcap') # hold all the end
                                                    # cap parts
+
         nmn = [('cap','Acrylic'), ('pmt','Glass'), ('pc','PhotoCathode')]
         for ind,(name,matname) in enumerate(nmn):
             puc = self.make_puc(geo,name,matname) 
@@ -110,6 +114,7 @@ class CowbellGeometryBuilder(object):
             trans = make_translation(0,0,offset+0.5*width)
             offset += width
             puc_ass.AddNode(puc,1,trans)
+            print 'Node: "%s"' % node_name(puc)
             continue        
 
         top = geo.MakeVolumeAssembly("cowbells")

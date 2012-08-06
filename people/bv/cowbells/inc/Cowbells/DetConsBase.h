@@ -18,6 +18,7 @@
 #include <G4VPhysicalVolume.hh>
 
 #include <string>
+#include <vector>
 #include <map>
 
 namespace Cowbells {
@@ -30,10 +31,15 @@ namespace Cowbells {
         virtual ~DetConsBase();
 
         /// Associate a sensitive detector and hit collection to a
-        /// logical volume.  By default Cowbells::SensitiveDetector is
-        /// used.  If the hit collection name is not given it will be
-        /// formed by appending "HC" to the logical volume name.
+        /// logical volume.  The touchables vector should contain an
+        /// ordered list of touchable names and is used to translate
+        /// name into an index.
+	///
+	/// By default a Cowbells::SensitiveDetector object is used.
+        /// If the hit collection name is not given it will be formed
+        /// by appending "HC" to the logical volume name.
         void add_sensdet(std::string logical_volume_name,
+			 std::vector<std::string> touchables,
                          std::string hit_collection_name = "",
                          std::string sensitive_detector_class = "");
 

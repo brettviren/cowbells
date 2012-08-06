@@ -17,6 +17,10 @@ class SensitiveDetector : public G4VSensitiveDetector
 public:
     SensitiveDetector(const std::string& name, 
                       const std::string& hitsname);
+
+    SensitiveDetector(const std::string& name, 
+                      const std::string& hitsname,
+		      std::vector<std::string> touchables);
     virtual ~SensitiveDetector();
 
     // optional interface
@@ -29,6 +33,10 @@ public:
 
 private:
     Cowbells::HitCollection* fHC;
+
+    typedef std::map<std::string, int> TouchableId_t;
+    TouchableId_t m_touchId;
+
 };
 
 

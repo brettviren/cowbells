@@ -1,5 +1,6 @@
 
 #include "Cowbells/Interface.h"
+#include "Cowbells/DetConsBase.h"
 #include "Cowbells/BuildFromRoot.h"
 #include "Cowbells/BuildFromGdml.h"
 #include "Cowbells/PrimaryGenerator.h"

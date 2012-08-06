@@ -7,6 +7,7 @@
     <class name="Cowbells::Interface"/>
 
     <!-- Cowbells Geant4 user classes -->
+    <class name="Cowbells::DetConsBase"/>
     <class name="Cowbells::BuildFromRoot"/>
     <class name="Cowbells::BuildFromGdml"/>
     <class name="Cowbells::PrimaryGenerator"/>

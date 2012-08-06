@@ -330,7 +330,8 @@ void Cowbells::TestDetectorConstruction::add_sensdet(std::string lvname,
         return;
     }
 
-    Cowbells::SensitiveDetector* csd = new Cowbells::SensitiveDetector(sdname.c_str(), hcname.c_str());
+    Cowbells::SensitiveDetector* csd = 
+      new Cowbells::SensitiveDetector(sdname.c_str(), hcname.c_str());
     m_lvsd[lvname] = csd;
 }
 

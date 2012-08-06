@@ -41,11 +41,24 @@ static G4Material* get_mat(const G4MaterialTable& mattab, std::string matname)
     return 0;
 }
 
+static void dump(G4VPhysicalVolume* top, int depth) 
+{
+    std::string tab(depth,' ');
+
+    cerr << tab << top->GetName() << endl;
+    G4LogicalVolume* lv = top->GetLogicalVolume();
+    int nchilds = lv->GetNoDaughters();
+    for (int ind=0; ind<nchilds; ++ind) {
+        dump(lv->GetDaughter(ind), depth+1);
+    }
+}
+
 G4VPhysicalVolume* Cowbells::DetConsBase::Construct()
 {
     G4VPhysicalVolume* world = this->ConstructGeometry();
     this->AddMaterialProperties();
     this->RegisterSensDets();
+    dump(world, 0);
     return world;
 }
 
@@ -111,8 +124,9 @@ void Cowbells::DetConsBase::AddMaterialProperties()
 }
 
 void Cowbells::DetConsBase::add_sensdet(std::string lvname,
-                                          std::string hcname,
-                                          std::string sdname)
+                                        std::vector<std::string> touchables,
+                                        std::string hcname,
+                                        std::string sdname)
 {
     if (hcname.empty()) {
         hcname = lvname + "HC";
@@ -127,7 +141,8 @@ void Cowbells::DetConsBase::add_sensdet(std::string lvname,
         return;
     }
 
-    Cowbells::SensitiveDetector* csd = new Cowbells::SensitiveDetector(sdname.c_str(), hcname.c_str());
+    Cowbells::SensitiveDetector* csd = 
+        new Cowbells::SensitiveDetector(sdname.c_str(), hcname.c_str(), touchables);
     m_lvsd[lvname] = csd;
 }
 

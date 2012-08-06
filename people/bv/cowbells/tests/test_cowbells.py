@@ -8,11 +8,7 @@ import ROOT
 import cowbells
 Cowbells = ROOT.Cowbells        # namespace
 
-root_file = "geo.root"
-gdml_file = "geo.gdml"
-
-geofile = gdml_file
-#geofile = root_file
+geofile = "geo.root"
 
 def test_cowbells():
 
@@ -31,13 +27,10 @@ def test_cowbells():
         detcon = Cowbells.TestDetectorConstruction()
         detcon.add_sensdet("Bubble")
     else:
-        if 'root' in geofile:
-            detcon = Cowbells.BuildFromRoot(geofile)
-        elif 'gdml' in geofile:                   
-            detcon = Cowbells.BuildFromGdml(geofile, root_file)
-        else:
-            raise RuntimeError, 'Unknown geometry file: "%s"' % geofile
-        detcon.add_sensdet("PC")
+        detcon = Cowbells.BuildFromRoot(geofile)
+        top = ROOT.TGeoManager.Import(geofile).GetTopNode()
+        touchables = cowbells.geo.touchable_paths(top, 'PC')
+        detcon.add_sensdet("PC", touchables)
         pass
 
     ROOT.SetOwnership(detcon,0)
