@@ -32,7 +32,8 @@ def format_node_path(np):
     Convert node path in form of list of lists to std::vector<std::string>
     '''
     path = ROOT.std.vector("std::string")()
-    path.push_back("")
+    ROOT.SetOwnership(path,0)
+    path.push_back("")          # reserve element 0.
     for p in np:
         print p
         sp = '%'.join(p[1:])

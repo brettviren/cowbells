@@ -25,7 +25,8 @@ Cowbells::SensitiveDetector::SensitiveDetector(const std::string& name,
 
 
     for (size_t ind=0; ind<touchables.size(); ++ind) {
-        m_touchId[touchables[ind]] = ind;
+        string tname = touchables[ind];
+        m_touchId[tname] = ind;
     }
 }
 
@@ -83,45 +84,35 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     G4Track* track = aStep->GetTrack();
 
     Cowbells::Hit* hit = new Cowbells::Hit();
-    hit->setEnergy(track->GetTotalEnergy());
-    hit->setTime(psp->GetGlobalTime());
-    hit->setPos(pos.x(),pos.y(),pos.z());
-    hit->setVolId(touch->GetCopyNumber());
-    fHC->insert(hit);
-
+    fHC->insert(new Cowbells::GHit(hit));
 
     int depth = touch->GetHistoryDepth();
     G4VPhysicalVolume* pv = touch->GetVolume();
 
     TouchableId_t::iterator it = m_touchId.find(pv->GetName());
     if (it == m_touchId.end()) {
-        cerr << "Hit: in #?? \"" << pv->GetName() << "\"" << " @ " << hit->time() << ", " << pos.x() << ", " << pos.y() << ", " << pos.z() << endl;
+        cerr << "Hit: hit in unknown volume: \"" << pv->GetName() << endl;
         return true;
     }
-
     int id = it->second;
 
-    cerr << "Hit: in #"<<id<<" \"" << pv->GetName() << "\"" << " @ " << hit->time() << ", " << pos.x() << ", " << pos.y() << ", " << pos.z() << endl;
+    hit->setEnergy(track->GetTotalEnergy());
+    hit->setTime(psp->GetGlobalTime());
+    hit->setPos(pos.x(),pos.y(),pos.z());
+    hit->setVolId(id);
 
-    for (int ind = touch->GetHistoryDepth(); ind >= 0; --ind) {
-      pv = touch->GetVolume(ind);
-      cerr << "touch: #" << ind << " " << pv->GetName() <<  " " << pv->GetCopyNo() << " " << pv->GetMultiplicity()
-	   << ", " << touch->GetCopyNumber(ind) 
-	   << ", " << touch->GetReplicaNumber(ind)
-	   << endl;
-    }
 
-    // do {
-    //     cerr << "\t" << pv->GetName() 
-    //          << " depth:" << depth
-    //          << " copy:" << touch->GetCopyNumber() 
-    //          << " repl:" << touch->GetReplicaNumber() 
-    //          << " hist:" << touch->GetHistoryDepth()
-    //          << endl;
-    //     touch->MoveUpHistory(1);
-    //     pv = touch->GetVolume();
-    //     --depth;
-    // } while (depth >= 0);
+    //cerr << "Hit: in #"<<id<<" \"" << pv->GetName() << "\"" << " @ " << hit->time() 
+    //     << ", " << pos.x() << ", " << pos.y() << ", " << pos.z() << endl;
+
+    // for (int ind = touch->GetHistoryDepth(); ind >= 0; --ind) {
+    //   pv = touch->GetVolume(ind);
+    //   cerr << "touch: #" << ind << " " << pv->GetName() 
+    //        <<  " " << pv->GetCopyNo() << " " << pv->GetMultiplicity()
+    //        << ", " << touch->GetCopyNumber(ind) 
+    //        << ", " << touch->GetReplicaNumber(ind)
+    //        << endl;
+    // }
 
     return true;
 }

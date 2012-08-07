@@ -18,6 +18,9 @@
 
 
 #include "HepMC/GenEvent.h"
+#include "Cowbells/Hit.h"
+
+#include <vector>
 
 namespace Cowbells {
 
@@ -29,17 +32,20 @@ namespace Cowbells {
         Event(Cowbells::EventKinematics* kin = 0);
         ~Event();
 
+        void clear();
+
         // Set the event kinematics, takes ownership
-        void set_kinematics(Cowbells::EventKinematics* kin);
-        const Cowbells::EventKinematics* get_kinematics() const;
+        // void set_kinematics(Cowbells::EventKinematics* kin);
+        // const Cowbells::EventKinematics* get_kinematics() const;
 
         // Post-simulation data:
         // void set_hits()
         // void set_...()
 
-    private:
         
-        EventKinematics* m_kine;
+        // EventKinematics* m_kine;
+
+        std::vector<Cowbells::Hit*> hc;
     };
 }
 

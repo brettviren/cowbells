@@ -7,12 +7,17 @@
     <class name="Cowbells::Interface"/>
 
     <!-- Cowbells Geant4 user classes -->
+    <class name="Cowbells::DataRecorder"/>
     <class name="Cowbells::DetConsBase"/>
     <class name="Cowbells::BuildFromRoot"/>
     <class name="Cowbells::BuildFromGdml"/>
     <class name="Cowbells::PrimaryGenerator"/>
     <class name="Cowbells::PhysicsList"/>
     <class name="Cowbells::SensitiveDetector"/>
+    <class name="Cowbells::RunAction"/>
+    <class name="Cowbells::EventAction"/>
+    <class name="Cowbells::Event"/>
+    <class name="Cowbells::Hit"/>
 
     <!-- test geant4 user classes -->
     <class name="Cowbells::TestDetectorConstruction"/>
@@ -34,6 +39,8 @@
     <class name="G4VUserDetectorConstruction"/>
     <class name="G4UserStackingAction"/>
     <class name="G4UImanager"/>
+
+    <class name="std::vector<Cowbells::Hit*>"/>
 
     <class pattern="HepMC::Gen*"/>
     <class name="std::deque<HepMC::GenEvent*>"/>

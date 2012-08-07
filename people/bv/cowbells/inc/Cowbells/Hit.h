@@ -20,13 +20,10 @@
 
 namespace Cowbells {
 
-    class Hit : public G4VHit 
-    {
+    class Hit {
     public:
         Hit();
-        //Hit(const Cowbells::Hit& rhs);
-        virtual ~Hit();
-
+        ~Hit();
         // Time of hit relative to primary vertex time
         double time() const { return m_time; }
         void setTime(double t) { m_time = t; }
@@ -48,7 +45,23 @@ namespace Cowbells {
         int m_volid;
     };
 
-    typedef G4THitsCollection<Cowbells::Hit> HitCollection;
+    class GHit : public G4VHit 
+    {
+    public:
+        GHit(Cowbells::Hit* hit) {
+            m_hit = hit;
+        }
+        virtual ~GHit() {
+            if (!m_hit) { return; }
+            delete m_hit; 
+            m_hit = 0;
+        }
+        Cowbells::Hit* get() { return m_hit; }
+    private:
+        Cowbells::Hit* m_hit;
+    };
+
+    typedef G4THitsCollection<Cowbells::GHit> HitCollection;
 
 } // namespace Cowbells
 

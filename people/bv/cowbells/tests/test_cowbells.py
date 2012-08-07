@@ -10,39 +10,50 @@ Cowbells = ROOT.Cowbells        # namespace
 
 geofile = "geo.root"
 
+def rootnew(name,*args):
+    klass = eval('ROOT.' + name)
+    obj = klass(*args)
+    ROOT.SetOwnership(obj,0)
+    return obj
+
 def test_cowbells():
 
-    rm = ROOT.G4RunManager()
+    rm = rootnew('G4RunManager')
 
-    pl = ROOT.Cowbells.PhysicsList()
-    ROOT.SetOwnership(pl,0)
+    pl = rootnew('Cowbells.PhysicsList')
     rm.SetUserInitialization(pl)
 
-    pg = Cowbells.PrimaryGenerator()
-    ROOT.SetOwnership(pg,0)
+    pg = rootnew('Cowbells.PrimaryGenerator')
     rm.SetUserAction(pg)
 
     do_test = False
     if do_test:
-        detcon = Cowbells.TestDetectorConstruction()
+        detcon = rootnew('Cowbells.TestDetectorConstruction')
         detcon.add_sensdet("Bubble")
     else:
-        detcon = Cowbells.BuildFromRoot(geofile)
-        top = ROOT.TGeoManager.Import(geofile).GetTopNode()
+        detcon = rootnew('Cowbells.BuildFromRoot',geofile)
+        geo = ROOT.TGeoManager.Import(geofile)
+        top = geo.GetTopNode()
         touchables = cowbells.geo.touchable_paths(top, 'PC')
         detcon.add_sensdet("PC", touchables)
+        geo.Delete()
         pass
-
-    ROOT.SetOwnership(detcon,0)
     rm.SetUserInitialization(detcon)
 
+    #dr = rootnew('Cowbells.DataRecorder',"test_cowbells.root")
+    dr = None
 
-    ura = ROOT.Cowbells.TestRunAction()
-    ROOT.SetOwnership(ura,0)
-    rm.SetUserAction(ura)
+    # user actions.  run before event
 
-    usa = ROOT.Cowbells.TestStackingAction()
-    ROOT.SetOwnership(usa,0)
+    #ura = rootnew('Cowbells.RunAction')
+    #if dr: ura.set_recorder(dr)
+    #rm.SetUserAction(ura)
+
+    ea = rootnew('Cowbells.EventAction')
+    if dr: ea.set_recorder(dr)
+    rm.SetUserAction(ea)
+
+    usa = rootnew('Cowbells.TestStackingAction')
     rm.SetUserAction(usa)
 
     rm.Initialize()

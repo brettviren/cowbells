@@ -13,6 +13,8 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
 project(cowbells)
 
+SET(CMAKE_COLOR_MAKEFILE ON)
+
 # Hook into Geant4
 find_package(Geant4 REQUIRED)
 include(${Geant4_USE_FILE})
@@ -29,9 +31,11 @@ include_directories(${VGM_DIR}/packages/BaseVGM/include)
 include_directories(${VGM_DIR}/packages/Geant4GM/include)
 include_directories(${VGM_DIR}/packages/RootGM/include)
 include_directories(${VGM_DIR}/packages/XmlVGM/include)
+file(GLOB vgmlib  ${VGM_DIR}/lib/${VGM_SYSTEM}/lib*.so)
 
 # -DHEPMC_DIR:STRING=/path/to/hepmc
 include_directories(${HEPMC_DIR}/include)
+file(GLOB hepmc ${HEPMC_DIR}/lib/libHepMC.so) #must be a better way....
 
 # this package
 include_directories(${PROJECT_SOURCE_DIR}/inc)
@@ -43,9 +47,13 @@ file(GLOB sources src/Cowbells/*.cc)
 file(COPY python/ DESTINATION python/ FILES_MATCHING PATTERN "*.py")
 
 # build library
-#add_library(cowbells MODULE ${sources} cowbellsdict.cxx)
-add_library(cowbells MODULE ${sources})
-target_link_libraries(cowbells ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree)
+add_library(cowbells SHARED ${sources})
+#add_library(cowbells MODULE ${sources})
+target_link_libraries(cowbells ${vgmlib} ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex)
+
+# Build executable
+add_executable(test_cowbells_main main/test_cowbells_main.cc)
+target_link_libraries(test_cowbells_main cowbellsDict cowbells ${vgmlib} ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex)
 
 ### Generate dictionary
 
@@ -58,8 +66,9 @@ target_link_libraries(cowbells ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree)
 # import PyCintex
 # somewhere early in your Python code
 REFLEX_GENERATE_DICTIONARY(cowbells ${PROJECT_SOURCE_DIR}/dict/selection.h SELECTION dict/selection.xml )
-add_library(cowbellsDict MODULE cowbells_dict.cpp)
-target_link_libraries(cowbellsDict ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Reflex)
+#add_library(cowbellsDict MODULE cowbells_dict.cpp)
+add_library(cowbellsDict SHARED cowbells_dict.cpp)
+target_link_libraries(cowbellsDict cowbells ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Reflex)
 
 
 
