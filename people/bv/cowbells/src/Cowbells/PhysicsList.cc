@@ -2,10 +2,10 @@
 #include "Cowbells/PhysicsConsGeneral.h"
 #include "Cowbells/PhysicsConsEM.h"
 #include "Cowbells/PhysicsConsMuon.h"
+#include "Cowbells/PhysicsConsOp.h"
 
 #include <G4DecayPhysics.hh>
 #include <G4RadioactiveDecayPhysics.hh>
-#include <G4OpticalPhysics.hh>
 
 #include "G4Electron.hh"
 #include "G4Positron.hh"
@@ -20,25 +20,12 @@ Cowbells::PhysicsList::PhysicsList()
 
     defaultCutValue = 1.0*mm;
 
-    // These three classes are copied from extended/optical/LXe example
+    // These three classes are copied from extended/optical/LXe examples
 
     //RegisterPhysics( new Cowbells::PhysicsConsGeneral("general") );
-    RegisterPhysics( new Cowbells::PhysicsConsEM("standard EM"));
-    RegisterPhysics( new Cowbells::PhysicsConsMuon("muon"));
-
-    // Standard G4 physics constructors:
-
-    G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
-    RegisterPhysics( opticalPhysics );
-
-    opticalPhysics->SetWLSTimeProfile("delta");
-    opticalPhysics->SetScintillationYieldFactor(1.0);
-    opticalPhysics->SetScintillationExcitationRatio(0.0);
-    opticalPhysics->SetMaxNumPhotonsPerStep(100);
-    opticalPhysics->SetMaxBetaChangePerStep(10.0);
-    opticalPhysics->SetTrackSecondariesFirst(kCerenkov,true);
-    opticalPhysics->SetTrackSecondariesFirst(kScintillation,true);
-
+    RegisterPhysics( new Cowbells::PhysicsConsEM()   );
+    RegisterPhysics( new Cowbells::PhysicsConsMuon() );
+    RegisterPhysics( new Cowbells::PhysicsConsOp()   );
 
     RegisterPhysics(new G4DecayPhysics());
     RegisterPhysics(new G4RadioactiveDecayPhysics());

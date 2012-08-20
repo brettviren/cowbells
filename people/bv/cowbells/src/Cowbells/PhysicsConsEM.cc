@@ -1,7 +1,7 @@
 #include "Cowbells/PhysicsConsEM.h"
 
-Cowbells::PhysicsConsEM::PhysicsConsEM(const G4String& name)
-    :  G4VPhysicsConstructor(name)
+Cowbells::PhysicsConsEM::PhysicsConsEM()
+    :  G4VPhysicsConstructor("EM")
 {
 }
 

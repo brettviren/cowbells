@@ -14,7 +14,7 @@ namespace Cowbells {
 class PhysicsConsEM : public G4VPhysicsConstructor 
 {
 public: 
-    PhysicsConsEM(const G4String& name ="EM");
+    PhysicsConsEM();
     virtual ~PhysicsConsEM();
 
 public: 

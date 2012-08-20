@@ -16,7 +16,7 @@ namespace Cowbells {
     class PhysicsConsMuon : public G4VPhysicsConstructor
     {
     public: 
-        PhysicsConsMuon(const G4String& name="muon");
+        PhysicsConsMuon();
         virtual ~PhysicsConsMuon();
 
     public: 

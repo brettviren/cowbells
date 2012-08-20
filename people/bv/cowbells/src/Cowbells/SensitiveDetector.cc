@@ -91,7 +91,17 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
 
     TouchableId_t::iterator it = m_touchId.find(pv->GetName());
     if (it == m_touchId.end()) {
-        cerr << "Hit: hit in unknown volume: \"" << pv->GetName() << endl;
+        cerr << "Hit: hit in unknown volume: \"" << pv->GetName() << "\"" << endl;
+
+        for (int ind = touch->GetHistoryDepth(); ind >= 0; --ind) {
+            pv = touch->GetVolume(ind);
+            cerr << "touch: #" << ind << " " << pv->GetName() 
+                 <<  " " << pv->GetCopyNo() << " " << pv->GetMultiplicity()
+                 << ", " << touch->GetCopyNumber(ind) 
+                 << ", " << touch->GetReplicaNumber(ind)
+                 << endl;
+        }
+
         return true;
     }
     int id = it->second;
@@ -102,17 +112,8 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     hit->setVolId(id);
 
 
-    //cerr << "Hit: in #"<<id<<" \"" << pv->GetName() << "\"" << " @ " << hit->time() 
-    //     << ", " << pos.x() << ", " << pos.y() << ", " << pos.z() << endl;
-
-    // for (int ind = touch->GetHistoryDepth(); ind >= 0; --ind) {
-    //   pv = touch->GetVolume(ind);
-    //   cerr << "touch: #" << ind << " " << pv->GetName() 
-    //        <<  " " << pv->GetCopyNo() << " " << pv->GetMultiplicity()
-    //        << ", " << touch->GetCopyNumber(ind) 
-    //        << ", " << touch->GetReplicaNumber(ind)
-    //        << endl;
-    // }
+    cerr << "Hit: in #"<<id<<" \"" << pv->GetName() << "\"" << " @ " << hit->time() 
+         << ", " << pos.x() << ", " << pos.y() << ", " << pos.z() << endl;
 
     return true;
 }

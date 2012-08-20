@@ -1,7 +1,7 @@
 #include "Cowbells/PhysicsConsMuon.h"
 
-Cowbells::PhysicsConsMuon::PhysicsConsMuon(const G4String& name)
-    :  G4VPhysicsConstructor(name)
+Cowbells::PhysicsConsMuon::PhysicsConsMuon()
+    :  G4VPhysicsConstructor("muon")
 {
 }
 

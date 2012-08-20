@@ -33,10 +33,12 @@ void Cowbells::PrimaryGenerator::GeneratePrimaries(G4Event* gevt)
     G4ThreeVector zero;
     G4PrimaryVertex* origin = new G4PrimaryVertex(zero,0.0);
     //int pdg = 22;               // gamma
-    int pdg = 11;               // electron
+    // int pdg = 11;               // electron
+    int pdg = 2212;               // proton
     G4PrimaryParticle* particle = new G4PrimaryParticle(pdg);
-    particle->SetMass(0.0);
-    double momz = 10.0*MeV;
+    //particle->SetMass(0.0);
+    G4cout << "Using primarty particle of mass " << particle->GetMass() << G4endl;
+    double momz = 3000.0*MeV;
     if (count/2) momz *= -1.0;
     particle->SetMomentum(0.0,0.0,momz);
     origin->SetPrimary(particle);

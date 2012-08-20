@@ -39,10 +39,12 @@
 // this file then it causes the units to go undefined when they are
 // later included by G4 files.
 #undef HEP_SYSTEM_OF_UNITS_H
+#undef HEP_PHYSICAL_CONSTANTS_H
 namespace units {
 //#include "G4SystemOfUnits.hh"
-#include "CLHEP/Units/SystemOfUnits.h"
-
+// #include "CLHEP/Units/SystemOfUnits.h" 
+// next one pulls this in
+#include "CLHEP/Units/PhysicalConstants.h"
 }
 
 namespace CowbellsInstantiations
