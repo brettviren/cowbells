@@ -18,7 +18,8 @@ do_it () {
 	-DVGM_SYSTEM=$VGM_SYSTEM \
 	-DHEPMC_DIR=$base/hepmc/2.06.08 \
 	../cowbells && \
-	make && \
+	make CPPFLAGS=-DGEANT4_USE_OPENGL_X11=1\
+              && \
 	popd
     echo ok, log in $log
 }

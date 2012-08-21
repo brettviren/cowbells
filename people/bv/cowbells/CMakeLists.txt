@@ -16,7 +16,7 @@ project(cowbells)
 SET(CMAKE_COLOR_MAKEFILE ON)
 
 # Hook into Geant4
-find_package(Geant4 REQUIRED)
+find_package(Geant4 REQUIRED vis_opengl_x11)
 include(${Geant4_USE_FILE})
 
 # Hook into ROOT

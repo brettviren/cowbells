@@ -38,14 +38,16 @@ const option::Descriptor usage[] =
 };
 
 option::Option* options = 0;
+option::Parser* parser = 0;
 
 option::Option* parse_args(int argc, char* argv[])
 {
     option::Stats stats(usage, argc-1, argv+1);
     options = new option::Option[stats.options_max];
     option::Option* buffer  = new option::Option[stats.buffer_max];
-    option::Parser parse(usage, argc-1, argv+1, options, buffer);
+    parser = new option::Parser(usage, argc-1, argv+1, options, buffer);
 
+    option::Parser& parse = *parser;
     if (parse.error()) {
         std::cerr << "Error parsing commandline arguments" << std::endl;
         option::printUsage(std::cout, usage);
@@ -72,8 +74,18 @@ option::Option* parse_args(int argc, char* argv[])
     return options;
 }
 
-const char* arg(optionIndex oi)
+const char* opt(optionIndex oi)
 {
     return options[oi].arg;
 }
 
+int nargs()
+{
+    return parser->nonOptionsCount();
+}
+
+const char* arg(int ind)
+{
+    if (ind<0 || ind >+ nargs()) { return 0; }
+    return parser->nonOption(ind);
+}

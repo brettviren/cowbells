@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     Cowbells::PrimaryGenerator* pg = new Cowbells::PrimaryGenerator();
     rm->SetUserAction(pg);
 
-    std::string geofile = arg(oGEOMETRY);
+    std::string geofile = opt(oGEOMETRY);
     Cowbells::BuildFromRoot* detcon = new Cowbells::BuildFromRoot(geofile);
 
     std::vector<std::string> paths; // fake it until you make it
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     rm->SetUserInitialization(detcon);
 
     
-    std::string outfile = arg(oOUTPUT);
+    std::string outfile = opt(oOUTPUT);
     Cowbells::DataRecorder* dr = new Cowbells::DataRecorder(outfile);
 
     Cowbells::RunAction* ura = new Cowbells::RunAction();
@@ -63,25 +63,27 @@ int main(int argc, char *argv[])
 
     rm->Initialize();
     
-    G4VisManager* vm = new G4VisExecutive;
+    G4VisManager* vm = new G4VisExecutive("all");
     vm->Initialize();
 
     G4UImanager* um = G4UImanager::GetUIpointer();
 
-    um->ApplyCommand("/run/verbose 0");
-    um->ApplyCommand("/event/verbose 0");
-    um->ApplyCommand("/tracking/verbose 0");
-    um->ApplyCommand("/WLS/phys/verbose 0");
-
-    //rm->BeamOn(10);
-
     // apply command line args.
-    if (arg(oUI)) {
-        G4UIExecutive ui(argc,argv);
-        ui.SessionStart();
+    G4UIExecutive * ui = 0;
+    if (opt(oUI)) {
+        ui = new G4UIExecutive(0,0);
     }
-    else {
-        // batch
+
+    for (int ind=0; ind<nargs(); ++ind) {
+        std::string cmd = "/control/execute ";
+        cmd += arg(ind);
+        std::cerr << cmd << std::endl;
+        um->ApplyCommand(cmd);
+    }
+
+    if (ui) {
+        ui->SessionStart();
+        delete ui;
     }
 
     delete vm;
