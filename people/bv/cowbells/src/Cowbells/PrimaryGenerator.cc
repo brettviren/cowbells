@@ -38,8 +38,7 @@ void Cowbells::PrimaryGenerator::GeneratePrimaries(G4Event* gevt)
     G4PrimaryParticle* particle = new G4PrimaryParticle(pdg);
     //particle->SetMass(0.0);
     G4cout << "Using primarty particle of mass " << particle->GetMass() << G4endl;
-    double momz = 300.0*MeV;
-    if (count/2) momz *= -1.0;
+    double momz = -1500.0*MeV;
     particle->SetMomentum(0.0,0.0,momz);
     origin->SetPrimary(particle);
     gevt->AddPrimaryVertex(origin);

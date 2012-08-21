@@ -55,6 +55,9 @@ target_link_libraries(cowbells ${vgmlib} ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIB
 add_executable(test_cowbells_main main/test_cowbells_main.cc)
 target_link_libraries(test_cowbells_main cowbellsDict cowbells ${vgmlib} ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex)
 
+add_executable(cowbells.exe main/cowbells.cc)
+target_link_libraries(cowbells.exe cowbellsDict cowbells ${vgmlib} ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex)
+
 ### Generate dictionary
 
 # rootcint dictionary - has trouble with G4 classes
