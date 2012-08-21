@@ -23,6 +23,10 @@ namespace Cowbells {
 
         void SetCuts();
 
+        virtual void ConstructParticle();
+        virtual void ConstructProcess();
+
+
     private:
         PhysicsList(const PhysicsList& rhs);
         PhysicsList& operator=(const PhysicsList& rhs);

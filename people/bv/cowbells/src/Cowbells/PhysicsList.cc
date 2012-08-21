@@ -1,14 +1,14 @@
 #include "Cowbells/PhysicsList.h"
 #include "Cowbells/PhysicsConsGeneral.h"
+#include "Cowbells/PhysicsConsOp.h"
 #include "Cowbells/PhysicsConsEM.h"
 #include "Cowbells/PhysicsConsMuon.h"
-#include "Cowbells/PhysicsConsOp.h"
 
-#include <G4DecayPhysics.hh>
-#include <G4RadioactiveDecayPhysics.hh>
+#include "G4HadronElasticPhysics.hh"
 
 #include "G4Electron.hh"
-#include "G4Positron.hh"
+#include "G4Proton.hh"
+#include "G4Neutron.hh"
 
 #include <iostream>
 using namespace std;
@@ -20,19 +20,15 @@ Cowbells::PhysicsList::PhysicsList()
 
     defaultCutValue = 1.0*mm;
 
-    // These three classes are copied from extended/optical/LXe examples
+    verboseLevel = 9;
 
-    //RegisterPhysics( new Cowbells::PhysicsConsGeneral("general") );
-    RegisterPhysics( new Cowbells::PhysicsConsEM()   );
+    RegisterPhysics( new Cowbells::PhysicsConsGeneral() );
+    RegisterPhysics( new Cowbells::PhysicsConsEM() );
     RegisterPhysics( new Cowbells::PhysicsConsMuon() );
-    RegisterPhysics( new Cowbells::PhysicsConsOp()   );
+    RegisterPhysics( new Cowbells::PhysicsConsOp() );
+    RegisterPhysics( new G4HadronElasticPhysics() );
 
-    RegisterPhysics(new G4DecayPhysics());
-    RegisterPhysics(new G4RadioactiveDecayPhysics());
-
-
-    // fixme: 
-    //RegisterPhysics(new hadronic physics...);
+    SetVerboseLevel(verboseLevel);
 }
 
 
@@ -44,4 +40,17 @@ Cowbells::PhysicsList::~PhysicsList()
 void Cowbells::PhysicsList::SetCuts()
 {
     SetCutsWithDefault();
+}
+
+void Cowbells::PhysicsList::ConstructParticle()
+{
+    this->G4VModularPhysicsList::ConstructParticle();
+}
+void Cowbells::PhysicsList::ConstructProcess()
+{
+    this->G4VModularPhysicsList::ConstructProcess();
+
+    assert(G4Electron::Definition()->GetProcessManager());
+    assert(G4Proton::Definition()->GetProcessManager());    
+    assert(G4Neutron::Definition()->GetProcessManager());    
 }

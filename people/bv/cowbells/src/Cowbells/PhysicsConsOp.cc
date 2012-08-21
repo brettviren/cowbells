@@ -98,13 +98,13 @@ void Cowbells::PhysicsConsOp::ConstructProcess()
         }
 
         if(theCerenkovProcess->IsApplicable(*particle)){
-            G4cout << "Setting cerenkov process for particle " << particleName << G4endl;
+            //G4cout << "Setting cerenkov process for particle " << particleName << G4endl;
 
             pManager->AddProcess(theCerenkovProcess);
             pManager->SetProcessOrdering(theCerenkovProcess,idxPostStep);
         }
         if(theScintProcess->IsApplicable(*particle)){
-            G4cout << "Setting scintilation process for particle " << particleName << G4endl;
+            //G4cout << "Setting scintilation process for particle " << particleName << G4endl;
 
             pManager->AddProcess(theScintProcess);
             pManager->SetProcessOrderingToLast(theScintProcess,idxAtRest);

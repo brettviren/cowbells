@@ -1,8 +1,8 @@
 #include "Cowbells/PhysicsConsGeneral.h"
 
 
-Cowbells::PhysicsConsGeneral::PhysicsConsGeneral(const G4String& name)
-    : G4VPhysicsConstructor(name)
+Cowbells::PhysicsConsGeneral::PhysicsConsGeneral()
+    : G4VPhysicsConstructor("general")
 {
 }
 

@@ -1,7 +1,7 @@
 #include "Cowbells/PhysicsConsEM.h"
 
 Cowbells::PhysicsConsEM::PhysicsConsEM()
-    :  G4VPhysicsConstructor("EM")
+    :  G4VPhysicsConstructor("standard EM")
 {
 }
 

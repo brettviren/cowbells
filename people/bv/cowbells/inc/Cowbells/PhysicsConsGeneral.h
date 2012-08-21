@@ -9,7 +9,7 @@ namespace Cowbells {
     class PhysicsConsGeneral : public G4VPhysicsConstructor
     {
     public: 
-        PhysicsConsGeneral(const G4String& name = "general");
+        PhysicsConsGeneral();
         virtual ~PhysicsConsGeneral();
 
     public: 
