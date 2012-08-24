@@ -5,7 +5,7 @@
 #include "Cowbells/DataRecorder.h"
 #include "Cowbells/RunAction.h"
 #include "Cowbells/EventAction.h"
-#include "Cowbells/TestStackingAction.h"
+#include "Cowbells/StackingAction.h"
 
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 
     std::string outputfile = opt(oOUTPUT);
     if ("none" != outputfile) {
-        dr = new Cowbells::DataRecorder(outputfile);
+        dr = new Cowbells::DataRecorder(outputfile.c_str());
     }
 
     Cowbells::RunAction* ura = new Cowbells::RunAction();
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     if (dr) { ea->set_recorder(dr); }
     rm.SetUserAction(ea);
 
-    Cowbells::TestStackingAction* usa = new Cowbells::TestStackingAction();
+    Cowbells::StackingAction* usa = new Cowbells::StackingAction();
     rm.SetUserAction(usa);
 
     rm.Initialize();

@@ -6,12 +6,18 @@
 #include <iostream>
 using namespace std;
 
-Cowbells::DataRecorder::DataRecorder(std::string filename)
+static Cowbells::DataRecorder* singleton = 0;
+
+Cowbells::DataRecorder::DataRecorder(const char* filename)
     : m_file(0)
     , m_tree(0)
     , m_event(0)
 {
-    this->set_output_file(filename);
+    if (filename) {
+        this->set_output_file(filename);
+    }
+
+    if (!singleton) { singleton = this; } // first one wins
 }
 
 Cowbells::DataRecorder::~DataRecorder()
@@ -20,11 +26,21 @@ Cowbells::DataRecorder::~DataRecorder()
     this->close();
 }
 
+Cowbells::DataRecorder* Cowbells::DataRecorder::Get()
+{
+    if (!singleton) {
+        singleton = new Cowbells::DataRecorder();
+    }
+    return singleton;
+}
+
+
 
 void Cowbells::DataRecorder::set_output_file(std::string filename)
 {
     this->close();
     m_file = TFile::Open(filename.c_str(),"recreate");
+    m_file->cd();
     m_tree = new TTree("cowbells","Cowbells Simulation Truth Tree");
     //m_event = new Cowbells::Event();
     TBranch* branch = m_tree->Branch("event","Cowbells::Event",&m_event);

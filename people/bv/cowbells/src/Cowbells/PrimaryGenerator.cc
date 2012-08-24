@@ -84,24 +84,7 @@ void Cowbells::PrimaryGenerator::SetKinDesc(const char* kindesc)
 
 void Cowbells::PrimaryGenerator::GeneratePrimaries(G4Event* gevt)
 {
-    cerr << "Cowbells::PrimaryGenerator::GeneratePrimaries("<<(void*)this<<") with G4Event*(" << (void*)gevt << ")" << endl;
-
-    static int count = 0;
-    ++count;
-
-    // fixme: for now just make *something* to get the ball rolling
-    G4ThreeVector zero;
-    G4PrimaryVertex* origin = new G4PrimaryVertex(zero,0.0);
-    //int pdg = 22;               // gamma
-    // int pdg = 11;               // electron
-    int pdg = 2212;               // proton
-    G4PrimaryParticle* particle = new G4PrimaryParticle(pdg);
-    //particle->SetMass(0.0);
-    G4cout << "Using primarty particle of mass " << particle->GetMass() << G4endl;
-    double momz = -1500.0*MeV;
-    particle->SetMomentum(0.0,0.0,momz);
-    origin->SetPrimary(particle);
-    gevt->AddPrimaryVertex(origin);
+    m_gen->generate(gevt);
     return;
 }
 

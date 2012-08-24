@@ -26,8 +26,10 @@ namespace Cowbells {
     class DataRecorder
     {
     public:
-        DataRecorder(std::string filename);
+        DataRecorder(const char* filename = 0);
         virtual ~DataRecorder();
+
+        static DataRecorder* Get();
 
         // call once an event
         void fill(const G4Event* event);

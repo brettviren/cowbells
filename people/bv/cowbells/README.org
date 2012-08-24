@@ -1,13 +1,18 @@
-Cowbells simulation
+Cowbells simulation a simple Geant4 based detector simulation.
 
-* Blah Blah
+Cowbells provides a simple Geant4 based application.  It requires a
+detector geometry defined through ROOT TGeo objects and material
+properties defined as TGraphs.  Initial kinematics are generated with
+built-in methods or by reading in a text file (FIXME: not yet
+implemented).  Output is in the form of a ROOT TTree.
 
 * Building
 
 ** Prereq
 
-Need Geant4, ROOT and a recent Python.  This project can be used
-to pre-build all the necessary code:
+Cmake, Geant4, ROOT and a recent Python are needed.  
+
+The =grinst= project can be used to pre-build the necessary code:
 
   https://github.com/brettviren/grinst
 
@@ -20,38 +25,61 @@ cmake -DGeant4_DIR=/path/to/geant4/lib64/Geant4-9.5.1 \
 make 
 #+end_example
 
+
 * Configuration 
 
-** Geant4 configuration
+** Material Properties
 
-*** Physics Lists
+Material properties are specified as TGraphs.  The name of the TGraph
+identifies the property name and the TGraph object should be located
+in the input TFile in a TDirectory named like =properties/MATERIAL/=.
+Scalar properties are TGraphs with a single entry.
 
-Optical physics use the standard G4OpticalPhysics constructor.  It
-takes these G4 macro commands:
+*** Scintillation Properties
 
-#+begin_example
-/optics_engine/selectOpProcess  processName
-/optics_engine/setOpProcessUse  true|false
-/optics_engine/setOpProcessVerbose  verboseLevel
-/optics_engine/setCerenkovMaxPhotons maxNofPhotons
-/optics_engine/setCerenkovMaxBetaChange maxBetaChange
-/optics_engine/setScintillationYieldFactor yieldFactor
-/optics_engine/setScintillationByParticleType true|false
-/optics_engine/setOpticalSurfaceModel glisur|unified
-/optics_engine/setWLSTimeProfile delta|exponential
-/optics_engine/setTrackSecondariesFirst true|false
-/optics_engine/setFiniteRiseTime true|false
-#+end_example
+The standard Geant4 =G4Scintillation= process is used.  The properties
+it supports are:
+
+ - =FASTCOMPONENT= :: the fast time component of the scintilation
+
+ - =SLOWCOMPONENT= :: the slow time component of the scintilation
+
+ - =xxxSCINTILLATIONYIELD= :: the per-particle scintillation yield
+      (photons/MeV) for particle =xxx= if
+      =SetScintillationByParticleType()= has been called.  The
+      supported particles are =PROTON=, =DEUTERON=, =TRITON=, =ALHPA=,
+      =ION=, =ELECTRON=.
+
+ - =SCINTILLATIONYIELD= :: the scintillation yield (photons/MeV) for
+      with no regards to particle type.
+
+ - =RESOLUTIONSCALE= :: 
+
+ - =FASTTIMECONSTANT= ::
+
+ - =FASTSCINTILLATIONRISETIME= ::
+
+ - =SLOWTIMECONSTANT= ::
+
+ - =SLOWSCINTILLATIONRISETIME= ::
+
+ - =YIELDRATIO= :: 
+
+*** Wavelength Shifting Properties
+
+The standard Geant4 =G4OpWLS= process is used.  The properties it
+supports are:
+
+ - =WLSCOMPONENT= ::
+
+ - =WLSMEANNUMBERPHOTONS= ::
+ 
+ - =WLSTIMECONSTANT= :: 
+
+ - =WLSABSLENGTH= ::
+
 
 ** Sensitive Detectors
 
-A sensitive detector produces hits when certain particles deposit
-energy in certain volumes.  A sensitive detector is assigned to a
-particular volume via
-
-#+begin_src Python
-interface.register_lvsd(logvol_name, sensdet_name)
-#+end_src
-
-Where =logvol_name= is the name of a logical volume defined in the
-geometry and =sensdet_name= is the name of a sensitive detector class.
+The geometry is defined as ROOT TGeo classes but the sensitive
+detector must be told to cowbells.  (FIXME: this is still hard coded).

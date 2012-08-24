@@ -1,9 +1,9 @@
 #!/bin/bash
 
-build_dir=/data3/lbne/bv/wbls/sim/WbLS/people/bv/cowbells-cmake-build/
+build_dir=/data3/lbne/bv/wbls/sim/WbLS/people/bv/build/
 mkdir -p $build_dir
 
-log=/data3/lbne/bv/wbls/sim/WbLS/people/bv/cowbells-cmake-build/build.log
+log=$build_dir/build.log
 
 do_it () {
     base=/data3/lbne/bv/wbls/install
