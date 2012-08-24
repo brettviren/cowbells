@@ -1,5 +1,4 @@
 
-#include "Cowbells/Interface.h"
 #include "Cowbells/DataRecorder.h"
 #include "Cowbells/DetConsBase.h"
 #include "Cowbells/BuildFromRoot.h"
@@ -19,7 +18,6 @@
 #include "Cowbells/TestStackingAction.h"
 #include "Cowbells/TestSteppingVerbose.h"
 #include "Cowbells/TestMain.h"
-#include "Cowbells/TestCB.h"
 
 // Exposed Geant4 classes
 #include <G4RunManager.hh>

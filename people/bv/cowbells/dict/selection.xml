@@ -3,8 +3,6 @@
 
     <variable pattern="units::*"/>
     <variable pattern="units::CLHEP::*"/>
-    <function name="Cowbells::interface"/>
-    <class name="Cowbells::Interface"/>
 
     <!-- Cowbells Geant4 user classes -->
     <class name="Cowbells::DataRecorder"/>
@@ -27,7 +25,7 @@
     <class name="Cowbells::TestStackingAction"/>
     <class name="Cowbells::TestSteppingVerbose"/>
     <class name="Cowbells::TestMain"/>
-    <class name="Cowbells::TestCB"/>
+
     <function name="Cowbells::test_main"/>
     <function name="Cowbells::test_run_manager"/>
 

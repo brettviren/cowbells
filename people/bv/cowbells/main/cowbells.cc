@@ -18,6 +18,8 @@
 #include <iostream>
 #include "cmdline.h"
 
+using namespace std;
+
 int main(int argc, char *argv[])
 {
     if (!parse_args(argc, argv)) {
@@ -27,13 +29,13 @@ int main(int argc, char *argv[])
     
     ROOT::Cintex::Cintex::Enable();
 
-    G4RunManager *rm = new G4RunManager;
+    G4RunManager rm;
     
     Cowbells::PhysicsList* pl = new Cowbells::PhysicsList();
-    rm->SetUserInitialization(pl);
+    rm.SetUserInitialization(pl);
 
-    Cowbells::PrimaryGenerator* pg = new Cowbells::PrimaryGenerator();
-    rm->SetUserAction(pg);
+    Cowbells::PrimaryGenerator* pg = new Cowbells::PrimaryGenerator(opt(oKIN));
+    rm.SetUserAction(pg);
 
     std::string geofile = opt(oGEOMETRY);
     Cowbells::BuildFromRoot* detcon = new Cowbells::BuildFromRoot(geofile);
@@ -44,26 +46,29 @@ int main(int argc, char *argv[])
     // paths.push_back("&cowbells_1%endcap_1%PC");
     // paths.push_back("&cowbells_1%endcap_2%PC");
     detcon->add_sensdet("PC", paths);
-    rm->SetUserInitialization(detcon);
+    rm.SetUserInitialization(detcon);
 
-    
-    std::string outfile = opt(oOUTPUT);
-    Cowbells::DataRecorder* dr = new Cowbells::DataRecorder(outfile);
+    Cowbells::DataRecorder* dr = 0;
+
+    std::string outputfile = opt(oOUTPUT);
+    if ("none" != outputfile) {
+        dr = new Cowbells::DataRecorder(outputfile);
+    }
 
     Cowbells::RunAction* ura = new Cowbells::RunAction();
     if (dr) { ura->set_recorder(dr); }
-    rm->SetUserAction(ura);
+    rm.SetUserAction(ura);
 
     Cowbells::EventAction* ea = new Cowbells::EventAction();
     if (dr) { ea->set_recorder(dr); }
-    rm->SetUserAction(ea);
+    rm.SetUserAction(ea);
 
     Cowbells::TestStackingAction* usa = new Cowbells::TestStackingAction();
-    rm->SetUserAction(usa);
+    rm.SetUserAction(usa);
 
-    rm->Initialize();
+    rm.Initialize();
     
-    G4VisManager* vm = new G4VisExecutive("all");
+    G4VisExecutive *vm = new G4VisExecutive("all");
     vm->Initialize();
 
     G4UImanager* um = G4UImanager::GetUIpointer();
@@ -71,7 +76,11 @@ int main(int argc, char *argv[])
     // apply command line args.
     G4UIExecutive * ui = 0;
     if (opt(oUI)) {
+        cerr << "User interface requested" << endl;
         ui = new G4UIExecutive(0,0);
+    }
+    else {
+        cerr << "Batch mode." << endl;
     }
 
     for (int ind=0; ind<nargs(); ++ind) {
@@ -81,13 +90,19 @@ int main(int argc, char *argv[])
         um->ApplyCommand(cmd);
     }
 
+    if (opt(oNEVENTS)) {
+        int nevents = atol(opt(oNEVENTS));
+        assert (nevents);
+        rm.BeamOn(nevents);
+    }
+
+
     if (ui) {
         ui->SessionStart();
         delete ui;
     }
 
-    delete vm;
-    delete rm;
-
+    if (vm) {delete vm; vm = 0;}
+    if (dr) {delete dr; dr = 0;}
     return 0;
 }

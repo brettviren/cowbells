@@ -16,6 +16,7 @@ Cowbells::DataRecorder::DataRecorder(std::string filename)
 
 Cowbells::DataRecorder::~DataRecorder()
 {
+    cerr << "Destructing DataRecorder" << endl;
     this->close();
 }
 

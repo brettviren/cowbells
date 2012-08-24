@@ -14,9 +14,20 @@ struct Arg: public option::Arg
     static option::ArgStatus Empty(const option::Option& option, bool) {
         return (option.arg == 0 || option.arg[0] == 0) ? option::ARG_OK : option::ARG_IGNORE;
     }
+
+    static option::ArgStatus Numeric(const option::Option& option, bool) {
+        char* endptr = 0;
+        if (option.arg != 0 && strtol(option.arg, &endptr, 10)){};
+        if (endptr != option.arg && *endptr == 0) {
+            return option::ARG_OK;
+        }
+        return option::ARG_ILLEGAL;
+    }
+
+
 };
 
-enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oGEOMETRY, oUI };
+enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oGEOMETRY, oUI, oKIN, oNEVENTS };
 const option::Descriptor usage[] = 
 {
     {oUNKNOWN, 0, "", "", Arg::None, 
@@ -33,6 +44,12 @@ const option::Descriptor usage[] =
 
     {oUI, 0, "u", "interface", Arg::Required,
      "  --interface, -u <interface>\tSet the user interface"},
+
+    {oKIN, 0, "k", "kinematics", Arg::Required,
+     "  --kinematics, -k <kindesc>\tSet the kinematics descriptor"},
+
+    {oNEVENTS, 0, "n", "nevents", Arg::Required,
+     "  -nevents, -n <#events>\tSet the number of events to generate"},
 
     {0,0,0,0,0,0}
 };
@@ -59,16 +76,17 @@ option::Option* parse_args(int argc, char* argv[])
         return 0;
     }
 
-    if (! options[oGEOMETRY].arg) {
-        std::cerr << "Must give an input geometry file" << std::endl;
-        option::printUsage(std::cout, usage);
-        return 0;
-    }
-
-    if (! options[oOUTPUT].arg) {
-        std::cerr << "Must give an output file" << std::endl;
-        option::printUsage(std::cout, usage);
-        return 0;
+    optionIndex required[] = { oGEOMETRY, oOUTPUT, oKIN, oUNKNOWN };
+    for (int ind=0; required[ind]; ++ind) {
+        optionIndex oi = required[ind];
+        option::Option& opt = options[oi];
+        if (! opt.arg) {
+            std::cerr << "Option \"" 
+                      << usage[oi].longopt
+                      << "\" is required" << std::endl;
+            option::printUsage(std::cout, usage);
+            return 0;
+        }
     }
 
     return options;

@@ -31,6 +31,7 @@ Cowbells::BuildFromRoot::BuildFromRoot(std::string filename)
 
 Cowbells::BuildFromRoot::~BuildFromRoot()
 {
+  cerr << "Destructing BuildFromRoot" << endl;
 }
 
 G4VPhysicalVolume* Cowbells::BuildFromRoot::ConstructGeometry()
