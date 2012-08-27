@@ -1,6 +1,6 @@
 #include "Cowbells/Event.h"
 
-Cowbells::Event::Event(Cowbells::EventKinematics* kin)
+Cowbells::Event::Event(Cowbells::EventKinematics* /*kin*/)
 //    : m_kine(0)
 {
 //    if (kin) set_kinematics(kin);

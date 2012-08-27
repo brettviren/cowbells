@@ -1,11 +1,13 @@
 #include "Cowbells/PhysicsList.h"
-#include "Cowbells/PrimaryGenerator.h"
+#include "Cowbells/PrimaryGeneratorBeam.h"
+#include "Cowbells/PrimaryGeneratorFile.h"
 #include "Cowbells/TestDetectorConstruction.h"
 #include "Cowbells/BuildFromRoot.h"
 #include "Cowbells/DataRecorder.h"
 #include "Cowbells/RunAction.h"
 #include "Cowbells/EventAction.h"
 #include "Cowbells/StackingAction.h"
+#include "Cowbells/strutil.h"
 
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
@@ -19,6 +21,7 @@
 #include "cmdline.h"
 
 using namespace std;
+using Cowbells::uri_split;
 
 int main(int argc, char *argv[])
 {
@@ -34,7 +37,22 @@ int main(int argc, char *argv[])
     Cowbells::PhysicsList* pl = new Cowbells::PhysicsList();
     rm.SetUserInitialization(pl);
 
-    Cowbells::PrimaryGenerator* pg = new Cowbells::PrimaryGenerator(opt(oKIN));
+    G4VUserPrimaryGeneratorAction* pg = 0;
+    vector<string> kin = uri_split(opt(oKIN));
+    if (kin[0] == "file") {     // file://path/to/file.txt
+        cout << "File based generator with " << kin[1] << endl;
+        pg = new Cowbells::PrimaryGeneratorFile(kin[1].c_str());
+    }
+    else if (kin[0] == "kin") { // kin://beam?vertex=.....
+        assert (kin.size() > 1);
+        if (kin[1] == "beam") {
+            assert (kin.size() > 2);
+            cout << "Beam generator with " << kin[2] << endl;
+            pg = new Cowbells::PrimaryGeneratorBeam(kin[2].c_str());
+        }
+    }
+    assert(pg);
+
     rm.SetUserAction(pg);
 
     std::string geofile = opt(oGEOMETRY);

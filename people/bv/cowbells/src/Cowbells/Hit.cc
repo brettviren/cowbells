@@ -1,6 +1,9 @@
 #include "Cowbells/Hit.h"
 
 Cowbells::Hit::Hit()
+    : t(0), x(0), y(0), z(0), e(0)
+    , volid(0), pdg(0)
+
 {
 }
 
@@ -11,14 +14,53 @@ Cowbells::Hit::~Hit()
 std::vector<double> Cowbells::Hit::pos()
 {
     std::vector<double> ret;
-    ret.push_back(m_x);
-    ret.push_back(m_y);     
-    ret.push_back(m_z); 
+    ret.push_back(x);
+    ret.push_back(y);     
+    ret.push_back(z); 
     return ret;
 }
-void Cowbells::Hit::setPos(double x, double y, double z)
+void Cowbells::Hit::setPos(double _x, double _y, double _z)
 {
-    m_x = x;
-    m_y = y;
-    m_z = z;
+    x = _x;
+    y = _y;
+    z = _z;
+}
+
+double Cowbells::Hit::time() const
+{
+    return t;
+}
+
+void Cowbells::Hit::setTime(double _t)
+{
+    t = _t;
+}
+
+
+int Cowbells::Hit::volId()
+{
+    return volid;
+}
+void Cowbells::Hit::setVolId(int _volid)
+{
+    volid = _volid;
+}
+
+int Cowbells::Hit::pdgId()
+{
+    return pdg;
+}
+void Cowbells::Hit::setPdgId(int _pdg)
+{
+    pdg = _pdg;
+}
+
+
+double Cowbells::Hit::energy()
+{
+    return e;
+}
+void Cowbells::Hit::setEnergy(double _e)
+{
+    e = _e;
 }

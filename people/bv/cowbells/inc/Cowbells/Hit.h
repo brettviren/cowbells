@@ -25,24 +25,28 @@ namespace Cowbells {
         Hit();
         ~Hit();
         // Time of hit relative to primary vertex time
-        double time() const { return m_time; }
-        void setTime(double t) { m_time = t; }
+        double time() const;
+        void setTime(double t);
 
         // Global hit position
         std::vector<double> pos();
         void setPos(double x, double y, double z);
 
         // Logical volume copy number 
-        int volId() { return m_volid; }
-        void setVolId(int id) {m_volid = id;}
+        int volId();
+        void setVolId(int id);
+
+        // PDG particle id
+        int pdgId();
+        void setPdgId(int pid);
 
         // Energy deposition
-        double energy() {return m_energy;}
-        void setEnergy(double e) {m_energy = e;}
+        double energy();
+        void setEnergy(double e);
 
     private:
-        double m_time, m_x, m_y, m_z, m_energy;
-        int m_volid;
+        double t, x, y, z, e;
+        int volid, pdg;
     };
 
     class GHit : public G4VHit 

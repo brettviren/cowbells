@@ -3,7 +3,7 @@
 #include "Cowbells/DetConsBase.h"
 #include "Cowbells/BuildFromRoot.h"
 #include "Cowbells/BuildFromGdml.h"
-#include "Cowbells/PrimaryGenerator.h"
+//#include "Cowbells/PrimaryGenerator.h"
 #include "Cowbells/PhysicsList.h"
 #include "Cowbells/SensitiveDetector.h"
 #include "Cowbells/RunAction.h"

@@ -25,13 +25,10 @@ Cowbells::StackingAction::~StackingAction()
 G4ClassificationOfNewTrack
 Cowbells::StackingAction::ClassifyNewTrack(const G4Track * aTrack)
 {
-    if(aTrack->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition())
-        { // particle is optical photon
-            if(aTrack->GetParentID()>0)
-                { // particle is secondary
-                    gammaCounter++;
-                }
-        }
+    if(aTrack->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition()
+       && aTrack->GetParentID()>0) {
+        gammaCounter++;
+    }
     return fUrgent;
 }
 
