@@ -7,6 +7,7 @@
 #include "Cowbells/RunAction.h"
 #include "Cowbells/EventAction.h"
 #include "Cowbells/StackingAction.h"
+#include "Cowbells/SteppingAction.h"
 #include "Cowbells/strutil.h"
 
 #include "G4RunManager.hh"
@@ -81,8 +82,11 @@ int main(int argc, char *argv[])
     if (dr) { ea->set_recorder(dr); }
     rm.SetUserAction(ea);
 
-    Cowbells::StackingAction* usa = new Cowbells::StackingAction();
-    rm.SetUserAction(usa);
+    Cowbells::StackingAction* sta = new Cowbells::StackingAction();
+    rm.SetUserAction(sta);
+
+    Cowbells::SteppingAction* ste = new Cowbells::SteppingAction();
+    rm.SetUserAction(ste);
 
     rm.Initialize();
     
