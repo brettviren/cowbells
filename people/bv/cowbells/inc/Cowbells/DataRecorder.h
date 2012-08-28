@@ -37,6 +37,8 @@ namespace Cowbells {
         // call at end of run
         void close();
 
+        // Add a step to the current event
+        void add_step(Cowbells::Step* step);
 
     private:
         TFile* m_file;

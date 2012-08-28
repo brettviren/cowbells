@@ -24,6 +24,7 @@ Cowbells::DataRecorder::~DataRecorder()
 {
     cerr << "Destructing DataRecorder" << endl;
     this->close();
+    cerr << "DataRecorder done." << endl;
 }
 
 Cowbells::DataRecorder* Cowbells::DataRecorder::Get()
@@ -55,13 +56,13 @@ void Cowbells::DataRecorder::close()
     cerr << "Closing \"" << m_file->GetName() << endl;
     m_file->cd();
     m_tree->Write();            // redundant?
-    m_file->Close();
+    //m_file->Close();
 }
 
 
 void Cowbells::DataRecorder::fill(const G4Event* event)
 {
-    cerr << "Filling tree" << endl;
+    //cerr << "Filling tree" << endl;
     std::string hcName = "PCHC";    // fixme: make configurable
     int hcID = G4SDManager::GetSDMpointer()->GetCollectionID(hcName);
     Cowbells::HitCollection* hc = 
@@ -77,5 +78,10 @@ void Cowbells::DataRecorder::fill(const G4Event* event)
     m_tree->Fill();
     m_event->clear();
 
-    cerr << "Filled tree with " << nhits << " hits" << endl;
+    //cerr << "Filled tree with " << nhits << " hits" << endl;
+}
+
+void Cowbells::DataRecorder::add_step(Step* step)
+{
+    m_event->steps.push_back(step);
 }

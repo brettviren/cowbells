@@ -1,5 +1,18 @@
 #include "Cowbells/Event.h"
 
+Cowbells::Step::Step()
+    :  trackid(-1)
+    , parentid(-1)
+    , pdgid(-1)
+    , mat1(-1)
+    , mat2(-1)
+    , energy1(0.0)
+    , energy2(0.0)
+    , dist(0.0)
+{
+}        
+
+
 Cowbells::Event::Event(Cowbells::EventKinematics* /*kin*/)
 //    : m_kine(0)
 {
@@ -16,6 +29,11 @@ Cowbells::Event::~Event()
 void Cowbells::Event::clear()
 {
     hc.clear();
+
+    for (size_t ind=0; ind<steps.size(); ++ind) {
+        delete steps[ind];
+    }
+    steps.clear();
 }
 
 // void Cowbells::Event::set_kinematics(Cowbells::EventKinematics* kin)

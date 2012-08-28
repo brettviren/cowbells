@@ -17,7 +17,7 @@
 #include "Cowbells/TestRunAction.h"
 #include "Cowbells/TestStackingAction.h"
 #include "Cowbells/TestSteppingVerbose.h"
-#include "Cowbells/TestMain.h"
+//#include "Cowbells/TestMain.h"
 
 // Exposed Geant4 classes
 #include <G4RunManager.hh>
@@ -51,5 +51,6 @@ namespace CowbellsInstantiations
     struct __Instantiations 
     {
         std::vector<Cowbells::Hit*> vch;
+        std::vector<Cowbells::Step*> vcs;
     };    
 }

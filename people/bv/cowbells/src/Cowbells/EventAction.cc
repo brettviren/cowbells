@@ -20,13 +20,13 @@ Cowbells::EventAction::~EventAction()
             
 void Cowbells::EventAction::BeginOfEventAction(const G4Event* event)
 {
-    G4cout << "Cowbells::EventAction::BeginOfEventAction()" << G4endl;
+    //G4cout << "Cowbells::EventAction::BeginOfEventAction()" << G4endl;
 }
 
 
 void Cowbells::EventAction::EndOfEventAction(const G4Event* event) 
 {
-    G4cout << "Cowbells::EventAction::EndOfEventAction()" << G4endl;
+    //G4cout << "Cowbells::EventAction::EndOfEventAction()" << G4endl;
     if (!m_dr) return;
     m_dr->fill(event);
 }

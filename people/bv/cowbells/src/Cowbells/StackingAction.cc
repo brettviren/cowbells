@@ -36,8 +36,8 @@ Cowbells::StackingAction::ClassifyNewTrack(const G4Track * aTrack)
 
 void Cowbells::StackingAction::NewStage()
 {
-    G4cout << "Number of optical photons produced in this event : "
-           << gammaCounter << G4endl;
+//    G4cout << "Number of optical photons produced in this event : "
+//           << gammaCounter << G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

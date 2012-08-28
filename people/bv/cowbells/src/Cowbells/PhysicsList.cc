@@ -11,6 +11,8 @@
 #include "G4Proton.hh"
 #include "G4Neutron.hh"
 
+#include <G4EmStandardPhysics.hh>
+
 #include <iostream>
 using namespace std;
 
@@ -26,7 +28,6 @@ Cowbells::PhysicsList::PhysicsList(const char* physics)
     cerr << "Creating Cowbells::PhysicsList with: \"" << physics << "\"" << endl;
 
     defaultCutValue = 1.0*mm;
-
     verboseLevel = 9;
 
     // always
@@ -34,8 +35,9 @@ Cowbells::PhysicsList::PhysicsList(const char* physics)
 
     if (get_startswith(physics,"em",",","notfound") != "notfound") {
         cout << "\tusing EM Physics" << endl;
-        RegisterPhysics( new Cowbells::PhysicsConsEM() );
-        RegisterPhysics( new Cowbells::PhysicsConsMuon() );
+        RegisterPhysics( new G4EmStandardPhysics() );
+        //RegisterPhysics( new Cowbells::PhysicsConsEM() );
+        //RegisterPhysics( new Cowbells::PhysicsConsMuon() );
     }
     if (get_startswith(physics,"op",",","notfound") != "notfound") {
         cout << "\tusing Optical Physics" << endl;
@@ -68,7 +70,7 @@ void Cowbells::PhysicsList::ConstructProcess()
 {
     this->G4VModularPhysicsList::ConstructProcess();
 
-    assert(G4Electron::Definition()->GetProcessManager());
-    assert(G4Proton::Definition()->GetProcessManager());    
-    assert(G4Neutron::Definition()->GetProcessManager());    
+    // assert(G4Electron::Definition()->GetProcessManager());
+    // assert(G4Proton::Definition()->GetProcessManager());    
+    // assert(G4Neutron::Definition()->GetProcessManager());    
 }

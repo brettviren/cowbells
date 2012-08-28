@@ -85,11 +85,16 @@ int main(int argc, char *argv[])
     Cowbells::StackingAction* sta = new Cowbells::StackingAction();
     rm.SetUserAction(sta);
 
-    Cowbells::SteppingAction* ste = new Cowbells::SteppingAction();
-    rm.SetUserAction(ste);
+    if (dr) {
+        Cowbells::SteppingAction* ste = new Cowbells::SteppingAction();
+        ste->set_recorder(dr);
+        rm.SetUserAction(ste);
+    }
 
     rm.Initialize();
     
+    cout << *G4Material::GetMaterialTable() << endl;
+
     G4VisExecutive *vm = new G4VisExecutive("all");
     vm->Initialize();
 

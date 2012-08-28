@@ -27,6 +27,19 @@ namespace Cowbells {
     /// Initial kinematics of one event
     typedef HepMC::GenEvent EventKinematics;
 
+    // Record some truth info about steps
+    class Step {
+    public:
+        int trackid; // g4 track id number
+        int parentid; // track ID number of parent;
+        int pdgid; // pdg particle id
+        int mat1, mat2; // material index before/after the step
+        float energy1, energy2; // kinetic energy before/after the step
+        float dist; // the distance stepped
+        float x1,y1,z1,x2,y2,z2;
+        Step();
+    };
+
     class Event {
     public:
         Event(Cowbells::EventKinematics* kin = 0);
@@ -46,7 +59,10 @@ namespace Cowbells {
         // EventKinematics* m_kine;
 
         std::vector<Cowbells::Hit*> hc;
+        std::vector<Cowbells::Step*> steps;
     };
+
+
 }
 
 #endif  // COWBELLS_EVENT_H

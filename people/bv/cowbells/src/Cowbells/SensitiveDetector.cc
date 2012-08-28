@@ -41,16 +41,16 @@ void Cowbells::SensitiveDetector::Initialize(G4HCofThisEvent* hce)
                                       this->collectionName[0]);
     int hcid = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
     hce->AddHitsCollection(hcid, fHC);
-    cerr << "SensitiveDetector::Initialize() with " 
-         << this->SensitiveDetectorName << ", " <<  this->collectionName[0] << endl;
+    // cerr << "SensitiveDetector::Initialize() with " 
+    //      << this->SensitiveDetectorName << ", " <<  this->collectionName[0] << endl;
 
 }
 
 void Cowbells::SensitiveDetector::EndOfEvent(G4HCofThisEvent*)
 {
-    cerr << "End of event for \""
-         << this->SensitiveDetectorName << "\"/\"" << this->collectionName[0] << "\" with "
-         << fHC->entries() << " entries" << endl;
+    // cerr << "End of event for \""
+    //      << this->SensitiveDetectorName << "\"/\"" << this->collectionName[0] << "\" with "
+    //      << fHC->entries() << " entries" << endl;
 }
 
 void Cowbells::SensitiveDetector::clear()
@@ -97,11 +97,11 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     const G4ParticleDefinition* pd = track->GetParticleDefinition();
     hit->setPdgId(pd->GetPDGEncoding());
 
-    cerr << "Hit: in #"<<id
-         <<" \"" << pv->GetName() << "\"" 
-         <<" (#" << hit->pdgId()<<" "<< pd->GetParticleName() << ") "
-         << " @ " << hit->time() 
-         << ", " << pos.x() << ", " << pos.y() << ", " << pos.z() << endl;
+    // cerr << "Hit: in #"<<id
+    //      <<" \"" << pv->GetName() << "\"" 
+    //      <<" (#" << hit->pdgId()<<" "<< pd->GetParticleName() << ") "
+    //      << " @ " << hit->time() 
+    //      << ", " << pos.x() << ", " << pos.y() << ", " << pos.z() << endl;
 
     return true;
 }
