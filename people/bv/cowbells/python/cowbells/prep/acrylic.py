@@ -11,8 +11,6 @@ import util
 mm = cowbells.units.mm
 eV = cowbells.units.eV
 meter = cowbells.units.meter
-gram = cowbells.units.gram
-cm3 = cowbells.units.cm3
 
 
 parts = [

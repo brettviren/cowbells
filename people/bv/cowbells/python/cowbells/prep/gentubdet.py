@@ -93,6 +93,7 @@ class TubDetBuilder(object):
                            0.0, b_radius, b_hheight)
         tub.SetVisibility(1)
         tub.SetLineColor(2)
+        print 'Geo: bucket: r=%f hh=%f' % (b_radius, b_hheight)
 
         # sample volume
         s_radius = 0.5*(p['inner_diameter'])
@@ -101,6 +102,7 @@ class TubDetBuilder(object):
                            0.0, s_radius, s_hheight)
         sam.SetVisibility(1)
         sam.SetLineColor(1)
+        print 'Geo: sample: r=%f hh=%f' % (s_radius, s_hheight)
         
         # Window, from bottom to top
         win = ROOT.TGeoPcon('Window', 0, 360, 4)

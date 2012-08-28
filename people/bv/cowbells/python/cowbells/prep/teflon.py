@@ -8,15 +8,15 @@ import cowbells
 import util
 
 
-gram = cowbells.units.gram
+
 cm = cowbells.units.cm
 mm = cowbells.units.mm
-cm3 = cowbells.units.cm3
-hbarc = cowbells.units.hbarc
+
+hbarc = cowbells.units.clhep_units.hbarc
 
 def materials(geo):
     mat = util.make_mixture(geo, 'Teflon', [('Carbon',0.759814),
-                                            ('Fluorine',0.240186)], 2.2*gram/cm3)
+                                            ('Fluorine',0.240186)], 2.2)
     util.make_medium(geo, mat)
     return
 

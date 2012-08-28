@@ -13,8 +13,6 @@ mm = cowbells.units.mm
 eV = cowbells.units.eV
 MeV = cowbells.units.MeV
 ns = cowbells.units.ns
-gram = cowbells.units.gram
-cm3 = cowbells.units.cm3
 
 parts =   [('Hydrogen', 0.659),
            ('Oxygen', 0.309),

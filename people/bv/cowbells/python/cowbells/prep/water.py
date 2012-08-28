@@ -9,8 +9,6 @@ import util
 
 cm = cowbells.units.cm
 eV = cowbells.units.eV
-gram = cowbells.units.gram
-cm3 = cowbells.units.cm3
 
 parts = [
     ('Hydrogen',2),

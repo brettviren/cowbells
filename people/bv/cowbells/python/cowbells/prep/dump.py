@@ -38,6 +38,8 @@ def dump_materials(filename):
         continue
     return
 
+
+
 if __name__ == '__main__':
     import sys
     func = eval("dump_%s" % sys.argv[1])

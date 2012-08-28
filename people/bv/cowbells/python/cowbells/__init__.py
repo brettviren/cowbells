@@ -12,7 +12,5 @@ boot.everything()               # boot all the things!
 
 import geo
 
-units = PyCintex.Namespace("units").CLHEP
-
-interface = ROOT.Cowbells.interface
+import units
 
