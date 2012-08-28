@@ -11,7 +11,7 @@ namespace Cowbells {
     /// Split str into substrings based delimiter.
     std::vector<std::string> split(const std::string& str, const std::string& delim);
 
-    /// Split and return element that starts with the given string
+    /// Split and return the remaining part of the element that starts with the given string
     std::string get_startswith(const std::string& str, 
                                const std::string& startswith,
                                const std::string& delim = ",",

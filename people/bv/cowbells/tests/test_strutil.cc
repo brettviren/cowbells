@@ -1,3 +1,11 @@
+/** test strutil
+
+Build like:
+
+g++ -g -o test_strutil -Wall ../cowbells/tests/test_strutil.cc -I/data3/lbne/bv/wbls/install/geant4/4.9.5.p01/include/Geant4 -I ../cowbells/inc ../cowbells/src/Cowbells/strutil.cc -L /data3/lbne/bv/wbls/install/geant4/4.9.5.p01/lib64 -lG4clhep
+
+*/
+
 #include "Cowbells/strutil.h"
 
 #include <iostream>
@@ -52,6 +60,17 @@ void test_special()
         << "from argstr:\"" << argstr << "\"" << endl;
 }
 
+void test_special2()
+{
+    const char* physics = "em,op,had";
+    const char* phy[] = {"em","op","had",0};
+    for (int ind=0; phy[ind]; ++ind) {
+        string what = get_startswith(physics,phy[ind],",","notfound");
+        cout << "get \"" << phy[ind] << "\" from \"" 
+             << physics << "\" returns \"" << what << "\"" << endl;
+    }
+}
+
 int main(int argc, char *argv[])
 {
     const char* strings[] = {
@@ -84,5 +103,6 @@ int main(int argc, char *argv[])
     }
 
     test_special();
+    test_special2();
     return 0;
 }

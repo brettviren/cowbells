@@ -3,6 +3,7 @@
 #include "Cowbells/PhysicsConsOp.h"
 #include "Cowbells/PhysicsConsEM.h"
 #include "Cowbells/PhysicsConsMuon.h"
+#include "Cowbells/strutil.h"
 
 #include "G4HadronElasticPhysics.hh"
 
@@ -13,20 +14,37 @@
 #include <iostream>
 using namespace std;
 
-Cowbells::PhysicsList::PhysicsList()
+using Cowbells::get_startswith;
+
+Cowbells::PhysicsList::PhysicsList(const char* physics)
     : G4VModularPhysicsList()
 {
-    cerr << "Creating Cowbells::PhysicsList" << endl;
+    string all("all");
+    if (!physics || all == physics) {
+        physics = "em,op,had";
+    }
+    cerr << "Creating Cowbells::PhysicsList with: \"" << physics << "\"" << endl;
 
     defaultCutValue = 1.0*mm;
 
     verboseLevel = 9;
 
+    // always
     RegisterPhysics( new Cowbells::PhysicsConsGeneral() );
-    RegisterPhysics( new Cowbells::PhysicsConsEM() );
-    RegisterPhysics( new Cowbells::PhysicsConsMuon() );
-    RegisterPhysics( new Cowbells::PhysicsConsOp() );
-    RegisterPhysics( new G4HadronElasticPhysics() );
+
+    if (get_startswith(physics,"em",",","notfound") != "notfound") {
+        cout << "\tusing EM Physics" << endl;
+        RegisterPhysics( new Cowbells::PhysicsConsEM() );
+        RegisterPhysics( new Cowbells::PhysicsConsMuon() );
+    }
+    if (get_startswith(physics,"op",",","notfound") != "notfound") {
+        cout << "\tusing Optical Physics" << endl;
+        RegisterPhysics( new Cowbells::PhysicsConsOp() );
+    }
+    if (get_startswith(physics,"had",",","notfound") != "notfound") {
+        cout << "\tusing Hadronic Physics" << endl;
+        RegisterPhysics( new G4HadronElasticPhysics() );
+    }
 
     SetVerboseLevel(verboseLevel);
 }

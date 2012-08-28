@@ -31,6 +31,8 @@ Cowbells::PrimaryGeneratorBeam::~PrimaryGeneratorBeam()
  */
 void Cowbells::PrimaryGeneratorBeam::SetKinDesc(const char* kindesc)
 {
+    cout << "Setting kinematics to: \"" << kindesc << "\"" << endl;
+
     const string delim = "&";
     string name = "";
 
@@ -45,7 +47,13 @@ void Cowbells::PrimaryGeneratorBeam::SetKinDesc(const char* kindesc)
         int pdgcode = atol(name.c_str());
         particle = G4ParticleTable::GetParticleTable()->FindParticle(pdgcode);
     }
-    assert (particle);
+    if (!particle) {
+        cerr << "Failed to get particle named: \"" << name << "\"" << endl;
+        assert (particle);
+    }
+    else {
+        cout << "Using particle: \"" << particle->GetParticleName() << "\"" << endl;
+    }
         
     int count = uri_integer(kindesc, "count", 1);
 

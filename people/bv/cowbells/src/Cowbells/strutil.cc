@@ -22,7 +22,7 @@ vector<string> Cowbells::split(const string& pass, const string& delim)
     return ret;                      
 }
 
-/// Split and return element that starts with the given string
+/// Split and return the remaining part of the element that starts with the given string
 std::string Cowbells::get_startswith(const std::string& str, 
                                      const std::string& startswith,
                                      const std::string& delim,
@@ -30,8 +30,16 @@ std::string Cowbells::get_startswith(const std::string& str,
 {
     vector<string> parts = split(str,delim);
     for (size_t ind=0; ind<parts.size(); ++ind) {
-        if (startswith.size() > parts[ind].size()) { continue; }
-        if (startswith != parts[ind].substr(0,startswith.size())) { continue; }
+        //cerr << "parts[" << ind << "]=" << parts[ind] << endl;
+        if (startswith.size() > parts[ind].size()) { 
+            //cerr << "bad size: " << startswith.size() << " > " << parts[ind].size() << endl;
+            continue; 
+        }
+        if (startswith != parts[ind].substr(0,startswith.size())) { 
+            //cerr << "bad match: " << startswith << " != " 
+            //     << parts[ind].substr(0,startswith.size()) << endl;
+            continue; 
+        }
         return parts[ind].substr(startswith.size());
     }
     return def;

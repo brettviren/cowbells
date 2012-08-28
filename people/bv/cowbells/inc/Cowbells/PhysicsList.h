@@ -3,6 +3,14 @@
  *
  * \brief A G4VUserPhysicsList for Cowbells
  *
+ * The phyiscs to use can be controlled by a string.  Either "all" (or
+ * null) can be specified and all physics will be used or a comma
+ * separated list can be given to the constructor made up of:
+ *
+ *  "em" - E&M physics
+ *  "op" - optical physics
+ *  "had" - hadronic physics
+ *
  * bv@bnl.gov Sun May  6 11:17:00 2012
  *
  */
@@ -18,7 +26,7 @@ namespace Cowbells {
 
     class PhysicsList : public G4VModularPhysicsList {
     public:
-        PhysicsList();
+        PhysicsList(const char* physics = 0);
         virtual ~PhysicsList();
 
         void SetCuts();
