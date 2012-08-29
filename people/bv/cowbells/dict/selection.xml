@@ -1,10 +1,8 @@
 <lcgdict>
   <selection>
 
-    <!-- 
     <variable pattern="units::*"/>
     <variable pattern="units::CLHEP::*"/>
-    -->
 
     <!-- Cowbells Geant4 user classes -->
     <!-- 

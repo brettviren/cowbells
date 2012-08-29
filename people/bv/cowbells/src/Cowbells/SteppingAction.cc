@@ -57,10 +57,13 @@ void Cowbells::SteppingAction::UserSteppingAction(const G4Step* step)
     cb_step->energy1 = prepoint->GetKineticEnergy();
     cb_step->energy2 = pstpoint->GetKineticEnergy();
 
+    cb_step->edep = step->GetTotalEnergyDeposit();
+    cb_step->enoni = step->GetNonIonizingEnergyDeposit();
+    cb_step->dist = step->GetStepLength();
+    cb_step->dt = step->GetDeltaTime();
+
     G4ThreeVector r1 = prepoint->GetPosition();
     G4ThreeVector r2 = pstpoint->GetPosition();
-    G4ThreeVector diff = r2-r1;
-    cb_step->dist = diff.mag();
     cb_step->x1 = r1.x();
     cb_step->y1 = r1.y();
     cb_step->z1 = r1.z();

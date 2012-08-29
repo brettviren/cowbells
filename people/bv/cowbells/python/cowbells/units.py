@@ -4,6 +4,8 @@ Handle units in spite of VGM.
 '''
 
 import PyCintex
+import ROOT
+
 clhep_units = PyCintex.Namespace("units").CLHEP
 
 

@@ -30,12 +30,17 @@ namespace Cowbells {
     // Record some truth info about steps
     class Step {
     public:
-        int trackid; // g4 track id number
-        int parentid; // track ID number of parent;
-        int pdgid; // pdg particle id
-        int mat1, mat2; // material index before/after the step
-        float energy1, energy2; // kinetic energy before/after the step
-        float dist; // the distance stepped
+        int trackid;          // g4 track id number
+        int parentid;         // track ID number of parent;
+        int pdgid;            // pdg particle id
+        int mat1, mat2;       // material index before/after the step
+        float energy1;        // kinetic energy before the step
+        float energy2;        // kinetic energy after the step
+        float dist;           // the distance stepped
+        float dt;             // time spanned in the step
+        float edep;           // total energy deposted during the step
+        float enoni;          // non-ionization energy deposite 
+        // positions before/after the step
         float x1,y1,z1,x2,y2,z2;
         Step();
     };
