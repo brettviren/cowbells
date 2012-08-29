@@ -7,7 +7,7 @@ import cowbells
 import properties
 
 
-inch = cowbells.units.cm * 2.54
+inch = cowbells.units.inch
 meter = cowbells.units.meter
 
 import ROOT
@@ -51,11 +51,11 @@ class TubDetBuilder(object):
         # materials:
         'Tub' : 'Teflon',
         'Lid' : 'Teflon',
-        'Window' : 'Glass',
-        'PhotoCathode': 'Glass',
+        'Window' : 'Acrylic',
+        'PhotoCathode': 'Acrylic',
         #'Sample': 'Water',
         'Sample': 'WBLS',
-        'World': 'Vacuum',
+        'World': 'Air',
         }
 
 
@@ -146,10 +146,9 @@ class TubDetBuilder(object):
         ROOT.SetOwnership(wininlid,0)
         tub.AddNode(win, 1, wininlid)
 
-        self._top = geo.MakeBox("Top", self.get_med('World'),  10*meter, 10*meter, 10*meter)
-        self._top.AddNode(tub, 1)
-        self._top.SetVisibility(1)
-        return self._top
+        self._top = tub
+        return tub
+    pass
 
 def fill(geo, filename = 'tubdet.root'):
     '''
@@ -162,8 +161,15 @@ def fill(geo, filename = 'tubdet.root'):
     from cowbells.prep import propmods
     for mod in propmods:
         mod.materials(geo)
-    
-    geo.SetTopVolume(tdb.top())
+        continue
+
+
+    air = geo.GetMedium('Air')
+    top = geo.MakeBox("Top", air, 10*meter, 10*meter, 10*meter)
+    top.AddNode(tdb.top(), 1)
+    top.SetVisibility(1)
+
+    geo.SetTopVolume(top)
 
     fp = ROOT.TFile.Open(filename, "update")
     geo.Write("geometry")

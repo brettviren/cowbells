@@ -5,7 +5,8 @@ cowbells simulation.
 '''
 
 # fixme: make this automatic....
-import water, wbls, acrylic, glass, vacuum, teflon
-propmods = [water, wbls, acrylic, glass, vacuum, teflon]
+# note: the order here is preserved into the output and thus into G4
+import water, wbls, acrylic, glass, vacuum, teflon, air
+propmods = [water, wbls, acrylic, glass, vacuum, teflon, air]
 
     
