@@ -6,7 +6,7 @@ cowbells simulation.
 
 # fixme: make this automatic....
 # note: the order here is preserved into the output and thus into G4
-import water, wbls, acrylic, glass, vacuum, teflon, air
-propmods = [water, wbls, acrylic, glass, vacuum, teflon, air]
+import water, wbls, acrylic, glass, vacuum, teflon, air, aluminum, scintillator
+propmods = [water, wbls, acrylic, glass, vacuum, teflon, air, aluminum, scintillator]
 
     

@@ -53,8 +53,8 @@ class TubDetBuilder(object):
         'Lid' : 'Teflon',
         'Window' : 'Acrylic',
         'PhotoCathode': 'Acrylic',
-        #'Sample': 'Water',
-        'Sample': 'WBLS',
+        'Sample': 'Water',
+        #'Sample': 'WBLS',
         'World': 'Air',
         }
 
@@ -72,7 +72,7 @@ class TubDetBuilder(object):
         Return a medium for given material name
         '''
         med_name = self.params[mat_name]
-        med = geo.GetMedium(med_name)
+        med = self.geo.GetMedium(med_name)
         if not med:
             raise ValueError, 'Bogus medium name "%s"' % med_name
         return med
@@ -89,7 +89,7 @@ class TubDetBuilder(object):
         # bucket with lid
         b_radius = 0.5*(p['inner_diameter']+2.0*p['tub_thickness'])
         b_hheight = 0.5*(p['inner_height']+p['tub_thickness']+p['lid_thickness'])
-        tub = geo.MakeTube('Bucket', self.get_med('Tub'), 
+        tub = self.geo.MakeTube('Bucket', self.get_med('Tub'), 
                            0.0, b_radius, b_hheight)
         tub.SetVisibility(1)
         tub.SetLineColor(2)
@@ -98,7 +98,7 @@ class TubDetBuilder(object):
         # sample volume
         s_radius = 0.5*(p['inner_diameter'])
         s_hheight = 0.5*(p['inner_height'])
-        sam = geo.MakeTube('Sample', self.get_med('Sample'),
+        sam = self.geo.MakeTube('Sample', self.get_med('Sample'),
                            0.0, s_radius, s_hheight)
         sam.SetVisibility(1)
         sam.SetLineColor(1)
@@ -107,7 +107,7 @@ class TubDetBuilder(object):
         # Window, from bottom to top
         win = ROOT.TGeoPcon('Window', 0, 360, 4)
         ROOT.SetOwnership(win,0)
-        # win = geo.MakePcon('Window', self.get_med('Window'), 0, 360, 4)
+        # win = self.geo.MakePcon('Window', self.get_med('Window'), 0, 360, 4)
         r_full = 0.5*p['window_full_diameter']
         r_step = 0.5*p['window_step_diameter']
         z_full = p['lid_thickness']
@@ -122,7 +122,7 @@ class TubDetBuilder(object):
         win.SetLineColor(4)
         
         # wafer of PC
-        pc = geo.MakeTube('PC', self.get_med('PhotoCathode'),
+        pc = self.geo.MakeTube('PC', self.get_med('PhotoCathode'),
                           0.0, 0.5*p['photocathode_diameter'],
                           0.5*p['photocathode_thickness'])
         pc.SetVisibility(1)

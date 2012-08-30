@@ -25,7 +25,58 @@ meter = cowbells.units.meter
 import ROOT
 
 
-from gentubedet import TubDetBuilder
+from gentubdet import TubDetBuilder
+
+class WindowBuilder(object):
+    '''
+    Build the beam window.
+    '''
+    default_params = {
+        ## dimensions
+
+        'radius': 2*cm,         # made up number
+        'thickness': 0.381*mm,  # from TN05-001
+        
+        ## materials:
+
+        'Window': 'Aluminum',
+        }
+
+    def __init__(self, geo, **params):
+        self.geo = geo
+        self.params = {}
+        self._top = None
+        self.params.update(WindowBuilder.default_params)
+        self.params.update(params)
+        return
+
+    def get_med(self, mat_name):
+        '''
+        Return a medium for given material name
+        '''
+        med_name = self.params[mat_name]
+        med = self.geo.GetMedium(med_name)
+        if not med:
+            raise ValueError, 'Bogus medium name "%s"' % med_name
+        return med
+
+    def top(self):
+        '''
+        Build geometry, return top node.
+        '''
+        if self._top: return self._top
+
+        p = self.params
+
+        rad = p['radius']
+        thick = p['thickness']
+
+        win = self.geo.MakeTube('Window', self.get_med('Window'),
+                                0.0, rad, 0.5*thick)
+        win.SetVisibility(1)
+        win.SetLineColor(2)
+        self._top = win
+        return win
 
 class TriggerCounterBuilder(object):
     '''
@@ -50,7 +101,7 @@ class TriggerCounterBuilder(object):
         'Scintillator':'Scintillator',
         'PhotoCathode': 'Glass',
 
-        };
+        }
 
     def __init__(self, geo, **params):
         self.geo = geo
@@ -84,8 +135,8 @@ class TriggerCounterBuilder(object):
 
         tc = geo.MakeBox('TriggerCounter', self.get_med('Scintillator'),
                          hwidth, hwidth, hdepth)
-        pc.SetVisibility(1)
-        pc.SetLineColor(2)
+        tc.SetVisibility(1)
+        tc.SetLineColor(2)
 
         pc = geo.MakeBox('PC',self.get_med('PhotoCathode'),
                          hwidth+thick, hwidth+thick, hdepth+thick)
@@ -99,10 +150,16 @@ class TriggerCounterBuilder(object):
 
     pass
 
+
+
+
 def fill(geo, filename = 'nsrldet.root'):
     '''
     Fill the given TGeo manager with geometry for the NSRL setup.
+
+    The first tub is at the origin.
     '''
+    w = WindowBuilder(geo)
     s1 = TubDetBuilder(geo)
     s2 = TubDetBuilder(geo,Tub='Aluminum')
     tc = TriggerCounterBuilder(geo)
@@ -115,10 +172,34 @@ def fill(geo, filename = 'nsrldet.root'):
 
     air = geo.GetMedium('Air')
     top = geo.MakeBox("Top", air, 10*meter, 10*meter, 10*meter)
-    top.AddNode(tdb.top(), 1)
     top.SetVisibility(1)
 
     geo.SetTopVolume(top)
+
+    winshift = ROOT.TGeoTranslation(0, 0, -5*meter)
+
+    tc1shift = ROOT.TGeoTranslation(0, 0, -10.0*cm)
+    sd1shift = ROOT.TGeoTranslation(0, 0,   0.0*cm)
+    tc2shift = ROOT.TGeoTranslation(0, 0, +10.0*cm)
+    sd2shift = ROOT.TGeoTranslation(0, 0,  20.0*cm)    
+    tc3shift = ROOT.TGeoTranslation(0, 0, +30.0*cm)
+
+    sdrot = ROOT.TGeoRotation()
+    sdrot.RotateY(90)
+    sd1tran = ROOT.TGeoCombiTrans(sd1shift, sdrot)
+    sd2tran = ROOT.TGeoCombiTrans(sd2shift, sdrot)
+    for t in [sdrot,sd1shift,sd2shift]: ROOT.SetOwnership(t,0)
+
+    for shift, builder, copynum in [(winshift,w,1),
+                                    (tc1shift,tc,1),
+                                    (sd1tran, s1,1),
+                                    (tc2shift,tc,2),
+                                    (sd2tran, s2,1),
+                                    (tc3shift,tc,3)]:
+        ROOT.SetOwnership(shift,0)
+        obj = builder.top()
+        top.AddNode(obj, copynum, shift)
+        continue
 
     fp = ROOT.TFile.Open(filename, "update")
     geo.Write("geometry")

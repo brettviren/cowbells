@@ -27,8 +27,10 @@ Cowbells::PhysicsList::PhysicsList(const char* physics)
     }
     cerr << "Creating Cowbells::PhysicsList with: \"" << physics << "\"" << endl;
 
-    //defaultCutValue = 1.0*mm;
-    defaultCutValue = 0.1*mm;
+    defaultCutValue = 1.0*mm;
+    //defaultCutValue = 0.1*mm;
+    //defaultCutValue = 0.01*mm;
+
     verboseLevel = 9;
 
     // always

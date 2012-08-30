@@ -6,6 +6,8 @@ Make dE/dX plots
 import cowbells
 import ROOT
 
+import pstar
+
 canvas = ROOT.TCanvas()
 
 
@@ -22,6 +24,21 @@ materials = [
     "Na2O", "Al2O3", "Glass", "Vacuum", "Teflon",
 ]
 
+# FIXME: should take these numbers by importing the material class or
+# by reading properties from the root file!
+matdens = {
+    'Water': 1.0, 
+    'WBLS': 0.9945,
+    'Teflon': 2.2,
+}
+
+
+# map cowbells material names to close ones in the PSTAR data
+matpstarmap = {
+    'Water':'liquidwater',
+    'WBLS':'liquidwater',
+    'Teflon':'teflon',
+    }
 
 
 def get_trees(filenames):
@@ -80,13 +97,27 @@ def plotexit(*filenames):
     cprint(pdffile)
     return
 
+
+def scale_pstar_graph(matname, index=2):
+    pstarname = matpstarmap[matname]
+    dens = matdens[matname]
+
+    pgraphs = pstar.data_to_tgraph(pstar.data_by_name(pstarname))
+    pg = pgraphs[index]
+    pg2 = ROOT.TGraph()
+    pg2.SetName(pg.GetName())
+    for ind in range(pg.GetN()):
+        pg2.SetPoint(ind, pg.GetX()[ind], dens * pg.GetY()[ind])
+        continue
+    return pg2
+
 def multiplot(matid, *filenames):
     matid = int(matid)
     matname = materials[matid]
     dedx_max = 12;
     hdedx = ROOT.TH2F("dedx","dE/dx (MeV/cm) vs energy for material %s"%matname,
                      250,0,2500, 10*dedx_max, 0, dedx_max)
-    
+    hdedx.SetStats(0)
     print hdedx.GetTitle()
 
     pdffile = "dedx_multiplot_%s.pdf" % matname
@@ -108,6 +139,15 @@ def multiplot(matid, *filenames):
         continue
     hdedx.Draw("colz")
     cprint(pdffile)
+
+    hdedx.Draw("colz")
+    pg = pstarg = scale_pstar_graph(matname,2)
+
+    print 'PSTAR graph: %s %s' % (matname, pg.GetName())
+    pstarg.Draw("L")
+
+    cprint(pdffile)
+
     cprint(pdffile,"]")
     return (trees,files)
 
