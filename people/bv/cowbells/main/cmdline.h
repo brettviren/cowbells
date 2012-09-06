@@ -27,7 +27,7 @@ struct Arg: public option::Arg
 
 };
 
-enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oGEOMETRY, oUI, oKIN, oNEVENTS, oPHYSICS };
+enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oGEOMETRY, oUI, oKIN, oNEVENTS, oPHYSICS, oDEFCUT };
 const option::Descriptor usage[] = 
 {
     {oUNKNOWN, 0, "", "", Arg::None, 
@@ -53,6 +53,9 @@ const option::Descriptor usage[] =
 
     {oPHYSICS, 0, "p", "physics", Arg::Required,
      "  --physics, -p <phys,list>\tSet the physics list"},
+
+    {oDEFCUT, 0, "", "defcut", Arg::Required,
+     "  --defcut <default_cut_in_mm>\tSet the default cut"},
 
     {0,0,0,0,0,0}
 };

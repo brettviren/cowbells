@@ -26,7 +26,7 @@ namespace Cowbells {
 
     class PhysicsList : public G4VModularPhysicsList {
     public:
-        PhysicsList(const char* physics = 0);
+        PhysicsList(const char* physics = 0, float default_cut_valu_mm = 1.0);
         virtual ~PhysicsList();
 
         void SetCuts();

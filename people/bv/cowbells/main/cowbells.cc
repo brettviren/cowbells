@@ -35,7 +35,11 @@ int main(int argc, char *argv[])
 
     G4RunManager rm;
     
-    Cowbells::PhysicsList* pl = new Cowbells::PhysicsList(opt(oPHYSICS));
+    float defcut = 1.0;
+    if (opt(oDEFCUT)) {
+        defcut = atof(opt(oDEFCUT));
+    }
+    Cowbells::PhysicsList* pl = new Cowbells::PhysicsList(opt(oPHYSICS), defcut);
     rm.SetUserInitialization(pl);
 
     G4VUserPrimaryGeneratorAction* pg = 0;

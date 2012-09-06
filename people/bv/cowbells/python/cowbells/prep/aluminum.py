@@ -6,8 +6,10 @@ name = 'Aluminum'
 import util
 
 parts = [
-    ('Aluminum',   1.0)
-    ]
+    ('Aluminium',   1.0)        # gotta spell it like the freaks across the pond do
+    ]                           # typos in element names leads to VGM giving cryptic error:
+                                # No elements defined.*** Error: Aborting execution  *** 
+
 density = 2.7                   # g/cc, implicit
 
 def materials(geo):

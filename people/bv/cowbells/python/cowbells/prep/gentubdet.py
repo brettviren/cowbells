@@ -53,8 +53,8 @@ class TubDetBuilder(object):
         'Lid' : 'Teflon',
         'Window' : 'Acrylic',
         'PhotoCathode': 'Acrylic',
-        'Sample': 'Water',
-        #'Sample': 'WBLS',
+        #'Sample': 'Water',
+        'Sample': 'WBLS',
         'World': 'Air',
         }
 
@@ -150,16 +150,17 @@ class TubDetBuilder(object):
         return tub
     pass
 
-def fill(geo, filename = 'tubdet.root'):
+def fill(geo, filename = 'tubdet.root', samplemat='Water'):
     '''
     Fill the given TGeo manager with geometry for the "tub" detector
     given the parameters of the detector.
     '''
 
-    tdb = TubDetBuilder(geo)
+    tdb = TubDetBuilder(geo, Sample=samplemat)
 
     from cowbells.prep import propmods
     for mod in propmods:
+        print 'Setting up materials module "%s"' % mod.__name__
         mod.materials(geo)
         continue
 
@@ -187,4 +188,4 @@ if __name__ == '__main__':
     import sys
     geo = ROOT.TGeoManager('cowbells_geometry', 
                            'Geometry for COsmic WB(el)LS detector')
-    fill(geo, sys.argv[1])
+    fill(geo, sys.argv[1], sys.argv[2])

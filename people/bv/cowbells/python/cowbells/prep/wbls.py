@@ -14,12 +14,21 @@ eV = cowbells.units.eV
 MeV = cowbells.units.MeV
 ns = cowbells.units.ns
 
-parts =   [('Hydrogen', 0.659),
-           ('Oxygen', 0.309),
-           ('Sulfur', 0.0009),
-           ('Nitrogen', 0.000058),
-           ('Carbon', 0.031)]
+## initial, eroneous definition from WCSIM_WbLS
+# parts =   [('Hydrogen', 0.659),
+#            ('Oxygen', 0.309),
+#            ('Sulfur', 0.0009),
+#            ('Nitrogen', 0.000058),
+#            ('Carbon', 0.031)]
+
+# 1%, numbers from Minfang
+parts =   [('Hydrogen', 0.1097),
+           ('Oxygen', 0.8234),
+           ('Sulfur', 0.0048),
+           ('Nitrogen', 0.0001),
+           ('Carbon', 0.0620)]
 density = 0.9945
+
 
 
 # Use some same as water

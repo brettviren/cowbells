@@ -12,11 +12,14 @@ def get_stuff(geo,stuff):
     'Try to return element or material'
     ele = geo.GetElementTable().FindElement(stuff)
     if ele: 
+        print 'Got Element: "%s"' % stuff
         ROOT.SetOwnership(ele,0)
         return ele
 
     mat = geo.GetMaterial(stuff)
-    if mat: return mat
+    if mat: 
+        print 'Got Material: "%s"' % stuff
+        return mat
 
     return None
 

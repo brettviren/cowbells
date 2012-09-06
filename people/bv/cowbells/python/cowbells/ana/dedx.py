@@ -118,6 +118,7 @@ def multiplot(matid, *filenames):
     hdedx = ROOT.TH2F("dedx","dE/dx (MeV/cm) vs energy for material %s"%matname,
                      250,0,2500, 10*dedx_max, 0, dedx_max)
     hdedx.SetStats(0)
+
     print hdedx.GetTitle()
 
     pdffile = "dedx_multiplot_%s.pdf" % matname
@@ -129,8 +130,11 @@ def multiplot(matid, *filenames):
         htmp = ROOT.TH2F(name,"dE/dx (MeV/cm) vs energy for material %s energy #%d"%\
                              (matname, index),
                          250,0,2500, 10*dedx_max, 0, dedx_max)
+
         # multiply by 10 to put it in MeV/cm instead of native MeV/mm
         count = cb.Draw("10*edep/dist:0.5*(energy1+energy2)>>%s"%name,
+                        "mat1==%d&&mat2==%d&&trackid==1"%(matid,matid))
+        count = cb.Draw("10*edep/dist:0.5*(energy1+energy2)>>%s"%"p"+name,
                         "mat1==%d&&mat2==%d&&trackid==1"%(matid,matid))
         print '%d from %s' % (count, files[index].GetName())
         htmp.Draw("colz")
@@ -140,12 +144,15 @@ def multiplot(matid, *filenames):
     hdedx.Draw("colz")
     cprint(pdffile)
 
+    prof = hdedx.ProfileX()
+
     hdedx.Draw("colz")
     pg = pstarg = scale_pstar_graph(matname,2)
 
     print 'PSTAR graph: %s %s' % (matname, pg.GetName())
     pstarg.Draw("L")
 
+    prof.Draw("same")
     cprint(pdffile)
 
     cprint(pdffile,"]")

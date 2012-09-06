@@ -62,7 +62,6 @@ def dump(top, depth = 0):
     return
 
 
-
 if __name__ == '__main__':
     import sys
     geo = ROOT.TGeoManager.Import(sys.argv[1])

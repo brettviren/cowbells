@@ -18,7 +18,7 @@ using namespace std;
 
 using Cowbells::get_startswith;
 
-Cowbells::PhysicsList::PhysicsList(const char* physics)
+Cowbells::PhysicsList::PhysicsList(const char* physics, float default_cut_value_mm)
     : G4VModularPhysicsList()
 {
     string all("all");
@@ -27,7 +27,7 @@ Cowbells::PhysicsList::PhysicsList(const char* physics)
     }
     cerr << "Creating Cowbells::PhysicsList with: \"" << physics << "\"" << endl;
 
-    defaultCutValue = 1.0*mm;
+    defaultCutValue = default_cut_value_mm*mm;
     //defaultCutValue = 0.1*mm;
     //defaultCutValue = 0.01*mm;
 
