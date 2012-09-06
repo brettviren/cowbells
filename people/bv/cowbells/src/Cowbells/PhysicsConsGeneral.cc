@@ -1,5 +1,6 @@
 #include "Cowbells/PhysicsConsGeneral.h"
 
+#include "G4ParticleTypes.hh"
 
 Cowbells::PhysicsConsGeneral::PhysicsConsGeneral()
     : G4VPhysicsConstructor("general")
@@ -20,6 +21,14 @@ void Cowbells::PhysicsConsGeneral::ConstructParticle()
 {
     G4Geantino::GeantinoDefinition();
     G4ChargedGeantino::ChargedGeantinoDefinition();  
+
+    // neutrinos
+    G4NeutrinoE::NeutrinoEDefinition();
+    G4AntiNeutrinoE::AntiNeutrinoEDefinition();
+    G4NeutrinoMu::NeutrinoMuDefinition();
+    G4AntiNeutrinoMu::AntiNeutrinoMuDefinition();
+    G4NeutrinoTau::NeutrinoTauDefinition();
+    G4AntiNeutrinoTau::AntiNeutrinoTauDefinition();
 }
 
 void Cowbells::PhysicsConsGeneral::ConstructProcess()
