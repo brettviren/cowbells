@@ -43,14 +43,31 @@ G4VPhysicalVolume* Cowbells::BuildFromRoot::ConstructGeometry()
     RootGM::Factory rtFactory;
     rtFactory.SetDebug(0);
     rtFactory.Import(geo->GetTopNode());
-    cerr << "Loaded ROOT geometry" << endl;
+    cout << "Loaded ROOT geometry" << endl;
 
     // Export VGM geometry to Geant4
     Geant4GM::Factory g4Factory;
     g4Factory.SetDebug(0);
     rtFactory.Export(&g4Factory);
     G4VPhysicalVolume * world = g4Factory.World();
-    cerr << "Converted to Geant4 geometry" << endl;
+    cout << "Converted to Geant4 geometry" << endl;
+
+
+    // const G4MaterialTable& mattab = *G4Material::GetMaterialTable();
+    // for (size_t ind=0; ind<mattab.size(); ++ind) {
+    //     G4Material* mat = mattab[ind];
+    //     if (mat->GetName() == "Water") {
+    //         mat->SetChemicalFormula("H_2O"); // weee
+    //         mat->GetIonisation()->SetMeanExcitationEnergy(78.0*eV);
+    //     }
+    //     if (mat->GetName() == "Teflon") {
+    //         mat->SetChemicalFormula("(C_2F_4)-Teflon");
+    //     }
+    //     cout << "Chemical formuilat for material " << mat->GetName()
+    //          <<  " is " << mat->GetChemicalFormula()
+    //          << " mean excitation = " << mat->GetIonisation()->GetMeanExcitationEnergy()
+    //          << endl;
+    // }
 
     return world;
 }

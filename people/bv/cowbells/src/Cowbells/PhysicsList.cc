@@ -31,14 +31,14 @@ Cowbells::PhysicsList::PhysicsList(const char* physics, float default_cut_value_
     //defaultCutValue = 0.1*mm;
     //defaultCutValue = 0.01*mm;
 
-    verboseLevel = 9;
+    verboseLevel = 1;
 
     // always
     RegisterPhysics( new Cowbells::PhysicsConsGeneral() );
 
     if (get_startswith(physics,"em",",","notfound") != "notfound") {
         cout << "\tusing EM Physics" << endl;
-        RegisterPhysics( new G4EmStandardPhysics() );
+        RegisterPhysics( new G4EmStandardPhysics(verboseLevel) );
         //RegisterPhysics( new Cowbells::PhysicsConsEM() );
         //RegisterPhysics( new Cowbells::PhysicsConsMuon() );
     }
@@ -48,7 +48,7 @@ Cowbells::PhysicsList::PhysicsList(const char* physics, float default_cut_value_
     }
     if (get_startswith(physics,"had",",","notfound") != "notfound") {
         cout << "\tusing Hadronic Physics" << endl;
-        RegisterPhysics( new G4HadronElasticPhysics() );
+        RegisterPhysics( new G4HadronElasticPhysics(verboseLevel) );
     }
 
     SetVerboseLevel(verboseLevel);
