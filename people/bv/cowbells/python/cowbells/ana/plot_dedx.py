@@ -8,8 +8,8 @@ import bethe, cbdedx
 
 class PlotStuff:
     titles = {
-        'edep': 'Energy Deposition Per Step',
-        'ediff': 'Energy Loss Per Step',
+        'edep': 'Energy Deposition Per Step for %(particle)s in %(material)s',
+        'ediff': 'Energy Loss Per Step for %(particle)s in %(material)s',
         }
 
     def __init__(self, fname, particle=None, material=None):
@@ -50,7 +50,8 @@ class PlotStuff:
         self.plots, self.bethes = self.make(particle,material)
         
         for kind in self.plots.kinds():
-            self.cstart(kind)
+            tit = self.titles[kind] % locals()
+            self.cstart(tit)
             self.draw(self.plots.merged(kind), self.bethes)
             self.cprint()
             continue
@@ -61,9 +62,9 @@ class PlotStuff:
         self.canvas = None
         return
 
-    def cstart(self, kind):
-        self.frame = self.canvas.DrawFrame(0,0,2500,3)
-        self.frame.SetTitle(self.titles[kind])
+    def cstart(self, title):
+        self.frame = self.canvas.DrawFrame(0,0,2500,10)
+        self.frame.SetTitle(title)
         self.frame.SetXTitle("Energy (MeV)")
         self.frame.SetYTitle("Energy/step (MeV/cm)")
         return
@@ -77,5 +78,6 @@ class PlotStuff:
 
 if __name__ == '__main__':
     ps = PlotStuff('plot_dedx.pdf')
+    ps.plot('proton','water')
     ps.plot('mu+','water')
     del (ps)

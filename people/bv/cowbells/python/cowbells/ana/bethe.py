@@ -114,9 +114,12 @@ class DEDX(object):
         Set the particle properties
         '''
         self._charge_number = 1
+        if self.particle in ['e-','e+','electron','positron']:
+            self._mass = 0.511
         if self.particle[:2] == "mu":
             self._mass = 105.7
-            return
+        if self.particle == "proton":
+            self._mass = 938.272
         return
 
     def dedx_restricted(self,kine):
