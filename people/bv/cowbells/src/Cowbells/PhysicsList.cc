@@ -31,7 +31,7 @@ Cowbells::PhysicsList::PhysicsList(const char* physics, float default_cut_value_
     //defaultCutValue = 0.1*mm;
     //defaultCutValue = 0.01*mm;
 
-    verboseLevel = 1;
+    verboseLevel = 0;
 
     // always
     RegisterPhysics( new Cowbells::PhysicsConsGeneral() );

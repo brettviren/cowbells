@@ -6,7 +6,7 @@ Generate a ROOT TGeometry file for the NSRL "tub" detector
 import cowbells
 import properties
 
-
+hbarc = cowbells.units.clhep_units.hbarc
 inch = cowbells.units.inch
 meter = cowbells.units.meter
 
@@ -150,6 +150,62 @@ class TubDetBuilder(object):
         return tub
     pass
 
+#    known_parameters = ['type', 'model', 'finish', 'first', 'second',
+#                        'polish', 'sigmaalpha']
+
+def mkgraph(name):
+    g = ROOT.TGraph()    
+    ROOT.SetOwnership(g,0)
+    g.SetName(name)
+    return g
+
+from surfaces import GenericSurface
+class TeflonSurface(GenericSurface):
+    '''
+    Describe the optical surface between the sample and the teflon
+    walls.
+    '''
+    def __init__(self, color = 'white', first='Sample', second='Bucket'):
+        super(TeflonSurface,self).__init__(type='dielectric_metal', 
+                                           model="glisur", finish="polished", 
+                                           first=first, second=second)
+
+        if color.lower() in ['white']: self.set_white_teflon()
+        if color.lower() in ['black']: self.set_black_teflon()
+
+        return
+
+    def set_white_teflon(self):
+        '''
+        PTFE 8 layers from Fig 10 of,  
+        Reflectivity Spectra for Commonly Used Reflectors
+        Martin Janecek
+        IEEE TRANSACTIONS ON NUCLEAR SCIENCE, VOL. 59, NO. 3, JUNE 2012
+        '''
+        r = mkgraph("REFLECTIVITY")
+        t = mkgraph("TRANSMITTANCE")
+        # nm, reflectivity
+        data = [(250,0.90),
+                (400,0.96),
+                (500,0.95),
+                (600,0.94),
+                (800,0.87)]
+        data.reverse()
+        for nm,ref in data:
+            r.SetPoint(r.GetN(), hbarc/nm, ref)
+            t.SetPoint(t.GetN(), hbarc/nm, 1-ref)
+            continue
+        self.add_property_tgraph(r)
+        # can turn on transmittance if dielectric_dielectric is used
+        #self.add_property_tgraph(t)
+        return
+
+    def set_black_teflon(self):
+        undefined()
+        return
+
+    pass
+
 def fill(geo, filename = 'tubdet.root', samplemat='Water'):
     '''
     Fill the given TGeo manager with geometry for the "tub" detector
@@ -177,6 +233,9 @@ def fill(geo, filename = 'tubdet.root', samplemat='Water'):
     fp.Close()
 
     properties.fill(filename)
+
+    ts = TeflonSurface()
+    ts.write(filename)
 
     import os
     gdmlfile = os.path.splitext(filename)[0] + '.gdml'

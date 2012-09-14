@@ -21,6 +21,9 @@
 #include <vector>
 #include <map>
 
+class TGraph;
+class G4OpticalSurface;
+
 namespace Cowbells {
 
     class DetConsBase : public G4VUserDetectorConstruction {
@@ -54,7 +57,15 @@ namespace Cowbells {
     private:
 
         // Tack on material optical properties
-        virtual void AddMaterialProperties();
+        virtual bool AddMaterialProperties();
+
+	// Tack on any optical surfaces
+	virtual bool AddOpticalSurfaces();
+	virtual bool SetOpSurfParameter(G4OpticalSurface& opsurf,
+					std::string name, std::string value);
+	virtual bool SetOpSurfProperty(G4OpticalSurface& opsurf, TGraph& prop);
+	virtual bool SetLogicalSurface(G4OpticalSurface& opsurf, 
+				       std::string first, std::string second);
 
         // Register any sensitive detectors
         virtual void RegisterSensDets();
