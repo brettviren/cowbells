@@ -1,5 +1,8 @@
 #include "Cowbells/Hit.h"
 
+#include <iostream>
+using namespace std;
+
 Cowbells::Hit::Hit()
     : t(0), x(0), y(0), z(0), e(0)
     , volid(0), pdg(0)
@@ -9,6 +12,7 @@ Cowbells::Hit::Hit()
 
 Cowbells::Hit::~Hit()
 {
+    //cerr << "Deleting hit @ (" << x << "," << y << "," << z << "), " << e << "MeV" << endl;
 }
 
 std::vector<double> Cowbells::Hit::pos()

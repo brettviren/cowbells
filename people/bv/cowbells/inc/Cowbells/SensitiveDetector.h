@@ -26,7 +26,6 @@ public:
     // optional interface
     virtual void Initialize(G4HCofThisEvent* hce);
     virtual void EndOfEvent(G4HCofThisEvent* hce);
-    virtual void clear();
 
     // required interface 
     virtual G4bool ProcessHits(G4Step*aStep,G4TouchableHistory*ROhist);

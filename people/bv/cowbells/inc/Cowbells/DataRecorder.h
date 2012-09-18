@@ -45,6 +45,8 @@ namespace Cowbells {
         TTree* m_tree;
         Cowbells::Event* m_event;
 
+        bool m_save_steps;
+
         void clear();
         void set_output_file(std::string filename);
     };

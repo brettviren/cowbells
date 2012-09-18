@@ -48,7 +48,6 @@ void Cowbells::SteppingAction::UserSteppingAction(const G4Step* step)
 
 
     Cowbells::Step* cb_step = new Cowbells::Step();
-    m_dr->add_step(cb_step);
     cb_step->trackid = track->GetTrackID();
     cb_step->parentid = track->GetParentID();
     cb_step->pdgid = particle->GetPDGEncoding();
@@ -70,4 +69,5 @@ void Cowbells::SteppingAction::UserSteppingAction(const G4Step* step)
     cb_step->x2 = r2.x();
     cb_step->y2 = r2.y();
     cb_step->z2 = r2.z();
+    m_dr->add_step(cb_step);
 }

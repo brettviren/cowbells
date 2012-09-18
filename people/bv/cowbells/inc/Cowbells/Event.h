@@ -51,6 +51,7 @@ namespace Cowbells {
         ~Event();
 
         void clear();
+        void clear_steps();
 
         // Set the event kinematics, takes ownership
         // void set_kinematics(Cowbells::EventKinematics* kin);

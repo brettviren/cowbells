@@ -1,5 +1,8 @@
 #include "Cowbells/Event.h"
 
+#include <iostream>
+using namespace std;
+
 Cowbells::Step::Step()
     :  trackid(-1)
     , parentid(-1)
@@ -20,6 +23,7 @@ Cowbells::Event::Event(Cowbells::EventKinematics* /*kin*/)
 }
 Cowbells::Event::~Event()
 {
+    cerr << "Deleting Event" << endl;
     // if (m_kine) {
     //     delete m_kine;
     //     m_kine = 0;
@@ -29,7 +33,11 @@ Cowbells::Event::~Event()
 void Cowbells::Event::clear()
 {
     hc.clear();
-
+    this->clear_steps();
+}
+void Cowbells::Event::clear_steps()
+{
+    //cerr << "Deleting " << steps.size() << " steps" << endl;
     for (size_t ind=0; ind<steps.size(); ++ind) {
         delete steps[ind];
     }

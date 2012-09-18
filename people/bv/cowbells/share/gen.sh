@@ -22,14 +22,14 @@ fi
 
 tag=${sample}-${count}-${stepsize}
 
-args="-g tubdet-${sample}.root -p em -n $count --defcut $stepsize"
+args="-g tubdet-${sample}.root -p em,op -n $count --defcut $stepsize"
 
 
 #150 250 500 1000 1500 2000 2500
 #210 475 2500
 #150 1000 1500 2000
 
-for en in 150 210 475 1000 1500 2000  2500
+for en in $@
 do
     enstr=$(printf '%04d' $en)
     #echo $enstr

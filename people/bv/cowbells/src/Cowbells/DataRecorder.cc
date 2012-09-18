@@ -12,6 +12,7 @@ Cowbells::DataRecorder::DataRecorder(const char* filename)
     : m_file(0)
     , m_tree(0)
     , m_event(0)
+    , m_save_steps(false)
 {
     if (filename) {
         this->set_output_file(filename);
@@ -73,6 +74,10 @@ void Cowbells::DataRecorder::fill(const G4Event* event)
         GHit* ghit = dynamic_cast<Cowbells::GHit*>(hc->GetHit(ind));
         assert(ghit);
         m_event->hc.push_back(ghit->get());
+    }
+
+    if (!m_save_steps) { 
+        m_event->clear_steps();
     }
 
     m_tree->Fill();
