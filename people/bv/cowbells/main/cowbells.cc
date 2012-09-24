@@ -76,6 +76,7 @@ int main(int argc, char *argv[])
     std::string outputfile = opt(oOUTPUT);
     if ("none" != outputfile) {
         dr = new Cowbells::DataRecorder(outputfile.c_str());
+        dr->save_steps();
     }
 
     Cowbells::RunAction* ura = new Cowbells::RunAction();

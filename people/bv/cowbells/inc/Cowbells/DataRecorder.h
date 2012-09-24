@@ -40,6 +40,10 @@ namespace Cowbells {
         // Add a step to the current event
         void add_step(Cowbells::Step* step);
 
+        // Set true to actually save steps to output file.  If not
+        // called, default is false
+        void save_steps(bool save = true) { m_save_steps = save; }
+
     private:
         TFile* m_file;
         TTree* m_tree;

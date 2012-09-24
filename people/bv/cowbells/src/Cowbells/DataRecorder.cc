@@ -36,8 +36,6 @@ Cowbells::DataRecorder* Cowbells::DataRecorder::Get()
     return singleton;
 }
 
-
-
 void Cowbells::DataRecorder::set_output_file(std::string filename)
 {
     this->close();

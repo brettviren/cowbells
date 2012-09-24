@@ -1,0 +1,144 @@
+\documentclass[]{beamer}
+\usepackage{graphicx}
+\setbeamertemplate{navigation symbols}{}
+\useoutertheme{infolines}
+\usecolortheme[named=violet]{structure}
+\setbeamertemplate{items}[circle]
+\title[dedx]{Check dE/dx in Cowbells Simulation}
+\author{Brett Viren}
+\date{\today}
+
+\definecolor{rootpink}{RGB}{255,0,255}
+\begin{document}
+
+\maketitle
+
+
+\begin{frame}
+  \frametitle{Procedure}
+  \begin{itemize}
+  \item Check $\Delta E$ deposited vs $\Delta x$ step for all steps
+    that start/stop inside a material.
+  \item Check as a function of step size.
+  \item Compare to PSTAR numbers.
+  \end{itemize}
+
+  Check materials:
+  \begin{center}
+    \begin{tabular}[h]{|r|l|}
+      Material & Density (g/cc) \\
+      \hline
+      Water (sample) & 1.0 \\
+      WBLS (sample) & 0.99 \\
+      Teflon (wall) & 2.2 \\
+    \end{tabular}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{dE/dx deposited in water}
+  \begin{columns}
+    \begin{column}{0.5\paperwidth}
+      \includegraphics[width=\textwidth,page=9,type=pdf,ext=.pdf,read=.pdf]{dedx_multiplot_Water_step0.01}
+
+      \begin{center}
+        \texttt{defaultCutValue} = 0.01 mm
+      \end{center}
+    \end{column}
+    \begin{column}{0.5\paperwidth}
+      \includegraphics[width=\textwidth,page=9,type=pdf,ext=.pdf,read=.pdf]{dedx_multiplot_Water_step1.0}      
+
+      \begin{center}
+        \texttt{defaultCutValue} = 1.0 mm
+      \end{center}
+    \end{column}
+  \end{columns}
+  
+  \begin{center}
+    Line is PSTAR total stopping power.
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{dE/dx deposited in WBLS}
+  \begin{columns}
+    \begin{column}{0.5\paperwidth}
+      \includegraphics[width=\textwidth,page=9,type=pdf,ext=.pdf,read=.pdf]{dedx_multiplot_WBLS_step0.01}
+
+      \begin{center}
+        \texttt{defaultCutValue} = 0.01 mm
+      \end{center}
+    \end{column}
+    \begin{column}{0.5\paperwidth}
+      \includegraphics[width=\textwidth,page=9,type=pdf,ext=.pdf,read=.pdf]{dedx_multiplot_WBLS_step1.0}      
+
+      \begin{center}
+        \texttt{defaultCutValue} = 1.0 mm
+      \end{center}
+    \end{column}
+  \end{columns}
+  
+  \begin{center}
+    Line is PSTAR total stopping power.
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{dE/dx deposited in Teflon}
+  \begin{columns}
+    \begin{column}{0.5\paperwidth}
+      \includegraphics[width=\textwidth,page=9,type=pdf,ext=.pdf,read=.pdf]{dedx_multiplot_Teflon_step0.01}
+
+      \begin{center}
+        \texttt{defaultCutValue} = 0.01 mm
+      \end{center}
+    \end{column}
+    \begin{column}{0.5\paperwidth}
+      \includegraphics[width=\textwidth,page=9,type=pdf,ext=.pdf,read=.pdf]{dedx_multiplot_Teflon_step1.0}      
+
+      \begin{center}
+        \texttt{defaultCutValue} = 1.0 mm
+      \end{center}
+    \end{column}
+  \end{columns}
+  
+  \begin{center}
+    Line is PSTAR total stopping power.
+  \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Problems found and fixed}
+  
+  WbLS dE/dx higher than water.
+  \begin{itemize}
+  \item \texttt{WCSIM\_WbLS} code apparently had WbLS entered with
+    element count fractions instead of mass fractions.
+  \item[$\rightarrow$] fix: use corrected numbers from Minfang.
+    \begin{center}\footnotesize
+    \begin{tabular}[h]{rlcl}
+Hydrogen & 0.659    & $\rightarrow$ & 0.1097 \\
+Oxygen   & 0.309    & $\rightarrow$ & 0.8234 \\
+Sulfur   & 0.0009   & $\rightarrow$ & 0.0048 \\
+Nitrogen & 0.000058 & $\rightarrow$ & 0.0001 \\
+Carbon   & 0.031    & $\rightarrow$ & 0.0620 \\
+    \end{tabular}
+    \end{center}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Open Issues}
+
+    \begin{itemize}
+    \item Why is dE/dx for water lower than PSTAR
+      \begin{itemize}
+      \item[$\rightarrow$] check with muons
+      \end{itemize}
+    \end{itemize}
+  
+\end{frame}
+
+\end{document}

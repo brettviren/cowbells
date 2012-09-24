@@ -178,11 +178,13 @@ def fill(geo, filename = 'nsrldet.root'):
 
     winshift = ROOT.TGeoTranslation(0, 0, -5*meter)
 
-    tc1shift = ROOT.TGeoTranslation(0, 0, -10.0*cm)
-    sd1shift = ROOT.TGeoTranslation(0, 0,   0.0*cm)
-    tc2shift = ROOT.TGeoTranslation(0, 0, +10.0*cm)
-    sd2shift = ROOT.TGeoTranslation(0, 0,  20.0*cm)    
-    tc3shift = ROOT.TGeoTranslation(0, 0, +30.0*cm)
+    # spacing between centers of neighboring hodoscope or tubdet
+    spacing = 20*cm
+    tc1shift = ROOT.TGeoTranslation(0, 0, -1*spacing)
+    sd1shift = ROOT.TGeoTranslation(0, 0,     0.0*cm)
+    tc2shift = ROOT.TGeoTranslation(0, 0, +1*spacing)
+    sd2shift = ROOT.TGeoTranslation(0, 0, +2*spacing)    
+    tc3shift = ROOT.TGeoTranslation(0, 0, +3*spacing)
 
     sdrot = ROOT.TGeoRotation()
     sdrot.RotateY(90)
