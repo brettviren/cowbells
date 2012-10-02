@@ -25,7 +25,7 @@ meter = cowbells.units.meter
 import ROOT
 
 
-from gentubdet import TubDetBuilder
+from gentubdet import TubDetBuilder, TeflonSurface
 
 class WindowBuilder(object):
     '''
@@ -153,15 +153,15 @@ class TriggerCounterBuilder(object):
 
 
 
-def fill(geo, filename = 'nsrldet.root'):
+def fill(geo, filename = 'nsrldet.root', samplemat = 'Water'):
     '''
     Fill the given TGeo manager with geometry for the NSRL setup.
 
     The first tub is at the origin.
     '''
     w = WindowBuilder(geo)
-    s1 = TubDetBuilder(geo)
-    s2 = TubDetBuilder(geo,Tub='Aluminum')
+    s1 = TubDetBuilder(geo, Sample=samplemat, Tub='Teflon',   Lid='Teflon')
+    s2 = TubDetBuilder(geo, Sample=samplemat, Tub='Aluminum', Lid='Aluminum')
     tc = TriggerCounterBuilder(geo)
 
     from cowbells.prep import propmods
@@ -209,6 +209,11 @@ def fill(geo, filename = 'nsrldet.root'):
 
     properties.fill(filename)
 
+    for tubmat, tubcolor in [('Teflon','white'), ('Aluminum','black')]:
+        print 'Writing teflon color "%s"' % tubcolor
+        ts = TeflonSurface('Sample'+samplemat, 'Tub'+tubmat, tubcolor)
+        ts.write(filename)
+
     import os
     gdmlfile = os.path.splitext(filename)[0] + '.gdml'
     geo.Export(gdmlfile)
@@ -219,4 +224,6 @@ if __name__ == '__main__':
     import sys
     geo = ROOT.TGeoManager('cowbells_geometry', 
                            'Geometry for COsmic WB(el)LS detector')
-    fill(geo, sys.argv[1])
+    sample = sys.argv[1]
+    filename = 'nsrldet-%s.root' % sample.lower()
+    fill(geo, filename, sample)

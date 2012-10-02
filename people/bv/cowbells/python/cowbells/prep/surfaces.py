@@ -21,8 +21,9 @@ class GenericSurface(object):
                         'BACKSCATTERCONSTANT']
 
 
-    def __init__(self, **parameters):
+    def __init__(self, name, **parameters):
 
+        self.name = name
         self.parameters = {}
         self.properties = []
         for k,v in parameters.iteritems():
@@ -31,13 +32,15 @@ class GenericSurface(object):
         return
 
     def add_parameter(self, key, value):
-        assert key in self.known_parameters, 'Unknown parameter: "%s"' % key
+        assert key in self.known_parameters, \
+            'Unknown parameter given to surface %s: "%s"' % (self.name, key)
         self.parameters[key] = value
         return
 
     def add_property_tgraph(self, tgraph):
         name = tgraph.GetName() 
-        assert name in self.known_properties, 'Unknown property: "%s"' % name
+        assert name in self.known_properties, \
+            'Unknown property given to surface %s: "%s"' % (self.name, name)
         self.properties.append(tgraph)
         return
 
@@ -50,14 +53,21 @@ class GenericSurface(object):
         return
 
     def write(self, tfile):
+
+        i_opened = False
         if isinstance(tfile,str):
             tfile = ROOT.TFile.Open(tfile,'update')
+            i_opened = True
 
         sdir = tfile.Get(self.subdir)
         if not sdir:
+            print 'Making subdir "%s"' % self.subdir
             sdir = tfile.mkdir(self.subdir)
             pass
-        mydir = sdir.mkdir(self.__class__.__name__)
+        print 'Making subdir "%s"' % self.name
+        mydir = sdir.mkdir(self.name)
+
+        print 'Writing %s/%s to %s' % (self.subdir, self.name, tfile.GetName())
 
         mydir.cd()
         pardir = mydir.mkdir('parameters')
@@ -65,6 +75,7 @@ class GenericSurface(object):
         for k,v in sorted(self.parameters.iteritems()):
             n = ROOT.TNamed(k,v)
             n.Write()
+            print '\t%s parameters:%s/%s' % (self.name,k,v)
             continue
 
         mydir.cd()
@@ -72,7 +83,12 @@ class GenericSurface(object):
         prodir.cd()
         for p in self.properties:
             p.Write()
+            print '\t%s properties:%s' % (self.name, p.GetName())
             continue
+
+        if i_opened:
+            tfile.Close()
+            del tfile
         return
 
     pass
@@ -82,7 +98,7 @@ if '__main__' == __name__:
     import sys
     filename = sys.argv[1]
 
-    gs = GenericSurface(model='glisur', type='dielectric_metal', finish='polished')
+    gs = GenericSurface('TestSurface', model='glisur', type='dielectric_metal', finish='polished')
     gs.add_parameter('first','pvFirstVolume')
     gs.add_parameter('second','pvSecondVolume')
     ref = ROOT.TGraph()

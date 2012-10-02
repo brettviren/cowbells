@@ -86,19 +86,21 @@ class TubDetBuilder(object):
 
         p = self.params
         
-        # bucket with lid
-        b_radius = 0.5*(p['inner_diameter']+2.0*p['tub_thickness'])
-        b_hheight = 0.5*(p['inner_height']+p['tub_thickness']+p['lid_thickness'])
-        tub = self.geo.MakeTube('Bucket', self.get_med('Tub'), 
-                           0.0, b_radius, b_hheight)
+        # tub = bucket with lid
+        t_radius = 0.5*(p['inner_diameter']+2.0*p['tub_thickness'])
+        t_hheight = 0.5*(p['inner_height']+p['tub_thickness']+p['lid_thickness'])
+        tubname = 'Tub' + self.params['Tub']
+        tub = self.geo.MakeTube(tubname, self.get_med('Tub'), 
+                           0.0, t_radius, t_hheight)
         tub.SetVisibility(1)
         tub.SetLineColor(2)
-        print 'Geo: bucket: r=%f hh=%f' % (b_radius, b_hheight)
+        print 'Geo: tub: r=%f hh=%f' % (t_radius, t_hheight)
 
         # sample volume
         s_radius = 0.5*(p['inner_diameter'])
         s_hheight = 0.5*(p['inner_height'])
-        sam = self.geo.MakeTube('Sample', self.get_med('Sample'),
+        samname = 'Sample' + self.params['Sample']
+        sam = self.geo.MakeTube(samname, self.get_med('Sample'),
                            0.0, s_radius, s_hheight)
         sam.SetVisibility(1)
         sam.SetLineColor(1)
@@ -128,8 +130,8 @@ class TubDetBuilder(object):
         pc.SetVisibility(1)
         pc.SetLineColor(7)
 
-        # put sample in bucket
-        s_shift = b_hheight - s_hheight - p['tub_thickness']
+        # put sample in tub
+        s_shift = t_hheight - s_hheight - p['tub_thickness']
         samintub = ROOT.TGeoTranslation(0, 0, -1*s_shift)
         ROOT.SetOwnership(samintub,0)
         tub.AddNode(sam, 1, samintub)
@@ -141,7 +143,7 @@ class TubDetBuilder(object):
         win.AddNode(pc, 1, pcinwin)
 
         # put window in lid
-        w_shift = b_hheight - p['lid_thickness']
+        w_shift = t_hheight - p['lid_thickness']
         wininlid = ROOT.TGeoTranslation(0, 0, w_shift)
         ROOT.SetOwnership(wininlid,0)
         tub.AddNode(win, 1, wininlid)
@@ -163,10 +165,12 @@ from surfaces import GenericSurface
 class TeflonSurface(GenericSurface):
     '''
     Describe the optical surface between the sample and the teflon
-    walls.
+    walls.  You must giver the names of the first (sample) and second
+    (tub) physical volumes.
     '''
-    def __init__(self, color = 'white', first='Sample', second='Bucket'):
-        super(TeflonSurface,self).__init__(type='dielectric_metal', 
+    def __init__(self, first, second, color = 'white'):
+        name = color.capitalize() + 'TeflonSurface'
+        super(TeflonSurface,self).__init__(name, type='dielectric_metal', 
                                            model="glisur", finish="polished", 
                                            first=first, second=second)
 
@@ -175,7 +179,27 @@ class TeflonSurface(GenericSurface):
 
         return
 
+
     def set_white_teflon(self):
+        data = [(250,0.90),
+                (400,0.96),
+                (500,0.95),
+                (600,0.94),
+                (800,0.87)]
+
+        return self.set_surface(data)
+
+    def set_black_teflon(self):
+        # these numbers are pulled out of the proverbial butt
+        data = [(250,0.02),
+                (400,0.02),
+                (500,0.02),
+                (600,0.02),
+                (800,0.02)]
+        return self.set_surface(data)
+
+
+    def set_surface(self, reflectivity_vs_nm):
         '''
         PTFE 8 layers from Fig 10 of,  
         Reflectivity Spectra for Commonly Used Reflectors
@@ -185,11 +209,7 @@ class TeflonSurface(GenericSurface):
         r = mkgraph("REFLECTIVITY")
         t = mkgraph("TRANSMITTANCE")
         # nm, reflectivity
-        data = [(250,0.90),
-                (400,0.96),
-                (500,0.95),
-                (600,0.94),
-                (800,0.87)]
+        data = list(reflectivity_vs_nm) # copy
         data.reverse()
         for nm,ref in data:
             r.SetPoint(r.GetN(), hbarc/nm, ref)
@@ -200,19 +220,15 @@ class TeflonSurface(GenericSurface):
         #self.add_property_tgraph(t)
         return
 
-    def set_black_teflon(self):
-        undefined()
-        return
-
     pass
 
-def fill(geo, filename = 'tubdet.root', samplemat='Water'):
+def fill(geo, filename = 'tubdet.root', samplemat='Water', tubmat = 'Teflon'):
     '''
     Fill the given TGeo manager with geometry for the "tub" detector
     given the parameters of the detector.
     '''
 
-    tdb = TubDetBuilder(geo, Sample=samplemat)
+    tdb = TubDetBuilder(geo, Sample=samplemat, Tub=tubmat, Lid=tubmat)
 
     from cowbells.prep import propmods
     for mod in propmods:
@@ -234,7 +250,9 @@ def fill(geo, filename = 'tubdet.root', samplemat='Water'):
 
     properties.fill(filename)
 
-    ts = TeflonSurface()
+    tubcolor = {'Teflon':'white', 'Aluminum':'black'}[tubmat]
+    print 'Writing teflon color "%s"' % tubcolor
+    ts = TeflonSurface('Sample'+samplemat, 'Tub'+tubmat, tubcolor)
     ts.write(filename)
 
     import os
@@ -247,4 +265,6 @@ if __name__ == '__main__':
     import sys
     geo = ROOT.TGeoManager('cowbells_geometry', 
                            'Geometry for COsmic WB(el)LS detector')
-    fill(geo, sys.argv[1], sys.argv[2])
+    args = tuple([x.lower() for x in sys.argv[1:3]])
+    filename = 'tubdet-%s-%s.root' % args
+    fill(geo, filename, sys.argv[1], sys.argv[2])

@@ -157,6 +157,12 @@ bool Cowbells::DetConsBase::AddOpticalSurfaces()
     const char* par_dir_name = "parameters";
 
     TDirectory* surfaces_dir = dynamic_cast<TDirectory*>(fp->Get(surf_dir_name));
+    if (!surfaces_dir) {
+        cerr << "Failed to get directory " << surf_dir_name 
+             << " from " << m_prop_file
+             << endl;
+        return false;
+    }
 
     TList* los = surfaces_dir->GetListOfKeys();
     int nsurfs = los->GetSize();

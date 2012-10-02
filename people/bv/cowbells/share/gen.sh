@@ -3,6 +3,7 @@
 cb=../build/bin/cowbells.exe
 
 sample=$1 ; shift
+tub=$1; shift
 particle=$1 ; shift
 stepsize=$1 ; shift
 count=$1 ; shift
@@ -22,7 +23,7 @@ fi
 
 tag=${sample}-${count}-${stepsize}
 
-args="-g tubdet-${sample}.root -p em -n $count --defcut $stepsize"
+args="-g tubdet-${sample}-${tub}.root -p em -n $count --defcut $stepsize"
 
 
 #150 250 500 1000 1500 2000 2500
@@ -42,3 +43,4 @@ do
     echo "$cb $args -k $kin -o $out" > $log
     $cb $args -k "$kin" -o $out >> $log 2>&1 &
 done
+
