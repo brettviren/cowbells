@@ -9,7 +9,6 @@
 
 #include <string>
 
-
 namespace Cowbells {
 
 class SensitiveDetector : public G4VSensitiveDetector 
@@ -31,10 +30,13 @@ public:
     virtual G4bool ProcessHits(G4Step*aStep,G4TouchableHistory*ROhist);
 
 private:
+
+    int divine_touchable_id(const std::string& tname);
+
     Cowbells::HitCollection* fHC;
 
-    typedef std::map<std::string, int> TouchableId_t;
-    TouchableId_t m_touchId;
+    typedef std::map<std::string, int> TouchableNameId_t;
+    TouchableNameId_t m_touchNameId;
 
 };
 

@@ -124,7 +124,8 @@ class TubDetBuilder(object):
         win.SetLineColor(4)
         
         # wafer of PC
-        pc = self.geo.MakeTube('PC', self.get_med('PhotoCathode'),
+        # FIXME: this name must be hard-coded into cowbells.cc
+        pc = self.geo.MakeTube('TUB_PC', self.get_med('PhotoCathode'),
                           0.0, 0.5*p['photocathode_diameter'],
                           0.5*p['photocathode_thickness'])
         pc.SetVisibility(1)

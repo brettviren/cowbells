@@ -1,4 +1,4 @@
-#include "Cowbells/DetConsBase.h"
+ #include "Cowbells/DetConsBase.h"
 #include "Cowbells/SensitiveDetector.h"
 
 #include <G4VPhysicalVolume.hh>
@@ -56,8 +56,10 @@ static void dump(G4VPhysicalVolume* top, int depth)
     G4LogicalVolume* lv = top->GetLogicalVolume();
     int nchilds = lv->GetNoDaughters();
     cout << tab 
-         << "PV:" << top->GetName() << " "
-         << "LV:" << lv->GetName() << " "
+         << "PV(@0x" << (void*)top << "):" << top->GetName() << " "
+         << "mul:" << top->GetMultiplicity() << " "
+         << "cop:" << top->GetCopyNo() << " "
+         << "LV(@0x" << (void*)lv << "):" << lv->GetName() << " "
          << "(" << lv->GetMaterial()->GetName() << ") "
          << "#children:" << nchilds << ":" 
          << endl;
@@ -408,14 +410,22 @@ void Cowbells::DetConsBase::add_sensdet(std::string lvname,
         sdname = "SensitiveDetector";
     }
 
-    if (sdname != "SensitiveDetector") {
-        cerr << "Cowbells::DetConsBase::add_sensdet currently only supports Cowbells::SensitiveDetector" << endl;
-        return;
-    }
+    // if (sdname != "SensitiveDetector") {
+    //     cerr << "Cowbells::DetConsBase::add_sensdet currently only supports Cowbells::SensitiveDetector" << endl;
+    //     return;
+    // }
 
     Cowbells::SensitiveDetector* csd = 
         new Cowbells::SensitiveDetector(sdname.c_str(), hcname.c_str(), touchables);
     m_lvsd[lvname] = csd;
+
+
+    cout << "Sensitive Detector: " << sdname << ", HC: " << hcname << ", " 
+         << touchables.size()-1 << " touchables" << endl; 
+    for (size_t ind = 0; ind < touchables.size(); ++ind) {
+        if (!ind) continue;
+        cout << "\t" << ind << ": " << touchables[ind] << endl;
+    }
 }
 
 void Cowbells::DetConsBase::RegisterSensDets()
@@ -425,10 +435,19 @@ void Cowbells::DetConsBase::RegisterSensDets()
     for (it = m_lvsd.begin(); it != done; ++it) {
         string lvname = it->first;
         G4VSensitiveDetector* sd = it->second;
+        if (!sd) {
+            cerr << "No sensitive detector for LV=" << lvname << endl;
+            assert (sd);
+        }
         G4SDManager::GetSDMpointer()->AddNewDetector(sd);
         G4LogicalVolume* lv = G4LogicalVolumeStore::GetInstance()->GetVolume(lvname.c_str());
+        if (!lv) {
+            cerr << "No LV for " << lvname << endl;
+            assert (lv);
+        }
         lv->SetSensitiveDetector(sd);
-        cout << "Registered SD \"" << sd->GetName() << "\" with logical volume \"" << lvname << "\"" << endl;
+        cout << "Registered SD \"" << sd->GetName() 
+             << "\" with logical volume \"" << lvname << "\"" << endl;
     }
         
 }

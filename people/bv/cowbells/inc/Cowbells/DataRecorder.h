@@ -21,6 +21,9 @@
 #include <TFile.h>
 #include <TTree.h>
 
+#include <vector>
+#include <string>
+
 namespace Cowbells {
 
     class DataRecorder
@@ -28,6 +31,9 @@ namespace Cowbells {
     public:
         DataRecorder(const char* filename = 0);
         virtual ~DataRecorder();
+
+        // Tell data to record hit collection 
+        void add_hc(const std::string& hcname);
 
         static DataRecorder* Get();
 
@@ -48,8 +54,8 @@ namespace Cowbells {
         TFile* m_file;
         TTree* m_tree;
         Cowbells::Event* m_event;
-
         bool m_save_steps;
+        std::vector<std::string> m_hcnames;
 
         void clear();
         void set_output_file(std::string filename);

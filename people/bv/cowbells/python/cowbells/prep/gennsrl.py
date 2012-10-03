@@ -7,7 +7,7 @@ This consists of
 |   <>   ()  <>  ()  <>
 W   T1   S1  T2  S2  T3
 
-W : window (15 mil = 381 microns thick Aluminum)
+W : beam window (15 mil = 381 microns thick Aluminum)
 Tn: trigger counter #n
 Sn: sample detector #n
 
@@ -27,7 +27,7 @@ import ROOT
 
 from gentubdet import TubDetBuilder, TeflonSurface
 
-class WindowBuilder(object):
+class BeamWindowBuilder(object):
     '''
     Build the beam window.
     '''
@@ -39,14 +39,14 @@ class WindowBuilder(object):
         
         ## materials:
 
-        'Window': 'Aluminum',
+        'BeamWindow': 'Aluminum',
         }
 
     def __init__(self, geo, **params):
         self.geo = geo
         self.params = {}
         self._top = None
-        self.params.update(WindowBuilder.default_params)
+        self.params.update(BeamWindowBuilder.default_params)
         self.params.update(params)
         return
 
@@ -71,7 +71,7 @@ class WindowBuilder(object):
         rad = p['radius']
         thick = p['thickness']
 
-        win = self.geo.MakeTube('Window', self.get_med('Window'),
+        win = self.geo.MakeTube('BeamWindow', self.get_med('BeamWindow'),
                                 0.0, rad, 0.5*thick)
         win.SetVisibility(1)
         win.SetLineColor(2)
@@ -92,13 +92,13 @@ class TriggerCounterBuilder(object):
         # The width transverse to the beam
         'width': 2.0*cm,
         # The depth of the scint in the direction of the beam (Z)
-        'depth': 1.0*cm,
+        'depth': 0.5*cm,
         # Thickness of "photocathode" wrapping
         'thickness': 1*mm,
 
         ## materials:
 
-        'Scintillator':'Scintillator',
+        'Scintillator': 'Scintillator',
         'PhotoCathode': 'Glass',
 
         }
@@ -138,7 +138,8 @@ class TriggerCounterBuilder(object):
         tc.SetVisibility(1)
         tc.SetLineColor(2)
 
-        pc = geo.MakeBox('PC',self.get_med('PhotoCathode'),
+        # fixme: this name must be currently hard-coded into cowbells.cc
+        pc = geo.MakeBox('TC_PC',self.get_med('PhotoCathode'),
                          hwidth+thick, hwidth+thick, hdepth+thick)
         pc.SetVisibility(1)
         pc.SetLineColor(1)
@@ -159,7 +160,7 @@ def fill(geo, filename = 'nsrldet.root', samplemat = 'Water'):
 
     The first tub is at the origin.
     '''
-    w = WindowBuilder(geo)
+    bw = BeamWindowBuilder(geo)
     s1 = TubDetBuilder(geo, Sample=samplemat, Tub='Teflon',   Lid='Teflon')
     s2 = TubDetBuilder(geo, Sample=samplemat, Tub='Aluminum', Lid='Aluminum')
     tc = TriggerCounterBuilder(geo)
@@ -192,7 +193,7 @@ def fill(geo, filename = 'nsrldet.root', samplemat = 'Water'):
     sd2tran = ROOT.TGeoCombiTrans(sd2shift, sdrot)
     for t in [sdrot,sd1shift,sd2shift]: ROOT.SetOwnership(t,0)
 
-    for shift, builder, copynum in [(winshift,w,1),
+    for shift, builder, copynum in [(winshift,bw,1),
                                     (tc1shift,tc,1),
                                     (sd1tran, s1,1),
                                     (tc2shift,tc,2),

@@ -36,7 +36,8 @@ namespace Cowbells {
         /// Associate a sensitive detector and hit collection to a
         /// logical volume.  The touchables vector should contain an
         /// ordered list of touchable names and is used to translate
-        /// name into an index.
+        /// name into an index.  If the vector is empty it is assumed
+        /// to use the logical volume's physical volume's copy number.
 	///
 	/// By default a Cowbells::SensitiveDetector object is used.
         /// If the hit collection name is not given it will be formed

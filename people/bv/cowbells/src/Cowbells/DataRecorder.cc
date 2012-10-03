@@ -58,24 +58,49 @@ void Cowbells::DataRecorder::close()
     //m_file->Close();
 }
 
+void Cowbells::DataRecorder::add_hc(const std::string& hcname)
+{
+    m_hcnames.push_back(hcname);
+}
 
 void Cowbells::DataRecorder::fill(const G4Event* event)
 {
     //cerr << "Filling tree" << endl;
-    std::string hcName = "PCHC";    // fixme: make configurable
-    int hcID = G4SDManager::GetSDMpointer()->GetCollectionID(hcName);
-    Cowbells::HitCollection* hc = 
-        static_cast<Cowbells::HitCollection*>(event->GetHCofThisEvent()->GetHC(hcID));
 
-    int nhits = hc->entries();
-    for (int ind = 0; ind < nhits; ++ind) {
-        GHit* ghit = dynamic_cast<Cowbells::GHit*>(hc->GetHit(ind));
-        assert(ghit);
-        m_event->hc.push_back(ghit->get());
+    if (!m_hcnames.size() ) {
+        cerr << "No hit collections requested for storage." << endl;
     }
 
-    if (!m_save_steps) { 
-        m_event->clear_steps();
+    for (size_t hcind = 0; hcind < m_hcnames.size(); ++hcind) {
+        std::string hcName = m_hcnames[hcind];
+        int hcID = G4SDManager::GetSDMpointer()->GetCollectionID(hcName);
+    
+        G4HCofThisEvent* hcof = event->GetHCofThisEvent();
+        if (!hcof) {
+            cerr << "No hit collection of this event named " << hcName << endl;
+            continue;
+        }
+
+        G4VHitsCollection* gen_hc = hcof->GetHC(hcID);
+
+        Cowbells::HitCollection* hc = 
+            static_cast<Cowbells::HitCollection*>(gen_hc);
+
+        if (!hc) {
+            cerr << "No hit collection from HC ID:" << hcID << " \"" << hcName << "\"" << endl;
+            return;
+        }
+
+        int nhits = hc->entries();
+        for (int ind = 0; ind < nhits; ++ind) {
+            GHit* ghit = dynamic_cast<Cowbells::GHit*>(hc->GetHit(ind));
+            assert(ghit);
+            m_event->hc.push_back(ghit->get());
+        }
+        
+        if (!m_save_steps) { 
+            m_event->clear_steps();
+        }
     }
 
     m_tree->Fill();

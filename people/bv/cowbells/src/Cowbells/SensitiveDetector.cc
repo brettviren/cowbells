@@ -26,7 +26,7 @@ Cowbells::SensitiveDetector::SensitiveDetector(const std::string& name,
 
     for (size_t ind=0; ind<touchables.size(); ++ind) {
         string tname = touchables[ind];
-        m_touchId[tname] = ind;
+        m_touchNameId[tname] = ind;
     }
 }
 
@@ -54,6 +54,31 @@ void Cowbells::SensitiveDetector::EndOfEvent(G4HCofThisEvent*)
          << fHC->entries() << " entries" << endl;
 }
 
+static std::string make_touchable_name(G4TouchableHandle& touch)
+{
+    stringstream ss;
+    string comma = "";
+
+    for (int ind = touch->GetHistoryDepth(); ind >= 0; --ind) {
+        G4VPhysicalVolume* pv = touch->GetVolume(ind);
+        cerr << "touch: #" << ind << " " << pv->GetName() 
+             <<  " " << pv->GetCopyNo() << " " << pv->GetMultiplicity()
+             << ", " << touch->GetCopyNumber(ind) 
+             << ", " << touch->GetReplicaNumber(ind)
+             << endl;
+        ss << comma << pv->GetName() << ":" << touch->GetCopyNumber(ind);
+        comma = "/";
+    }
+   return ss.str();
+}
+
+int Cowbells::SensitiveDetector::divine_touchable_id(const std::string& tname)
+{
+    TouchableNameId_t::iterator it = m_touchNameId.find(tname);
+    if (it == m_touchNameId.end()) { return 0; }
+    return it->second;
+}
+
 G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory* /*nada*/)
 {
     // fixme: don't accept all particles, return false for the losers
@@ -63,28 +88,24 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     G4TouchableHandle touch = psp->GetTouchableHandle();
     G4Track* track = aStep->GetTrack();
 
-    Cowbells::Hit* hit = new Cowbells::Hit();
-    fHC->insert(new Cowbells::GHit(hit));
-
     int depth = touch->GetHistoryDepth();
     G4VPhysicalVolume* pv = touch->GetVolume();
 
-    TouchableId_t::iterator it = m_touchId.find(pv->GetName());
-    if (it == m_touchId.end()) {
-        cerr << "Hit: hit in unknown volume: \"" << pv->GetName() << "\"" << endl;
-
-        for (int ind = touch->GetHistoryDepth(); ind >= 0; --ind) {
-            pv = touch->GetVolume(ind);
-            cerr << "touch: #" << ind << " " << pv->GetName() 
-                 <<  " " << pv->GetCopyNo() << " " << pv->GetMultiplicity()
-                 << ", " << touch->GetCopyNumber(ind) 
-                 << ", " << touch->GetReplicaNumber(ind)
-                 << endl;
-        }
-
+    if (!fHC) {
+        cerr  << "No hit collection for PV:" << pv->GetName() << endl;
         return true;
     }
-    int id = it->second;
+
+    Cowbells::Hit* hit = new Cowbells::Hit();
+    fHC->insert(new Cowbells::GHit(hit));
+
+
+    string tname = make_touchable_name(touch);
+    int id = divine_touchable_id(tname);
+    if (!id) {
+        cerr << "Hit: hit in unknown volume: \"" << tname << "\"" << endl;
+        return true;
+    }
 
     hit->setEnergy(track->GetTotalEnergy());
     hit->setTime(psp->GetGlobalTime());
@@ -93,11 +114,19 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     const G4ParticleDefinition* pd = track->GetParticleDefinition();
     hit->setPdgId(pd->GetPDGEncoding());
 
-    // cerr << "Hit: in #"<<id
-    //      <<" \"" << pv->GetName() << "\"" 
-    //      <<" (#" << hit->pdgId()<<" "<< pd->GetParticleName() << ") "
-    //      << " @ " << hit->time() 
-    //      << ", " << pos.x() << ", " << pos.y() << ", " << pos.z() << endl;
+    cerr << "Hit: in #"<<id
+         <<" \"" << tname << "\"" 
+         <<" (#" << hit->pdgId()<<" "<< pd->GetParticleName() << ") "
+         << " @ " << hit->time() 
+         << ", " << pos.x() << ", " << pos.y() << ", " << pos.z() << endl;
 
+    for (int ind = touch->GetHistoryDepth(); ind >= 0; --ind) {
+        pv = touch->GetVolume(ind);
+        cerr << "touch: #" << ind << " " << pv->GetName() 
+             <<  " " << pv->GetCopyNo() << " " << pv->GetMultiplicity()
+             << ", " << touch->GetCopyNumber(ind) 
+             << ", " << touch->GetReplicaNumber(ind)
+             << endl;
+    }
     return true;
 }
