@@ -87,6 +87,8 @@ class TriggerCounterBuilder(object):
     '''
     default_params = {
 
+        'pc_name' : 'TC_PC'
+
         ## dimensions:
 
         # The width transverse to the beam
@@ -139,7 +141,7 @@ class TriggerCounterBuilder(object):
         tc.SetLineColor(2)
 
         # fixme: this name must be currently hard-coded into cowbells.cc
-        pc = geo.MakeBox('TC_PC',self.get_med('PhotoCathode'),
+        pc = geo.MakeBox(p['pc_name'],self.get_med('PhotoCathode'),
                          hwidth+thick, hwidth+thick, hdepth+thick)
         pc.SetVisibility(1)
         pc.SetLineColor(1)

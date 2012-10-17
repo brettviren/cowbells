@@ -3,6 +3,7 @@
 #include "Cowbells/PrimaryGeneratorFile.h"
 #include "Cowbells/TestDetectorConstruction.h"
 #include "Cowbells/BuildFromRoot.h"
+#include "Cowbells/BuildByHand.h"
 #include "Cowbells/DataRecorder.h"
 #include "Cowbells/RunAction.h"
 #include "Cowbells/EventAction.h"
@@ -61,26 +62,33 @@ int main(int argc, char *argv[])
     rm.SetUserAction(pg);
 
     std::string geofile = opt(oGEOMETRY);
-    Cowbells::BuildFromRoot* detcon = new Cowbells::BuildFromRoot(geofile);
+    
+    if (false) {
+        Cowbells::BuildFromRoot* detcon = new Cowbells::BuildFromRoot(geofile);
 
-    {                                       
-        std::vector<std::string> tub_paths; // fake it until you make it
-        tub_paths.push_back("");
-        tub_paths.push_back("Top:1/TubTeflon:1/Window:1/TUB_PC:1");
-        tub_paths.push_back("Top:1/TubAluminum:1/Window:1/TUB_PC:1");
-        detcon->add_sensdet("TUB_PC", tub_paths, "TUB_PC_HC", "/cowbells/tubsd");
+        {                                       
+            std::vector<std::string> tub_paths; // fake it until you make it
+            tub_paths.push_back("");
+            tub_paths.push_back("Top:1/TubTeflon:1/Window:1/TUB_PC:1");
+            tub_paths.push_back("Top:1/TubAluminum:1/Window:1/TUB_PC:1");
+            detcon->add_sensdet("TUB_PC", tub_paths, "TUB_PC_HC", "/cowbells/tubsd");
+        }
+
+        {
+            std::vector<std::string> tc_paths;
+            tc_paths.push_back("");
+            tc_paths.push_back("Top:1/TC_PC:1");
+            tc_paths.push_back("Top:1/TC_PC:2");
+            tc_paths.push_back("Top:1/TC_PC:3");
+            detcon->add_sensdet("TC_PC", tc_paths, "TC_PC_HC", "/cowbells/tcsd");
+        }
+
+        rm.SetUserInitialization(detcon);
     }
-
-    {
-        std::vector<std::string> tc_paths;
-        tc_paths.push_back("");
-        tc_paths.push_back("Top:1/TC_PC:1");
-        tc_paths.push_back("Top:1/TC_PC:2");
-        tc_paths.push_back("Top:1/TC_PC:3");
-        detcon->add_sensdet("TC_PC", tc_paths, "TC_PC_HC", "/cowbells/tcsd");
+    else {
+        Cowbells::BuildByHand* detcon = new Cowbells::BuildByHand(geofile);
+        rm.SetUserInitialization(detcon);
     }
-
-    rm.SetUserInitialization(detcon);
 
     Cowbells::DataRecorder* dr = 0;
 

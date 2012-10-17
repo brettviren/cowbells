@@ -55,7 +55,10 @@ def dump(top, depth = 0):
     med = top.GetMedium()
     if med: matname = med.GetName()
     else: matname = "None"
-    print '%spv=%s, lv=%s, med=%s' % (tab, top.GetName(), lv.GetName(), matname)
+    print '%spv=[0x%x]%s(%s), lv=[0x%x]%s(%s), med=%s' % \
+        (tab, id(top), top.GetName(), top.GetUniqueID(),
+         id(lv), lv.GetName(), lv.GetPointerName(), 
+         matname)
     for ind in range(top.GetNdaughters()):
         child = top.GetDaughter(ind)
         dump(child, depth + 1)
