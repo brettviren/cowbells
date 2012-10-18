@@ -42,6 +42,7 @@ include_directories(${PROJECT_SOURCE_DIR}/inc)
 
 # Some file lists
 file(GLOB sources src/Cowbells/*.cc)
+file(GLOB json_sources src/json/*.cpp)
 
 # Copy over the python 
 file(COPY python/ DESTINATION python/ FILES_MATCHING PATTERN "*.py")
@@ -50,6 +51,9 @@ file(COPY python/ DESTINATION python/ FILES_MATCHING PATTERN "*.py")
 add_library(cowbells SHARED ${sources})
 #add_library(cowbells MODULE ${sources})
 target_link_libraries(cowbells ${vgmlib} ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex)
+
+# JSON library
+add_library(json SHARED ${json_sources})
 
 # Build executable
 #add_executable(test_cowbells_main main/test_cowbells_main.cc)
