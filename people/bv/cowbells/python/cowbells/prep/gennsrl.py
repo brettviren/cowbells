@@ -87,7 +87,7 @@ class TriggerCounterBuilder(object):
     '''
     default_params = {
 
-        'pc_name' : 'TC_PC'
+        'pc_name' : 'TC_PC',
 
         ## dimensions:
 

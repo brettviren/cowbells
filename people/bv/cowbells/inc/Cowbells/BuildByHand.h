@@ -11,7 +11,7 @@
 #ifndef COWBELLS_BUILDBYHAND_H
 #define COWBELLS_BUILDBYHAND_H
 
-#include "G4VUserDetectorConstruction.hh"
+#include "Cowbells/DetConsBase.h"
 
 #include <string>
 #include <map>
@@ -20,7 +20,7 @@ class G4LogicalVolume;
 
 namespace Cowbells {
 
-    class BuildByHand : public G4VUserDetectorConstruction {
+    class BuildByHand : public DetConsBase {
     public:
 
         /// Build Geometry, materials and optical properties
@@ -28,14 +28,13 @@ namespace Cowbells {
         virtual ~BuildByHand();
 
         // G4VU.D.C. interface
-        virtual G4VPhysicalVolume* Construct();
+        virtual G4VPhysicalVolume* ConstructGeometry();
 
         
     private:
+        void MakeMaterials();
         G4LogicalVolume* MakeTubDet(std::string mat_sample_name,
                                     std::string mat_tub_name);
-
-        std::string m_prop_file;
     };
 
 }

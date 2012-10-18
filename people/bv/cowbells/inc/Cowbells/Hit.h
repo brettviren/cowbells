@@ -36,7 +36,11 @@ namespace Cowbells {
         int volId();
         void setVolId(int id);
 
-        // PDG particle id
+        // Hit Collection ID
+        int hcId();
+        void setHcId(int id);
+
+       // PDG particle id
         int pdgId();
         void setPdgId(int pid);
 
@@ -46,7 +50,7 @@ namespace Cowbells {
 
     private:
         double t, x, y, z, e;
-        int volid, pdg;
+        int volid, pdg, hcid;
     };
 
     class GHit : public G4VHit 

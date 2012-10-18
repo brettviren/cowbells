@@ -102,6 +102,7 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
         cerr  << "No hit collection for PV:" << pv->GetName() << endl;
         return true;
     }
+    int hcid = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
 
     Cowbells::Hit* hit = new Cowbells::Hit();
     fHC->insert(new Cowbells::GHit(hit));
@@ -127,6 +128,7 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     hit->setVolId(id);
     const G4ParticleDefinition* pd = track->GetParticleDefinition();
     hit->setPdgId(pd->GetPDGEncoding());
+    hit->setHcId(hcid);
 
     // cerr << "Hit: in "
     //      << " LV:" << lv->GetName() << " "

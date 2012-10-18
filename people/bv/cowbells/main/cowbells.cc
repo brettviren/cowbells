@@ -63,6 +63,14 @@ int main(int argc, char *argv[])
 
     std::string geofile = opt(oGEOMETRY);
     
+    Cowbells::DataRecorder* dr = 0;
+
+    std::string outputfile = opt(oOUTPUT);
+    if ("none" != outputfile) {
+        dr = new Cowbells::DataRecorder(outputfile.c_str());
+        dr->save_steps();
+    }
+
     if (false) {
         Cowbells::BuildFromRoot* detcon = new Cowbells::BuildFromRoot(geofile);
 
@@ -71,7 +79,8 @@ int main(int argc, char *argv[])
             tub_paths.push_back("");
             tub_paths.push_back("Top:1/TubTeflon:1/Window:1/TUB_PC:1");
             tub_paths.push_back("Top:1/TubAluminum:1/Window:1/TUB_PC:1");
-            detcon->add_sensdet("TUB_PC", tub_paths, "TUB_PC_HC", "/cowbells/tubsd");
+            detcon->add_sensdet("TUB_PC", tub_paths, "TUB_PC_HC", "/cowbells/tub");
+            if (dr) dr->add_hc("TUB_PC_HC");
         }
 
         {
@@ -80,22 +89,35 @@ int main(int argc, char *argv[])
             tc_paths.push_back("Top:1/TC_PC:1");
             tc_paths.push_back("Top:1/TC_PC:2");
             tc_paths.push_back("Top:1/TC_PC:3");
-            detcon->add_sensdet("TC_PC", tc_paths, "TC_PC_HC", "/cowbells/tcsd");
+            detcon->add_sensdet("TC_PC", tc_paths, "TC_PC_HC", "/cowbells/tc");
+            if (dr) dr->add_hc("TC_PC_HC");
         }
 
         rm.SetUserInitialization(detcon);
     }
     else {
         Cowbells::BuildByHand* detcon = new Cowbells::BuildByHand(geofile);
+
+        {
+            std::vector<std::string> paths; // fake it until you make it
+            paths.push_back("");
+            paths.push_back("World:0/TubTeflon:0/TubdetWindow:0/PC:0");
+            paths.push_back("World:0/TubAluminum:0/TubdetWindow:0/PC:0");
+            detcon->add_sensdet("lvTubPC", paths, "TUB_PC_HC", "/cowbells/tub");
+            if (dr) dr->add_hc("TUB_PC_HC");
+        }
+
+        {
+            std::vector<std::string> paths;
+            paths.push_back("");
+            paths.push_back("World:0/TriggerCounter:0");
+            paths.push_back("World:0/TriggerCounter:1");
+            paths.push_back("World:0/TriggerCounter:2");
+            detcon->add_sensdet("lvTCPC", paths, "TC_PC_HC", "/cowbells/tc");
+            if (dr) dr->add_hc("TC_PC_HC");
+        }
+
         rm.SetUserInitialization(detcon);
-    }
-
-    Cowbells::DataRecorder* dr = 0;
-
-    std::string outputfile = opt(oOUTPUT);
-    if ("none" != outputfile) {
-        dr = new Cowbells::DataRecorder(outputfile.c_str());
-        dr->save_steps();
     }
 
     Cowbells::RunAction* ura = new Cowbells::RunAction();
