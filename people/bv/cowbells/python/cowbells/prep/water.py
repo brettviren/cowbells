@@ -98,3 +98,24 @@ def properties(pf):
     pf.add(name, 'ABSLENGTH', zip(energy,absorption), ('Energy (MeV)', 'Absorption Length (mm)'))
     pf.add(name, 'RAYLEIGH',  zip(energy,rayleigh), ('Energy (MeV)', 'Rayleigh Scattering (mm)'))
     return
+
+if __name__ == '__main__':
+    import json
+    class JsonSpew:
+        def add(self, name, prop, xy, tits):
+            x=[d[0] for d in xy]
+            y=[d[1] for d in xy]
+            data = {
+                'properties': {
+                    name: {
+                        prop: {
+                            'x':x,
+                            'y':y,
+                            }
+                        }
+                    }
+                }
+            print json.dumps(data)
+        pass
+    js = JsonSpew()
+    properties(js)

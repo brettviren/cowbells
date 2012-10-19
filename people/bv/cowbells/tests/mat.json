@@ -1,12 +1,12 @@
 {
     "elements" : {
-	"H": ["Hydrogen", 1 ,  1.01],
-	"C": ["Carbon"  , 6 , 12.01],
-	"N": ["Nitrogen", 7 , 14.01],
-	"O": ["Oxygen"  , 8 , 16.00],
-	"F": ["Florine" , 9 , 19.00],
-	"Al":["Aluminum",13 , 26.98],
-	"S": ["Sulfur"  ,16 , 32.07]
+	"H": {"name":"Hydrogen", "z":1 , "a": 1.01},
+	"C": {"name":"Carbon"  , "z":6 , "a":12.01},
+	"N": {"name":"Nitrogen", "z":7 , "a":14.01},
+	"O": {"name":"Oxygen"  , "z":8 , "a":16.00},
+	"F": {"name":"Florine" , "z":9 , "a":19.00},
+	"Al":{"name":"Aluminum", "z":13, "a":26.98},
+	"S": {"name":"Sulfur"  , "z":16 ,"a":32.07}
     },
     "materials" : {
 	"Acrylic" : {

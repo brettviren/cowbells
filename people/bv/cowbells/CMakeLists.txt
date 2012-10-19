@@ -50,7 +50,7 @@ file(COPY python/ DESTINATION python/ FILES_MATCHING PATTERN "*.py")
 # build library
 add_library(cowbells SHARED ${sources})
 #add_library(cowbells MODULE ${sources})
-target_link_libraries(cowbells ${vgmlib} ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex)
+target_link_libraries(cowbells ${vgmlib} ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex json)
 
 # JSON library
 add_library(json SHARED ${json_sources})

@@ -2,8 +2,7 @@
 #include "Cowbells/PrimaryGeneratorBeam.h"
 #include "Cowbells/PrimaryGeneratorFile.h"
 #include "Cowbells/TestDetectorConstruction.h"
-#include "Cowbells/BuildFromRoot.h"
-#include "Cowbells/BuildByHand.h"
+#include "Cowbells/BuildFromJson.h"
 #include "Cowbells/DataRecorder.h"
 #include "Cowbells/RunAction.h"
 #include "Cowbells/EventAction.h"
@@ -42,7 +41,7 @@ int main(int argc, char *argv[])
     }
     Cowbells::PhysicsList* pl = new Cowbells::PhysicsList(opt(oPHYSICS), defcut);
     rm.SetUserInitialization(pl);
-
+    
     G4VUserPrimaryGeneratorAction* pg = 0;
     vector<string> kin = uri_split(opt(oKIN));
     if (kin[0] == "file") {     // file://path/to/file.txt
@@ -58,11 +57,11 @@ int main(int argc, char *argv[])
         }
     }
     assert(pg);
-
-    rm.SetUserAction(pg);
-
-    std::string geofile = opt(oGEOMETRY);
     
+    rm.SetUserAction(pg);
+    
+    std::string cfgfile = opt(oGEOMETRY);
+
     Cowbells::DataRecorder* dr = 0;
 
     std::string outputfile = opt(oOUTPUT);
@@ -71,54 +70,9 @@ int main(int argc, char *argv[])
         dr->save_steps();
     }
 
-    if (false) {
-        Cowbells::BuildFromRoot* detcon = new Cowbells::BuildFromRoot(geofile);
-
-        {                                       
-            std::vector<std::string> tub_paths; // fake it until you make it
-            tub_paths.push_back("");
-            tub_paths.push_back("Top:1/TubTeflon:1/Window:1/TUB_PC:1");
-            tub_paths.push_back("Top:1/TubAluminum:1/Window:1/TUB_PC:1");
-            detcon->add_sensdet("TUB_PC", tub_paths, "TUB_PC_HC", "/cowbells/tub");
-            if (dr) dr->add_hc("TUB_PC_HC");
-        }
-
-        {
-            std::vector<std::string> tc_paths;
-            tc_paths.push_back("");
-            tc_paths.push_back("Top:1/TC_PC:1");
-            tc_paths.push_back("Top:1/TC_PC:2");
-            tc_paths.push_back("Top:1/TC_PC:3");
-            detcon->add_sensdet("TC_PC", tc_paths, "TC_PC_HC", "/cowbells/tc");
-            if (dr) dr->add_hc("TC_PC_HC");
-        }
-
-        rm.SetUserInitialization(detcon);
-    }
-    else {
-        Cowbells::BuildByHand* detcon = new Cowbells::BuildByHand(geofile);
-
-        {
-            std::vector<std::string> paths; // fake it until you make it
-            paths.push_back("");
-            paths.push_back("World:0/TubTeflon:0/TubdetWindow:0/PC:0");
-            paths.push_back("World:0/TubAluminum:0/TubdetWindow:0/PC:0");
-            detcon->add_sensdet("lvTubPC", paths, "TUB_PC_HC", "/cowbells/tub");
-            if (dr) dr->add_hc("TUB_PC_HC");
-        }
-
-        {
-            std::vector<std::string> paths;
-            paths.push_back("");
-            paths.push_back("World:0/TriggerCounter:0");
-            paths.push_back("World:0/TriggerCounter:1");
-            paths.push_back("World:0/TriggerCounter:2");
-            detcon->add_sensdet("lvTCPC", paths, "TC_PC_HC", "/cowbells/tc");
-            if (dr) dr->add_hc("TC_PC_HC");
-        }
-
-        rm.SetUserInitialization(detcon);
-    }
+    Cowbells::BuildFromJson* detcon = new Cowbells::BuildFromJson();
+    detcon->addfile(cfgfile);
+    rm.SetUserInitialization(detcon);
 
     Cowbells::RunAction* ura = new Cowbells::RunAction();
     if (dr) { ura->set_recorder(dr); }
