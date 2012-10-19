@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     
     rm.SetUserAction(pg);
     
-    std::string cfgfile = opt(oGEOMETRY);
+    std::string geofile = opt(oGEOMETRY);
 
     Cowbells::DataRecorder* dr = 0;
 
@@ -71,7 +71,18 @@ int main(int argc, char *argv[])
     }
 
     Cowbells::BuildFromJson* detcon = new Cowbells::BuildFromJson();
-    detcon->addfile(cfgfile);
+    {
+        const char* cf = opt(oCONFIG);
+        if (!cf) {
+            cerr << "No config files!" << endl;
+            return 1;
+        }
+        vector<std::string> cfgfiles = Cowbells::split(cf,",");
+        for (size_t ind=0; ind<cfgfiles.size(); ++ind) {
+            cout << "Using configuration file: " << cfgfiles[ind] << endl;
+            detcon->addfile(cfgfiles[ind]);
+        }
+    }
     rm.SetUserInitialization(detcon);
 
     Cowbells::RunAction* ura = new Cowbells::RunAction();

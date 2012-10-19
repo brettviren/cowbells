@@ -22,18 +22,15 @@ int main(int argc, char *argv[])
     }
 
 
-    {
-        std::vector<std::string> keys;
-        keys.push_back("elements");
-        keys.push_back("H");
-        Json::Value val = Cowbells::json_get_keys(roots, keys);
-        cerr << val.toStyledString() << endl;
-    }
-    {
-        std::vector<std::string> keys;
-        keys.push_back("elements");
-        keys.push_back("U");
-        Json::Value val = Cowbells::json_get_keys(roots, keys);
+    const char* paths[] = {
+        "elements/H",
+        "elements/U",
+        "detector/world/size",
+        0
+    };
+    for (int ind=0; paths[ind]; ++ind) {
+        cerr << ind << ": " << paths[ind] << " = ";
+        Json::Value val = Cowbells::json_get_fitting(roots, paths[ind]);
         cerr << val.toStyledString() << endl;
     }
 

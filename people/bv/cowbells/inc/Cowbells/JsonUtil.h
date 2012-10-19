@@ -8,8 +8,8 @@
 namespace Cowbells {
 
     Json::Value json_parse_file(std::string filename);
-    Json::Value json_get_keys(std::vector<Json::Value> roots, 
-                              std::vector<std::string> keys);
 
+    Json::Value json_get_fitting(std::vector<Json::Value>& roots,
+                                 std::string path);
 }
 #endif  // JSONUTIL_H

@@ -27,7 +27,8 @@ struct Arg: public option::Arg
 
 };
 
-enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oGEOMETRY, oUI, oKIN, oNEVENTS, oPHYSICS, oDEFCUT };
+enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oGEOMETRY, oUI, oKIN, 
+                   oNEVENTS, oPHYSICS, oDEFCUT, oCONFIG };
 const option::Descriptor usage[] = 
 {
     {oUNKNOWN, 0, "", "", Arg::None, 
@@ -57,6 +58,9 @@ const option::Descriptor usage[] =
     {oDEFCUT, 0, "", "defcut", Arg::Required,
      "  --defcut <default_cut_in_mm>\tSet the default cut"},
 
+    {oCONFIG, 0, "c", "config", Arg::Required,
+     "  -config, -c <cfg,file,list>\tSet one or more configuration files"},
+
     {0,0,0,0,0,0}
 };
 
@@ -82,7 +86,7 @@ option::Option* parse_args(int argc, char* argv[])
         return 0;
     }
 
-    optionIndex required[] = { oGEOMETRY, oOUTPUT, oKIN, oUNKNOWN };
+    optionIndex required[] = { oGEOMETRY, oOUTPUT, oKIN, oUNKNOWN, oCONFIG };
     for (int ind=0; required[ind]; ++ind) {
         optionIndex oi = required[ind];
         option::Option& opt = options[oi];

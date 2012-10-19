@@ -120,26 +120,12 @@ void Cowbells::BuildFromJson::MakeMaterials(Json::Value mats)
 // get json object value
 Json::Value Cowbells::BuildFromJson::gjov(string path)
 {
-    vector<string> keys = Cowbells::split(path,"/");
-
-    for (size_t iroot=0; iroot < m_roots.size(); ++iroot) {
-        Json::Value root = m_roots[iroot];
-
-        bool failed = false;
-        for (size_t ikey = 0; keys.size(); ++ikey) {
-            Json::Value val = root[keys[ikey]];
-            if (val.isNull()) { 
-                failed = true; 
-                break; 
-            }
-            root = val;
-        }
-        if (failed || root.isNull()) { 
-            continue; 
-        }
-        return root;
+    Json::Value ret = Cowbells::json_get_fitting(m_roots, path);
+    if (ret.isNull()) {
+        cerr << "Failed to find configuration item \"" << path << "\"" << endl;
+        throw invalid_argument("bad configuration");
     }
-    return Json::Value();
+    return ret;
 }
 
 double Cowbells::BuildFromJson::asDistance(string path)
@@ -154,10 +140,13 @@ double Cowbells::BuildFromJson::asDistance(string path)
     if (unit == "cm") {
         return num*cm;
     }
+    if (unit == "mm") {
+        return num*mm;
+    }
     if (unit == "inch") {
         return num*2.54*cm;
     }
-    cerr << "Unkown unit: " << unit << endl;
+    cerr << "Unknown unit: \"" << unit << "\" for \"" << path << "\"" << endl;
     return 0;
 }
 
@@ -228,13 +217,15 @@ G4LogicalVolume* Cowbells::BuildFromJson::MakeTubDet(std::string mat_sample_name
 
         // window
         {
-            string matname = asString("detector/tubdet/window_material");
+            string matname = asString("detector/tubdets/window_material");
             G4Material* mat = G4Material::GetMaterial(matname);
             std::string shape_name = "shapeTubdetWindow";
-            double full_rad = asDistance("detector/tubdet/window_full_radius");
-            double step_rad = asDistance("detector/tubdet/window_step_radius");
-            double thick = asDistance("detector/tubdet/window_thickness");
-            double step_z = gjov("detector/tubdet/window_step_fraction").asFloat();
+            double full_rad = asDistance("detector/tubdets/window_full_radius");
+            double step_rad = asDistance("detector/tubdets/window_step_radius");
+            double thick = asDistance("detector/tubdets/window_thickness");
+            double step_z = gjov("detector/tubdets/window_step_fraction").asFloat();
+            cerr << "step_z = " << step_z << endl;
+            step_z *= thick;
             double z_planes[4] = { 0.0, step_z, step_z, thick };
             double r_min[4] = { 0.0, 0.0, 0.0, 0.0 };
             double r_max[4] = { step_rad, step_rad, full_rad, full_rad };
@@ -248,11 +239,11 @@ G4LogicalVolume* Cowbells::BuildFromJson::MakeTubDet(std::string mat_sample_name
 
         // pc in window
         {
-            string matname = asString("detector/tubdet/pc_material");
+            string matname = asString("detector/tubdets/pc_material");
             G4Material* mat = G4Material::GetMaterial(matname);
             std::string shape_name = "shapePC";
-            double rad = asDistance("detector/tubdet/pc_radius");
-            double height = asDistance("detector/tubdet/pc_thickness");
+            double rad = asDistance("detector/tubdets/pc_radius");
+            double height = asDistance("detector/tubdets/pc_thickness");
             double offset = tubdet_lid_thickness - 0.5*height;
 
             G4Tubs* shape = new G4Tubs(shape_name.c_str(), 0, rad, 0.5*height, 0, 2*M_PI);
@@ -286,7 +277,8 @@ G4VPhysicalVolume* Cowbells::BuildFromJson::MakeGeometry()
     G4VPhysicalVolume* world_pv = 0;
     {
         double size = asDistance("detector/world/size");
-        G4Material* mat = G4Material::GetMaterial(asString("detector/world/size"));
+        string matname = asString("detector/world/material");
+        G4Material* mat = G4Material::GetMaterial(matname);
 
         G4Box* shape = new G4Box("shapeWorld", size,size,size);
         G4LogicalVolume* lv
@@ -359,8 +351,8 @@ G4VPhysicalVolume* Cowbells::BuildFromJson::MakeGeometry()
 
         string sampmat1 = gjov("detector/samples")[0].asString();
         string sampmat2 = gjov("detector/samples")[1].asString();
-        string tubmat1 = gjov("detector/tubdets")[0].asString();
-        string tubmat2 = gjov("detector/tubdets")[1].asString();
+        string tubmat1 = gjov("detector/tubdets/tub_materials")[0].asString();
+        string tubmat2 = gjov("detector/tubdets/tub_materials")[1].asString();
 
         G4LogicalVolume* lv_tub1 = MakeTubDet(sampmat1,tubmat1);
         G4LogicalVolume* lv_tub2 = MakeTubDet(sampmat2,tubmat2);

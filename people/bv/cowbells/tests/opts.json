@@ -2,7 +2,7 @@
     "detector" : {
 	"world" : { 
 	    "size" : { "value": 10.0, "unit":"m" },
-	    "material": "Air",
+	    "material": "Air"
 	},
 	"beam_window" : { 
 	    "material" : "Aluminum",
@@ -12,7 +12,7 @@
 	},
 	"trigger_counters" : {
 	    "pc_material": "Glass",
-	    "scint_material": "Scintilator",
+	    "scint_material": "Scintillator",
 	    "number" : 3,
 	    "width" : { "value":2.0, "unit":"cm" },
 	    "thickness" : { "value":0.5, "unit":"cm" },
@@ -35,11 +35,11 @@
 	    "window_full_radius" : { "value":1.375, "unit":"inch" },
 	    "window_step_radius" : { "value":1.062, "unit":"inch" },
 	    "window_thickness" : { "value":0.75, "unit":"inch" },
-	    "window_step_fraction" : .333333,
+	    "window_step_fraction" : 0.333333,
 	    "pc_material": "Acrylic",
             "pc_radius" : { "value":1.0, "unit":"inch" },
             "pc_thickness" : { "value":0.01, "unit":"inch"}
-	}
+	},
 	"samples" : [ "Water", "Water" ]
     }
 }

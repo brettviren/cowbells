@@ -1,4 +1,5 @@
 #include "Cowbells/JsonUtil.h"
+#include "Cowbells/strutil.h"
 
 
 #include <fstream>
@@ -26,13 +27,38 @@ Json::Value Cowbells::json_parse_file(std::string filename)
     return root;
 }
     
-Json::Value Cowbells::json_get_keys(vector<Json::Value> roots, vector<string> keys)
+// Json::Value Cowbells::json_get_keys(vector<Json::Value> roots, vector<string> keys)
+// {
+//     for (size_t iroot=0; iroot < roots.size(); ++iroot) {
+//         Json::Value root = roots[iroot];
+
+//         bool failed = false;
+//         for (size_t ikey = 0; ikey < keys.size(); ++ikey) {
+//             Json::Value val = root[keys[ikey]];
+//             if (val.isNull()) { 
+//                 failed = true; 
+//                 break; 
+//             }
+//             root = val;
+//         }
+//         if (failed || root.isNull()) { 
+//             continue; 
+//         }
+//         return root;
+//     }
+//     return Json::Value();
+// }
+
+Json::Value Cowbells::json_get_fitting(std::vector<Json::Value>& roots,
+                                       std::string path)
 {
+    vector<string> keys = Cowbells::split(path,"/");
+
     for (size_t iroot=0; iroot < roots.size(); ++iroot) {
         Json::Value root = roots[iroot];
 
         bool failed = false;
-        for (size_t ikey = 0; ikey < keys.size(); ++ikey) {
+        for (size_t ikey = 0; ikey<keys.size(); ++ikey) {
             Json::Value val = root[keys[ikey]];
             if (val.isNull()) { 
                 failed = true; 
@@ -45,5 +71,6 @@ Json::Value Cowbells::json_get_keys(vector<Json::Value> roots, vector<string> ke
         }
         return root;
     }
+    cerr << "Unknown configuration item: \"" << path << "\"" << endl;
     return Json::Value();
 }
