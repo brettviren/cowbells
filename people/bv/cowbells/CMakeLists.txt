@@ -24,14 +24,6 @@ find_package(ROOT REQUIRED)
 include(${ROOT_USE_FILE})
 #include_directories(${ROOT_INCLUDE_DIRS})
 
-# Q: What about G4VMC? A: DIY
-include_directories(${VGM_DIR}/packages/VGM/include)
-include_directories(${VGM_DIR}/packages/ClhepVGM/include)
-include_directories(${VGM_DIR}/packages/BaseVGM/include)
-include_directories(${VGM_DIR}/packages/Geant4GM/include)
-include_directories(${VGM_DIR}/packages/RootGM/include)
-include_directories(${VGM_DIR}/packages/XmlVGM/include)
-file(GLOB vgmlib  ${VGM_DIR}/lib/${VGM_SYSTEM}/lib*.so)
 
 # -DHEPMC_DIR:STRING=/path/to/hepmc
 include_directories(${HEPMC_DIR}/include)
@@ -50,17 +42,17 @@ file(COPY python/ DESTINATION python/ FILES_MATCHING PATTERN "*.py")
 # build library
 add_library(cowbells SHARED ${sources})
 #add_library(cowbells MODULE ${sources})
-target_link_libraries(cowbells ${vgmlib} ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex json)
+target_link_libraries(cowbells ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex json)
 
 # JSON library
 add_library(json SHARED ${json_sources})
 
 # Build executable
 #add_executable(test_cowbells_main main/test_cowbells_main.cc)
-#target_link_libraries(test_cowbells_main cowbellsDict cowbells ${vgmlib} ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex)
+#target_link_libraries(test_cowbells_main cowbellsDict cowbells ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex)
 
 add_executable(cowbells.exe main/cowbells.cc)
-target_link_libraries(cowbells.exe cowbellsDict cowbells ${vgmlib} ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex)
+target_link_libraries(cowbells.exe cowbellsDict cowbells ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex)
 
 ### Generate dictionary
 

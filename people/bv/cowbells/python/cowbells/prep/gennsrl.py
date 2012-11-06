@@ -217,9 +217,9 @@ def fill(geo, filename = 'nsrldet.root', samplemat = 'Water'):
         ts = TeflonSurface('Sample'+samplemat, 'Tub'+tubmat, tubcolor)
         ts.write(filename)
 
-    import os
-    gdmlfile = os.path.splitext(filename)[0] + '.gdml'
-    geo.Export(gdmlfile)
+    #import os
+    #gdmlfile = os.path.splitext(filename)[0] + '.gdml'
+    #geo.Export(gdmlfile)
 
 
 

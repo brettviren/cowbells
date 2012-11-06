@@ -57,15 +57,21 @@ class GenericSurface(object):
         i_opened = False
         if isinstance(tfile,str):
             tfile = ROOT.TFile.Open(tfile,'update')
+            ROOT.SetOwnership(tfile,0)
             i_opened = True
+            print 'Opened TFile: "%s"' % tfile.GetName()
 
         sdir = tfile.Get(self.subdir)
         if not sdir:
             print 'Making subdir "%s"' % self.subdir
             sdir = tfile.mkdir(self.subdir)
+            assert sdir,"Failed to make dir %s in %s" %\
+                (self.subdir, tfile.GetName())
             pass
         print 'Making subdir "%s"' % self.name
         mydir = sdir.mkdir(self.name)
+        assert mydir, "Failed to make dir %s in %s" % \
+            (self.name, sdir.GetName())
 
         print 'Writing %s/%s to %s' % (self.subdir, self.name, tfile.GetName())
 
