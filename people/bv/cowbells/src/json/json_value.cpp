@@ -669,8 +669,11 @@ Value::asString() const
    case uintValue:
    case realValue:
    case arrayValue:
-   case objectValue:
-      JSON_FAIL_MESSAGE( "Type is not convertible to string" );
+   case objectValue: {
+       std::string msg = "Type is not convertible to string.  As styled string: ";
+       msg += toStyledString();
+       JSON_FAIL_MESSAGE( msg.c_str() );
+   }
    default:
       JSON_ASSERT_UNREACHABLE;
    }

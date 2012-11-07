@@ -20,8 +20,10 @@ int main(int argc, char *argv[])
 
     G4RunManager rm;
 
+    cerr << "Reading files:" << endl;
     j2g4.read();
 
+    cerr << "Making G4 objects:" << endl;
     j2g4.make();
 
     return 0;
