@@ -205,7 +205,7 @@ bool Cowbells::AddOpticalSurfaces(std::string filename)
 }
 
 bool Cowbells::SetOpSurfParameter(G4OpticalSurface& opsurf,
-                                               std::string name, std::string value)
+                                  std::string name, std::string value)
 {
     if (name == "model") {
         // Must match G4OpticalSurfaceModel enum

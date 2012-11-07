@@ -45,6 +45,11 @@ namespace Cowbells {
 
         void MakeElements(Json::Value eles);
         void MakeMaterials(Json::Value mats);
+        void MakeSensitive(Json::Value sens);
+
+        void MakeMaterialProperties(Json::Value props);
+        void MakeOpticalSurfaces(Json::Value surfs);
+
         G4VPhysicalVolume* MakeGeometry();
         G4LogicalVolume* MakeTubDet(std::string mat_sample_name,
                                     std::string mat_tub_name);

@@ -14,8 +14,6 @@ do_it () {
         -DROOT_DIR=$base/root/5.32.02 \
         -DGCCXML_home=$base/gccxml/0.9.0_20120309 \
         -DROOT_genreflex_cmd=genreflex \
-        -DVGM_DIR=$VGM_INSTALL \
-        -DVGM_SYSTEM=$VGM_SYSTEM \
         -DHEPMC_DIR=$base/hepmc/2.06.08 \
         ../cowbells && \
         make CPPFLAGS=-DGEANT4_USE_OPENGL_X11=1\

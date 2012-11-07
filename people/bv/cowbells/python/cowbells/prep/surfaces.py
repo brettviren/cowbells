@@ -52,6 +52,29 @@ class GenericSurface(object):
         self.add_tgraph(tgraph)
         return
 
+    def data(self):
+        '''
+        Return data as a data structure.
+        '''
+
+        props = {}
+        for g in self.properties:
+            x = []; y = []
+            for ind in range(g.GetN()):
+                x.append(g.GetX()[ind])
+                y.append(g.GetY()[ind])
+                continue
+            props[g.GetName()] = {'x':x, 'y':y}
+            continue
+
+        ret = {
+            self.name : { 
+                'parameters': self.parameters,
+                'properties': props,
+                }
+            }
+        return ret
+
     def write(self, tfile):
 
         i_opened = False
@@ -100,10 +123,9 @@ class GenericSurface(object):
     pass
 
 
-if '__main__' == __name__:
+def test_file(filename):
     import sys
     filename = sys.argv[1]
-
     gs = GenericSurface('TestSurface', model='glisur', type='dielectric_metal', finish='polished')
     gs.add_parameter('first','pvFirstVolume')
     gs.add_parameter('second','pvSecondVolume')
@@ -114,3 +136,18 @@ if '__main__' == __name__:
     gs.add_property_tgraph(ref);
     gs.write(filename)
 
+def test_data():
+    gs = GenericSurface('TestSurface', model='glisur', type='dielectric_metal', finish='polished')
+    gs.add_parameter('first','pvFirstVolume')
+    gs.add_parameter('second','pvSecondVolume')
+    ref = ROOT.TGraph()
+    ref.SetName("REFLECTIVITY")
+    ref.SetPoint(0,1,1);
+    ref.SetPoint(1,6,1);
+    gs.add_property_tgraph(ref);
+    import json
+    print json.dumps(gs.data(), indent=2)
+
+if '__main__' == __name__:
+    #test_file()
+    test_data()

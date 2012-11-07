@@ -1,6 +1,8 @@
 #include "Cowbells/BuildFromJson.h"
 #include "Cowbells/JsonUtil.h"
 #include "Cowbells/strutil.h"
+#include "Cowbells/Util.h"
+#include "Cowbells/SensitiveDetector.h"
 
 #include <G4VPhysicalVolume.hh>
 #include <G4MaterialPropertiesTable.hh>
@@ -203,16 +205,14 @@ G4LogicalVolume* Cowbells::BuildFromJson::MakeTubDet(std::string mat_sample_name
         lv_samp = new G4LogicalVolume(shape, mat, lv_name.c_str(), 0,0,0);
         
         std::string pv_name = "Sample" + mat_sample_name;
-        G4VPhysicalVolume* pv
-            = new G4PVPlacement(0,G4ThreeVector(0,0,offset), lv_samp, pv_name.c_str(),
-                                lv_tub, false, 0);
-        pv = 0;
+        new G4PVPlacement(0,G4ThreeVector(0,0,offset), lv_samp, pv_name.c_str(),
+                          lv_tub, false, 0);
     }
 
     // Window - shared by all tub dets
     std::string lv_tubdet_window_name = "lvTubdetWindow";
     G4LogicalVolume* lv_window 
-        = G4LogicalVolumeStore::GetInstance()->GetVolume(lv_tubdet_window_name);
+        = G4LogicalVolumeStore::GetInstance()->GetVolume(lv_tubdet_window_name, false);
     if (!lv_window) {
 
         // window
@@ -249,10 +249,8 @@ G4LogicalVolume* Cowbells::BuildFromJson::MakeTubDet(std::string mat_sample_name
             G4Tubs* shape = new G4Tubs(shape_name.c_str(), 0, rad, 0.5*height, 0, 2*M_PI);
             
             G4LogicalVolume* lv = new G4LogicalVolume(shape, mat, "lvTubPC", 0,0,0);
-            G4VPhysicalVolume* pv
-                = new G4PVPlacement(0,G4ThreeVector(0,0,offset), lv, "PC", 
-                                    lv_window, false, 0);
-            pv = 0;
+            new G4PVPlacement(0,G4ThreeVector(0,0,offset), lv, "PC", 
+                              lv_window, false, 0);
         }
     }
     
@@ -260,10 +258,8 @@ G4LogicalVolume* Cowbells::BuildFromJson::MakeTubDet(std::string mat_sample_name
         double sample_offset = 0.5*(tubdet_lid_thickness - tubdet_wall_thickness);
         double offset = 0.5*sample_height - sample_offset - 0.034;
 
-        G4VPhysicalVolume* pv_window_in_lid
-            = new G4PVPlacement(0,G4ThreeVector(0,0,offset), lv_window, "TubdetWindow",
-                                lv_tub, false, 0);
-        pv_window_in_lid = 0;
+        new G4PVPlacement(0,G4ThreeVector(0,0,offset), lv_window, "TubdetWindow",
+                          lv_tub, false, 0);
     }
 
     return lv_tub;
@@ -303,10 +299,8 @@ G4VPhysicalVolume* Cowbells::BuildFromJson::MakeGeometry()
         G4LogicalVolume* lv 
             = new G4LogicalVolume(shape, mat, "lvBeamWindow", 0,0,0);
         
-        G4VPhysicalVolume *pv
-            = new G4PVPlacement(0,G4ThreeVector(0,0,zoff),lv,"BeamWindow",
-                                world_pv->GetLogicalVolume(),false,0);
-        pv = 0;
+        new G4PVPlacement(0,G4ThreeVector(0,0,zoff),lv,"BeamWindow",
+                          world_pv->GetLogicalVolume(),false,0);
     }
             
                                                   
@@ -332,17 +326,13 @@ G4VPhysicalVolume* Cowbells::BuildFromJson::MakeGeometry()
         G4LogicalVolume* lv_scint
             = new G4LogicalVolume(shape_scint, mat_scint, "lvTCScint", 0,0,0);
 
-        G4VPhysicalVolume* scint_in_pc
-            = new G4PVPlacement(0, G4ThreeVector(), lv_scint, "TriggerCounterScint",
-                                lv_tcpc, false, 0);
-        scint_in_pc = 0;
+        new G4PVPlacement(0, G4ThreeVector(), lv_scint, "TriggerCounterScint",
+                          lv_tcpc, false, 0);
 
         for (int tcnum = 0; tcnum < 3; ++tcnum) {
             G4ThreeVector pos(0,0,zsep*tcnum + zoff);
-            G4VPhysicalVolume* pv 
-                = new G4PVPlacement(0, pos, lv_tcpc, "TriggerCounter",
-                                world_pv->GetLogicalVolume(), false, tcnum);
-            pv = 0;
+            new G4PVPlacement(0, pos, lv_tcpc, "TriggerCounter",
+                              world_pv->GetLogicalVolume(), false, tcnum);
         }
     }
 
@@ -365,18 +355,115 @@ G4VPhysicalVolume* Cowbells::BuildFromJson::MakeGeometry()
 
         G4RotationMatrix* rot = new G4RotationMatrix();
         rot->rotateX(90*deg);
-        G4VPhysicalVolume* pv_tub1 
-            = new G4PVPlacement(rot,G4ThreeVector(0,0,zoff), lv_tub1, tubname1.c_str(),
-                                world_pv->GetLogicalVolume(), false, 0);
-        G4VPhysicalVolume* pv_tub2
-            = new G4PVPlacement(rot,G4ThreeVector(0,0,zoff+zsep), lv_tub2, tubname2.c_str(), 
-                            world_pv->GetLogicalVolume(), false, 0);
-        pv_tub1 = pv_tub2 = 0;
+        new G4PVPlacement(rot,G4ThreeVector(0,0,zoff), lv_tub1, tubname1.c_str(),
+                          world_pv->GetLogicalVolume(), false, 0);
+        new G4PVPlacement(rot,G4ThreeVector(0,0,zoff+zsep), lv_tub2, tubname2.c_str(), 
+                          world_pv->GetLogicalVolume(), false, 0);
     }
 
     return world_pv;
 }
 
+void Cowbells::BuildFromJson::MakeSensitive(Json::Value sens)
+{
+    int nsens = sens.size();
+    for (int count=0; count<nsens; ++count) {
+        Json::Value sd = sens[count];
+        string hcname = sd["hitcollection"].asString();
+        string lvname = sd["volume"].asString();
+        Json::Value touchables = sd["touchables"];
+        vector<string> tv; tv.push_back("");
+        for (size_t ntouch = 0; ntouch < touchables.size(); ++ntouch) {
+            string tpath = touchables[ntouch].asString();
+            tv.push_back(tpath);
+        }        
+
+        Cowbells::SensitiveDetector* csd = 
+            new Cowbells::SensitiveDetector("SensitiveDetector", hcname.c_str(), tv);
+
+        G4SDManager::GetSDMpointer()->AddNewDetector(csd);
+        G4LogicalVolume* lv = G4LogicalVolumeStore::GetInstance()->GetVolume(lvname.c_str());
+        if (!lv) {
+            cerr << "No LV for " << lvname << endl;
+            assert (lv);
+        }
+        lv->SetSensitiveDetector(csd);
+        cout << "Registered SD \"" << csd->GetName() 
+             << "\" with logical volume \"" << lvname << "\"" << endl;
+    }
+}
+
+static G4Material* get_mat(const G4MaterialTable& mattab, std::string matname)
+{
+    size_t nmat = mattab.size();
+    for (size_t imat=0; imat < nmat; ++imat) {
+        G4Material* mat = mattab[imat];
+        if (mat->GetName() == matname.c_str()) { 
+            return mat;
+        }
+    }
+    return 0;
+}
+
+void Cowbells::BuildFromJson::MakeMaterialProperties(Json::Value props)
+{
+    const G4MaterialTable& mattab = *G4Material::GetMaterialTable();
+
+    int nprops = props.size();
+    Json::ValueIterator it = props.begin();
+    for (int count = 0; count < nprops; ++count, ++it) {
+        string matname = it.key().asString();
+
+        G4Material* mat = get_mat(mattab, matname);
+        G4MaterialPropertiesTable* mpt = new G4MaterialPropertiesTable();
+        mat->SetMaterialPropertiesTable(mpt);
+
+        Json::Value matprop = (*it);
+
+        int nmats = matprop.size();
+        Json::ValueIterator mit = matprop.begin();
+        for (int imat=0; imat<nmats; ++imat, ++mit) {
+            string propname = mit.key().asString();
+            Json::Value prop = (*mit);
+
+            int n = prop["x"].size();
+
+            if (n == 1) { // scalar
+                double propval = prop["y"][0].asFloat();
+                mpt->AddConstProperty(propname.c_str(), propval);
+                cout << "Set " << matname << "/" << propname
+                     << "[" << n << "] = " << propval << endl;
+                continue;
+            }
+
+            double *x = new double[n];
+            double *y = new double[n];
+            for (int i=0; i<n; ++i) {
+                x[i] = prop["x"][i].asFloat();
+                y[i] = prop["y"][i].asFloat();
+            }
+            mpt->AddProperty(propname.c_str(), x,y,n);
+            cout << "Set " << matname << "/" << propname
+                 << "[" << n << "] : (" << y[0] << " - "
+                 << y[n-1] << ")" << endl;
+            delete [] x;
+            delete [] y;
+        }
+        
+    }
+}
+
+void Cowbells::BuildFromJson::MakeOpticalSurfaces(Json::Value surfs)
+{
+    int nsurfs = surfs.size();
+    Json::ValueIterator it = surfs.begin();
+    for (int count = 0; count < nsurfs; ++count, ++it) {
+        string surfname = it.key().asString();
+
+        G4OpticalSurface* opsurf = new G4OpticalSurface(surfname.c_str());
+
+
+}
 
 G4VPhysicalVolume* Cowbells::BuildFromJson::Construct()
 {
@@ -388,20 +475,58 @@ G4VPhysicalVolume* Cowbells::BuildFromJson::Construct()
     for (size_t ind = 0; ind<m_roots.size(); ++ind) {
         Json::Value root = m_roots[ind];
         Json::Value ele = root["elements"];
-        if (! ele.isNull()) {
-            this->MakeElements(ele);
+        if (ele.isNull()) {
+            continue;
         }
+        cerr << "Making elements from root #" << ind << endl;
+        this->MakeElements(ele);
     }
     for (size_t ind = 0; ind<m_roots.size(); ++ind) {
         Json::Value root = m_roots[ind];
-
         Json::Value mat = root["materials"];
-        if (! mat.isNull()) {
-            this->MakeMaterials(mat);
+        if (mat.isNull()) {
+            continue;
         }
+        cerr << "Making materials from root #" << ind << endl;
+        this->MakeMaterials(mat);
     }
 
-    return this->MakeGeometry();
+    G4VPhysicalVolume* top = this->MakeGeometry();
+    Cowbells::dump(top);
+
+    for (size_t ind = 0; ind<m_roots.size(); ++ind) {
+        Json::Value root = m_roots[ind];
+        Json::Value props = root["matprops"];
+        if (props.isNull()) {
+            continue;
+        }
+        cerr << "Making material properties from root #" << ind << endl;
+        this->MakeMaterialProperties(props);
+    }
+
+    for (size_t ind = 0; ind<m_roots.size(); ++ind) {
+        Json::Value root = m_roots[ind];
+        Json::Value opsurfs = root["opsurfs"];
+        if (opsurfs.isNull()) {
+            continue;
+        }
+        cerr << "Making optical surfaces from root #" << ind << endl;
+        this->MakeOpticalSurfaces(opsurfs);
+    }
+   
+    for (size_t ind = 0; ind<m_roots.size(); ++ind) {
+        Json::Value root = m_roots[ind];
+
+        Json::Value sens = root["sensitives"];
+        if (sens.isNull()) {
+            continue;
+        }
+        cerr << "Making sensitive detectors from root #" << ind << endl;
+        this->MakeSensitive(sens);
+    }
+
+
+    return top;
 }
 
 

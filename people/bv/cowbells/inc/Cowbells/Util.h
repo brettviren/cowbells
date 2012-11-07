@@ -8,7 +8,7 @@
 
 namespace Cowbells {
 
-    void dump(G4VPhysicalVolume* top, int depth) ;
+    void dump(G4VPhysicalVolume* top, int depth = 0);
     void dump_pvs();
     void dump_lvs();
 
