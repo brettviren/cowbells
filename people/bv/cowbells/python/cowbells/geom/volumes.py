@@ -3,7 +3,7 @@
 Describe shapes and logical volumes.
 '''
 
-import base
+import base, materials
 
 ### SHAPES ###
 
@@ -22,8 +22,9 @@ store = []
 
 class LogicalVolume(base.Base):
     def __init__(self, name, matname, shape):
-        if isinstance(matname, Material):
+        if isinstance(matname, materials.Material):
             matname = matname.name
+        assert materials.get(matname), 'No material: %s' % matname
         self.__dict__ = dict(name=name, matname=matname, shape=shape)
         store.append(self)
         return
@@ -39,7 +40,7 @@ class LogicalVolume(base.Base):
     pass
 
 def get(name):
-    if isinstance(name, LogicalVolumes):
+    if isinstance(name, LogicalVolume):
         name = name.name
     for lv in store:
         if lv.name == name:

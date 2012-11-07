@@ -374,7 +374,7 @@ void Cowbells::BuildFromJson::MakeSensitive(Json::Value sens)
         Json::Value touchables = sd["touchables"];
         vector<string> tv; tv.push_back("");
         for (size_t ntouch = 0; ntouch < touchables.size(); ++ntouch) {
-            string tpath = touchables[ntouch].asString();
+            string tpath = touchables[(int)ntouch].asString();
             tv.push_back(tpath);
         }        
 
@@ -455,12 +455,6 @@ void Cowbells::BuildFromJson::MakeMaterialProperties(Json::Value props)
 
 void Cowbells::BuildFromJson::MakeOpticalSurfaces(Json::Value surfs)
 {
-    int nsurfs = surfs.size();
-    Json::ValueIterator it = surfs.begin();
-    for (int count = 0; count < nsurfs; ++count, ++it) {
-        string surfname = it.key().asString();
-
-        G4OpticalSurface* opsurf = new G4OpticalSurface(surfname.c_str());
 
 
 }

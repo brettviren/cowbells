@@ -54,6 +54,9 @@ add_library(json SHARED ${json_sources})
 add_executable(cowbells.exe main/cowbells.cc)
 target_link_libraries(cowbells.exe cowbellsDict cowbells ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex)
 
+add_executable(json2g4.exe main/json2g4.cc)
+target_link_libraries(json2g4.exe cowbellsDict cowbells ${hepmc} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Tree Geom Graf Cintex)
+
 ### Generate dictionary
 
 # rootcint dictionary - has trouble with G4 classes
