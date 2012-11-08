@@ -24,9 +24,14 @@ string Cowbells::pv2str(G4VPhysicalVolume& pv)
 
 string Cowbells::lv2str(G4LogicalVolume& lv)
 {
+    G4Material* mat = lv.GetMaterial();
+    if (!mat) {
+        cerr << "No material for " << lv.GetName() << endl;
+        return lv.GetName();
+    }
     stringstream ss;
     ss << "LV(@0x" << (void*)&lv << "):" << lv.GetName() << " "
-       << "(" << lv.GetMaterial()->GetName() << ") "
+       << "(" << mat->GetName() << ") "
        << "#children:" << lv.GetNoDaughters();
     return ss.str();
 }

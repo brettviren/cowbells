@@ -27,8 +27,7 @@ struct Arg: public option::Arg
 
 };
 
-enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oUI, oKIN, 
-                   oNEVENTS };
+enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oUI, oKIN, oNEVENTS };
 const option::Descriptor usage[] = 
 {
     {oUNKNOWN, 0, "", "", Arg::None, 
@@ -74,7 +73,7 @@ option::Option* parse_args(int argc, char* argv[])
         return 0;
     }
 
-    optionIndex required[] = { oOUTPUT, oKIN, oUNKNOWN };
+    optionIndex required[] = { oOUTPUT, oUNKNOWN };
     for (int ind=0; required[ind]; ++ind) {
         optionIndex oi = required[ind];
         option::Option& opt = options[oi];

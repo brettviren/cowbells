@@ -275,10 +275,14 @@ int Cowbells::Json2G4::volumes(Json::Value vols)
     for (int ivol=0; ivol < nvols; ++ivol) {
         Json::Value vol = vols[ivol];
 
-        string matname = vol["material"].asString();
-        G4Material* mat = G4Material::GetMaterial(matname, false);
-
         string lvname = vol["name"].asString();
+        string matname = vol["matname"].asString();
+        G4Material* mat = G4Material::GetMaterial(matname, false);
+        if (!mat) {
+            cerr << "No material \"" << matname << "\" found for volume \"" << lvname << "\"" << endl;
+            assert(mat);
+        }
+
         G4VSolid* solid = make_solid(vol["shape"]);
         new G4LogicalVolume(solid, mat, lvname);
     }
@@ -305,8 +309,8 @@ int Cowbells::Json2G4::placements(Json::Value placed)
             if (m_world) {
                 cerr << "Warning: replacing world volume: " << m_world->GetName() 
                      << " with: " << pv->GetName() << endl;
-                m_world = pv;
             }
+            m_world = pv;
         }
     }
     return nplaced;
@@ -533,5 +537,10 @@ G4VPhysicalVolume* Cowbells::Json2G4::construct_detector()
             cerr << "\tloaded " << nmade << endl;
         }
     }
+    if (!m_world) {
+        cerr << "No world volume found." << endl;
+        assert(m_world);
+    }
+
     return m_world;
 }

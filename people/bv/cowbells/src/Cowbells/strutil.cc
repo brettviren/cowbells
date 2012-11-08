@@ -62,6 +62,9 @@ std::vector<std::string> Cowbells::uri_split(const std::string& uri)
 {
     vector<string> ret;
     vector<string> scheme_rest = split(uri,"://");
+    if (scheme_rest.size() != 2) {
+        return ret;
+    }
     ret.push_back(scheme_rest[0]);
     vector<string> path_rest = split(scheme_rest[1],"?");
     for (size_t ind=0; ind<path_rest.size(); ++ind) {

@@ -27,8 +27,33 @@ using namespace std;
 using Cowbells::uri_split;
 
 
-G4VUserPrimaryGeneratorAction* make_generator(Json::Value cfg)
+G4VUserPrimaryGeneratorAction* make_generator(Json::Value cfg, const char* okin)
 {
+    if (okin) {                 // command line take precedence
+        cerr << "Using command line option: \"" << okin << "\"" << endl;
+        vector<string> kin = uri_split(opt(oKIN));
+        if (!kin.size()) {
+            cerr << "Bad kinematics URL: \"" << okin << "\"" << endl;
+            return 0;
+        }
+
+        if (kin[0] == "file") {     // file://path/to/file.txt
+            cout << "File based generator with " << kin[1] << endl;
+            return new Cowbells::PrimaryGeneratorFile(kin[1].c_str());
+        }
+        if (kin[0] == "kin") { // kin://beam?vertex=.....
+            assert (kin.size() > 1);
+            if (kin[1] == "beam") {
+                assert (kin.size() > 2);
+                cout << "Beam generator with " << kin[2] << endl;
+                return new Cowbells::PrimaryGeneratorBeam(kin[2].c_str());
+            }
+        }
+        cerr << "Unknown kinematics option: " << okin << endl;
+        return 0;
+    }
+
+    
     string kintype = cfg["type"].asString();
 
     if (kintype == "hepmcfile") {
@@ -62,8 +87,18 @@ int main(int argc, char *argv[])
     }
 
     Cowbells::Json2G4 j2g4;
+    vector<string> macfiles;
     for (int ind = 0; ind < parser->nonOptionsCount(); ++ind) {
-        j2g4.add_file(parser->nonOption(ind));
+        string fname = parser->nonOption(ind);
+        string::size_type dot = fname.rfind(".");
+        string ext = fname.substr(dot+1,fname.size()-dot-1);
+
+        if (ext == "mac") {
+            macfiles.push_back(fname);
+            continue;
+        }
+
+        j2g4.add_file(fname);
     }
     j2g4.read();
 
@@ -72,7 +107,7 @@ int main(int argc, char *argv[])
     Cowbells::PhysicsList* pl = new Cowbells::PhysicsList(j2g4);
     rm.SetUserInitialization(pl);
     
-    G4VUserPrimaryGeneratorAction* pg = make_generator(j2g4.get("kinematics"));
+    G4VUserPrimaryGeneratorAction* pg = make_generator(j2g4.get("kinematics"), opt(oKIN));
     assert(pg);
     rm.SetUserAction(pg);
     
@@ -123,9 +158,9 @@ int main(int argc, char *argv[])
         cerr << "Batch mode." << endl;
     }
 
-    for (int ind=0; ind<nargs(); ++ind) {
+    for (size_t ind=0; ind<macfiles.size(); ++ind) {
         std::string cmd = "/control/execute ";
-        cmd += arg(ind);
+        cmd += macfiles[ind];
         std::cerr << cmd << std::endl;
         um->ApplyCommand(cmd);
     }
