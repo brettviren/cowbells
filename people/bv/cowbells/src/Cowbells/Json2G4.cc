@@ -14,7 +14,7 @@
 #include <G4LogicalVolume.hh>
 #include <G4LogicalVolumeStore.hh>
 #include <G4SDManager.hh>
-
+#include <G4RotationMatrix.hh>
 #include <stdexcept>
 
 #include <iostream>
@@ -174,12 +174,131 @@ void Cowbells::Json2G4::optical(Json::Value props)
     }
 }
 
-void Cowbells::Json2G4::volumes(Json::Value v)
+float get_num(Json::Value val, float def=0.0);
+float get_num(Json::Value val, float def)
 {
+    if (val.isNull()) { return def; }
+    return val.asFloat();
 }
 
-void Cowbells::Json2G4::placements(Json::Value v)
+float get_int(Json::Value val, int def=0);
+float get_int(Json::Value val, int def)
 {
+    if (val.isNull()) { return def; }
+    return val.asInt();
+}
+
+// Make a G4VSolid based on shape data in "v"
+G4VSolid* make_solid(Json::Value v)
+{
+    string type = v["type"].asString();
+    string name = v["name"].asString();
+    
+    if (type == "box") {
+        return new G4Box(name, get_num(v["x"]), get_num(v["y"]), get_num(v["z"]));
+    }
+    if (type == "tubs") {
+        return new G4Tubs(name, get_num(v["rmin"]), get_num(v["rmax"]),
+                          get_num(v["dz"]),get_num(v["sphi"]), get_num(v["dphi"], 360*degree));
+    }
+    if (type == "polycone") {
+        if (!v["planes"].isNull()) {
+            int nplanes = v["planes"].size();
+            double *zplane = new double[nplanes];
+            double *rinner = new double[nplanes];
+            double *router = new double[nplanes];
+            
+            for (int ind=0; ind<nplanes; ++ind) {
+                Json::Value plane = v["planes"][ind];
+                zplane[ind] = plane["zplane"][ind].asFloat();
+                rinner[ind] = plane["rinner"][ind].asFloat();
+                router[ind] = plane["router"][ind].asFloat();
+            }
+            G4Polycone* pc =  new G4Polycone(name, get_num(v["phistart"]), 
+                                             get_num(v["phitotal"], 360*degree), nplanes,
+                                             zplane, rinner, router);
+            delete [] zplane;
+            delete [] rinner;
+            delete [] router;
+            return pc;
+        }
+        if (!v["rz"].isNull()) {
+            int nrzs = v["rz"].size();
+            double *r = new double[nrzs];
+            double *z = new double[nrzs];
+
+            for (int ind=0; ind<nrzs; ++ind) {
+                Json::Value rz = v["rz"][ind];
+                r[ind] = rz["r"].asFloat();
+                z[ind] = rz["z"].asFloat();
+            }
+            G4Polycone* pc = new G4Polycone(name, get_num(v["phistart"]), 
+                                            get_num(v["phitotal"], 360*degree), nrzs, r, z);
+            delete [] r;
+            delete [] z;
+            return pc;
+        }
+        return 0;
+    }
+    cerr << "Failed to make solid of type \"" << type << "\" named \"" << name << "\"" << endl;
+    return 0;
+}
+
+
+void Cowbells::Json2G4::volumes(Json::Value vols)
+{
+    int nvols = vols.size();
+    for (int ivol=0; ivol < nvols; ++ivol) {
+        Json::Value vol = vols[ivol];
+
+        string matname = vol["material"].asString();
+        G4Material* mat = G4Material::GetMaterial(matname, false);
+
+        string lvname = vol["name"].asString();
+        G4VSolid* solid = make_solid(vol["shape"]);
+        new G4LogicalVolume(solid, mat, lvname);
+    }
+}
+
+static G4RotationMatrix* get_rotation(Json::Value val)
+{
+    if (val.isNull()) { return 0; }
+
+    G4RotationMatrix* rot = new G4RotationMatrix();
+    rot->rotateX(degree * get_num(val["rotatex"]));
+    rot->rotateY(degree * get_num(val["rotatey"]));
+    rot->rotateZ(degree * get_num(val["rotatez"]));
+    return rot;
+}
+
+static G4ThreeVector get_position(Json::Value pos)
+{
+    if (pos.isNull()) { return G4ThreeVector(); }
+    return G4ThreeVector(get_num(pos["x"]), get_num(pos["y"]), get_num(pos["z"]));
+}
+
+G4LogicalVolume* get_lv(Json::Value val)
+{
+    if (val.isNull()) { return 0; }
+    G4LogicalVolumeStore* lvs = G4LogicalVolumeStore::GetInstance();
+    return lvs->GetVolume(val.asString(), false);
+}
+
+void Cowbells::Json2G4::placements(Json::Value placed)
+{
+    int nplaced = placed.size();
+    for (int ind = 0; ind < nplaced; ++ind) {
+        Json::Value pl = placed[ind];
+
+        G4LogicalVolume *lvmother = get_lv(pl["mother"]);
+        G4LogicalVolume *lvdaughter = get_lv(pl["daughter"]);
+
+        G4RotationMatrix* rot = get_rotation(pl["rot"]);
+        G4ThreeVector pos = get_position(pl["pos"]);
+
+        new G4PVPlacement(rot, pos, lvdaughter, pl["name"].asString(),
+                          lvmother, false, get_int(pl["copy"]));
+    }
 }
 
 static void set_model(G4OpticalSurface& opsurf, string model)

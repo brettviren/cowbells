@@ -37,7 +37,7 @@ def test_volumes():
     wb = volumes.Shape('world_box', 'box', x=10.0, y=10.0, z=10.0)
     volumes.LogicalVolume('lvWorld', 'Air', wb)
 
-    wc = volumes.Shape('water_cyl', 'cylinder', r=1.0, h=1.0)
+    wc = volumes.Shape('water_cyl', 'tubs', rmax=1.0, dz=1.0)
     volumes.LogicalVolume('lvCyl', 'Water', wc)
     assert len(volumes.store), 'Failed to make any logical volumes'
     return
