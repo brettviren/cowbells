@@ -1,7 +1,7 @@
 #include "Cowbells/Json2G4.h"
 #include "Cowbells/JsonUtil.h"
+#include "Cowbells/SensitiveDetector.h"
 
-#include <G4VPhysicalVolume.hh>
 #include <G4MaterialPropertiesTable.hh>
 #include <G4MaterialTable.hh>
 #include <G4Material.hh>
@@ -14,21 +14,55 @@
 #include <G4LogicalVolume.hh>
 #include <G4LogicalVolumeStore.hh>
 #include <G4SDManager.hh>
-#include <G4RotationMatrix.hh>
-#include <stdexcept>
 
+#include <stdexcept>
 #include <iostream>
 using namespace std;
+
+using Cowbells::get_int;
+using Cowbells::get_num;
+
+
+G4LogicalVolume* Cowbells::get_LogicalVolume(Json::Value val, G4LogicalVolume* def)
+{
+    if (val.isNull()) { return 0; }
+    G4LogicalVolumeStore* lvs = G4LogicalVolumeStore::GetInstance();
+    return lvs->GetVolume(val.asString(), false);
+}
+
+G4ThreeVector Cowbells::get_ThreeVector(Json::Value pos, G4ThreeVector def)
+{
+    if (pos.isNull()) { return def; }
+    return G4ThreeVector(pos[0].asFloat(),pos[1].asFloat(),pos[2].asFloat());
+}
+
+G4RotationMatrix* Cowbells::get_RotationMatrix(Json::Value val, G4RotationMatrix* def)
+{
+    if (val.isNull()) { return 0; }
+
+    G4RotationMatrix* rot = new G4RotationMatrix();
+    rot->rotateX(degree * get_num(val["rotatex"]));
+    rot->rotateY(degree * get_num(val["rotatey"]));
+    rot->rotateZ(degree * get_num(val["rotatez"]));
+    return rot;
+}
+
 
 
 Cowbells::Json2G4::Json2G4(FileList files)
     : m_files(files)
+    , m_world(0)
 {
     this->read();
 }
 
 Cowbells::Json2G4::~Json2G4()
 {
+}
+
+Json::Value Cowbells::Json2G4::get(std::string path)
+{
+    return Cowbells::json_get_fitting(m_roots, path);
 }
 
 void Cowbells::Json2G4::read() 
@@ -39,6 +73,7 @@ void Cowbells::Json2G4::read()
     for (size_t ind=0; ind < m_files.size(); ++ind) {
         Json::Value root = Cowbells::json_parse_file(m_files[ind]); // may throw
         m_roots.push_back(root);
+        cerr << "Read config file #" << ind+1 << ": " << m_files[ind] << endl;
     }
 }
 
@@ -60,7 +95,7 @@ static G4Element* GetElementBySymbol(string symbol, bool warn)
     return 0;
 }
 
-void Cowbells::Json2G4::elements(Json::Value eles)
+int Cowbells::Json2G4::elements(Json::Value eles)
 {
     int neles = eles.size();
     for (int ind = 0; ind<neles; ++ind) {
@@ -77,12 +112,13 @@ void Cowbells::Json2G4::elements(Json::Value eles)
         g4ele = new G4Element(name, symbol,
                               ele["z"].asInt(),
                               ele["a"].asFloat() *g/mole);
-        cerr << "Element added: " << symbol << ": "
-             << ele.toStyledString() << endl;
+        //cerr << "Element added: " << symbol << ": "
+        //     << ele.toStyledString() << endl;
     }
+    return neles;
 }
 
-void Cowbells::Json2G4::materials(Json::Value mats)
+int Cowbells::Json2G4::materials(Json::Value mats)
 {
     int nmats = mats.size();
     for (int ind=0; ind<nmats; ++ind) {
@@ -112,8 +148,9 @@ void Cowbells::Json2G4::materials(Json::Value mats)
             }
         }
 
-        cerr << "Material added: " << name << ": " << mat.toStyledString() << endl;
+        //cerr << "Material added: " << name << ": " << mat.toStyledString() << endl;
     }
+    return nmats;
 }
 
 static G4Material* get_mat(const G4MaterialTable& mattab, std::string matname)
@@ -128,7 +165,7 @@ static G4Material* get_mat(const G4MaterialTable& mattab, std::string matname)
     return 0;
 }
 
-void Cowbells::Json2G4::optical(Json::Value props)
+int Cowbells::Json2G4::optical(Json::Value props)
 {
     const G4MaterialTable& mattab = *G4Material::GetMaterialTable();
 
@@ -153,8 +190,8 @@ void Cowbells::Json2G4::optical(Json::Value props)
         if (npoints == 1) { 
             double propval = prop["y"][0].asFloat();
             mpt->AddConstProperty(propname.c_str(), propval);
-            cout << "Set " << matname << "/" << propname
-                 << "[" << npoints << "] = " << propval << endl;
+            //cout << "Set " << matname << "/" << propname
+            //     << "[" << npoints << "] = " << propval << endl;
             continue;
         }
 
@@ -166,26 +203,13 @@ void Cowbells::Json2G4::optical(Json::Value props)
             y[ind] = prop["y"][ind].asFloat();
         }
         mpt->AddProperty(propname.c_str(), x, y, npoints);
-        cout << "Set " << matname << "/" << propname
-             << "[" << npoints << "] : (" << y[0] << " - "
-             << y[npoints-1] << ")" << endl;
+        //cout << "Set " << matname << "/" << propname
+        //     << "[" << npoints << "] : (" << y[0] << " - "
+        //     << y[npoints-1] << ")" << endl;
         delete [] x;
         delete [] y;
     }
-}
-
-float get_num(Json::Value val, float def=0.0);
-float get_num(Json::Value val, float def)
-{
-    if (val.isNull()) { return def; }
-    return val.asFloat();
-}
-
-float get_int(Json::Value val, int def=0);
-float get_int(Json::Value val, int def)
-{
-    if (val.isNull()) { return def; }
-    return val.asInt();
+    return nprops;
 }
 
 // Make a G4VSolid based on shape data in "v"
@@ -245,7 +269,7 @@ G4VSolid* make_solid(Json::Value v)
 }
 
 
-void Cowbells::Json2G4::volumes(Json::Value vols)
+int Cowbells::Json2G4::volumes(Json::Value vols)
 {
     int nvols = vols.size();
     for (int ivol=0; ivol < nvols; ++ivol) {
@@ -258,47 +282,34 @@ void Cowbells::Json2G4::volumes(Json::Value vols)
         G4VSolid* solid = make_solid(vol["shape"]);
         new G4LogicalVolume(solid, mat, lvname);
     }
+    return nvols;
 }
 
-static G4RotationMatrix* get_rotation(Json::Value val)
-{
-    if (val.isNull()) { return 0; }
-
-    G4RotationMatrix* rot = new G4RotationMatrix();
-    rot->rotateX(degree * get_num(val["rotatex"]));
-    rot->rotateY(degree * get_num(val["rotatey"]));
-    rot->rotateZ(degree * get_num(val["rotatez"]));
-    return rot;
-}
-
-static G4ThreeVector get_position(Json::Value pos)
-{
-    if (pos.isNull()) { return G4ThreeVector(); }
-    return G4ThreeVector(get_num(pos["x"]), get_num(pos["y"]), get_num(pos["z"]));
-}
-
-G4LogicalVolume* get_lv(Json::Value val)
-{
-    if (val.isNull()) { return 0; }
-    G4LogicalVolumeStore* lvs = G4LogicalVolumeStore::GetInstance();
-    return lvs->GetVolume(val.asString(), false);
-}
-
-void Cowbells::Json2G4::placements(Json::Value placed)
+int Cowbells::Json2G4::placements(Json::Value placed)
 {
     int nplaced = placed.size();
     for (int ind = 0; ind < nplaced; ++ind) {
         Json::Value pl = placed[ind];
 
-        G4LogicalVolume *lvmother = get_lv(pl["mother"]);
-        G4LogicalVolume *lvdaughter = get_lv(pl["daughter"]);
+        G4LogicalVolume *lvmother = get_LogicalVolume(pl["mother"]);
+        G4LogicalVolume *lvdaughter = get_LogicalVolume(pl["daughter"]);
 
-        G4RotationMatrix* rot = get_rotation(pl["rot"]);
-        G4ThreeVector pos = get_position(pl["pos"]);
+        G4RotationMatrix* rot = get_RotationMatrix(pl["rot"]);
+        G4ThreeVector pos = get_ThreeVector(pl["pos"]);
 
-        new G4PVPlacement(rot, pos, lvdaughter, pl["name"].asString(),
-                          lvmother, false, get_int(pl["copy"]));
+        G4VPhysicalVolume* pv = 
+            new G4PVPlacement(rot, pos, lvdaughter, pl["name"].asString(),
+                              lvmother, false, get_int(pl["copy"]));
+
+        if (!lvmother) {        // no belly button
+            if (m_world) {
+                cerr << "Warning: replacing world volume: " << m_world->GetName() 
+                     << " with: " << pv->GetName() << endl;
+                m_world = pv;
+            }
+        }
     }
+    return nplaced;
 }
 
 static void set_model(G4OpticalSurface& opsurf, string model)
@@ -442,7 +453,7 @@ static void make_surface(Json::Value surf)
     }
 }
 
-void Cowbells::Json2G4::surfaces(Json::Value surfs)
+int Cowbells::Json2G4::surfaces(Json::Value surfs)
 {
     int nsurfs = surfs.size();
     for (int isurf = 0; isurf < nsurfs; ++isurf) {
@@ -453,13 +464,43 @@ void Cowbells::Json2G4::surfaces(Json::Value surfs)
         }
         make_surface(surf);
     }
+    return nsurfs;
 }
 
-void Cowbells::Json2G4::sensitive(Json::Value v)
+int Cowbells::Json2G4::sensitive(Json::Value sens)
 {
+    G4SDManager* sdm = G4SDManager::GetSDMpointer();
+
+    int nsens = sens.size();
+    for (int ind=0; ind<nsens; ++ind) {
+        Json::Value sdv = sens[ind];
+
+        string sdname = sdv["name"].asString();
+        string hcname = sdv["hcname"].asString();
+        string lvname = sdv["logvol"].asString();
+
+        Json::Value touchables = sdv["touchables"];
+        int ntouchables = touchables.size();
+        vector<string> tv;
+        for (int itouch=0; itouch<ntouchables; ++itouch) {
+            tv.push_back(touchables[itouch].asString());
+        }
+        
+        Cowbells::SensitiveDetector* csd = new Cowbells::SensitiveDetector(sdname, hcname, tv);
+        sdm->AddNewDetector(csd);
+        G4LogicalVolume* lv = G4LogicalVolumeStore::GetInstance()->GetVolume(lvname);
+        if (!lv) {
+            cerr << "No LV for " << lvname << " for sensitive detector " << sdname << endl;
+            assert (lv);
+        }
+        lv->SetSensitiveDetector(csd);
+        //cout << "Registered SD \"" << csd->GetName() 
+        //     << "\" with logical volume \"" << lvname << "\"" << endl;
+    }
+    return nsens;
 }
 
-void Cowbells::Json2G4::make()
+G4VPhysicalVolume* Cowbells::Json2G4::construct_detector()
 {
     string parts[] = {
         "elements", "materials", "optical", "volumes",
@@ -475,19 +516,22 @@ void Cowbells::Json2G4::make()
             cerr << "Loading section \"" << parts[ipart] 
                  << "\" from file \"" << m_files[iroot] << "\"" << endl;
 
+            int nmade = 0;
             try {
-                if (parts[ipart] == "elements")   this->elements(val);
-                if (parts[ipart] == "materials")  this->materials(val);
-                if (parts[ipart] == "optical")    this->optical(val);
-                if (parts[ipart] == "volumes")    this->volumes(val);
-                if (parts[ipart] == "placements") this->placements(val);
-                if (parts[ipart] == "surfaces")   this->surfaces(val);
-                if (parts[ipart] == "sensitive")  this->sensitive(val);
+                if (parts[ipart] == "elements")   nmade = this->elements(val);
+                if (parts[ipart] == "materials")  nmade = this->materials(val);
+                if (parts[ipart] == "optical")    nmade = this->optical(val);
+                if (parts[ipart] == "volumes")    nmade = this->volumes(val);
+                if (parts[ipart] == "placements") nmade = this->placements(val);
+                if (parts[ipart] == "surfaces")   nmade = this->surfaces(val);
+                if (parts[ipart] == "sensitive")  nmade = this->sensitive(val);
             }
             catch (const runtime_error& re) {
                 cerr << "Failed: " << re.what() << endl;
                 throw;
             }
+            cerr << "\tloaded " << nmade << endl;
         }
     }
+    return m_world;
 }

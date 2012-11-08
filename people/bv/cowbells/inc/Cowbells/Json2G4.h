@@ -20,7 +20,14 @@
 #include <string>
 #include <json/json.h>
 
+#include <G4VPhysicalVolume.hh>
+#include <G4RotationMatrix.hh>
+
 namespace Cowbells {
+
+    G4LogicalVolume* get_LogicalVolume(Json::Value val, G4LogicalVolume* def = 0);
+    G4ThreeVector get_ThreeVector(Json::Value val, G4ThreeVector def = G4ThreeVector());
+    G4RotationMatrix* get_RotationMatrix(Json::Value val, G4RotationMatrix* def = 0);
 
     class Json2G4 {
     public:
@@ -31,23 +38,31 @@ namespace Cowbells {
 
         void add_file(std::string file) { m_files.push_back(file); }
 
-        void elements(Json::Value v);
-        void materials(Json::Value v);
-        void optical(Json::Value v);
-        void volumes(Json::Value v);
-        void placements(Json::Value v);
-        void surfaces(Json::Value v);
-        void sensitive(Json::Value v);
-
-        /// Load all files
+        /// Read in and parse all added JSON files
         void read();
 
-        /// Make the G4 objects
-        void make();
+        /// Return the value at the given path in the data structure
+        Json::Value get(std::string path);
+
+        // Load individual configuration sections of the same name
+        int elements(Json::Value v);
+        int materials(Json::Value v);
+        int optical(Json::Value v);
+        int volumes(Json::Value v);
+        int placements(Json::Value v);
+        int surfaces(Json::Value v);
+        int sensitive(Json::Value v);
+
+        /// Walk JSON data structure and make the G4 objects related
+        /// to the detector.  This calls each of the above methods in
+        /// turn.
+        G4VPhysicalVolume* construct_detector();
 
     private:
         FileList m_files;
         std::vector<Json::Value> m_roots;
+
+        G4VPhysicalVolume* m_world;
     };
 
 }

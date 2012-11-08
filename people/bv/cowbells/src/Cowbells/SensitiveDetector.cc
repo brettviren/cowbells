@@ -13,7 +13,7 @@ Cowbells::SensitiveDetector::SensitiveDetector(const std::string& name,
     , fHC(0)
 {
     collectionName.insert(hitsname); // stupid interface....
-    cout << "SensitiveDetector(" <<name<< "," << hitsname << ")" << endl;
+    //cout << "SensitiveDetector(" <<name<< "," << hitsname << ")" << endl;
 }
 
 Cowbells::SensitiveDetector::SensitiveDetector(const std::string& name, 
@@ -23,7 +23,7 @@ Cowbells::SensitiveDetector::SensitiveDetector(const std::string& name,
     , fHC(0)
 {
     collectionName.insert(hitsname); // stupid interface....
-    cout << "SensitiveDetector(" <<name<< "," << hitsname << ")" << endl;
+    //cout << "SensitiveDetector(" <<name<< "," << hitsname << ")" << endl;
 
     for (size_t ind=0; ind<touchables.size(); ++ind) {
         string tname = touchables[ind];

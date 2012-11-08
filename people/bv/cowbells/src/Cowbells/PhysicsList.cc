@@ -1,9 +1,9 @@
+#include "Cowbells/JsonUtil.h"
 #include "Cowbells/PhysicsList.h"
 #include "Cowbells/PhysicsConsGeneral.h"
 #include "Cowbells/PhysicsConsOp.h"
 #include "Cowbells/PhysicsConsEM.h"
 #include "Cowbells/PhysicsConsMuon.h"
-#include "Cowbells/strutil.h"
 
 #include "G4HadronElasticPhysics.hh"
 
@@ -16,39 +16,44 @@
 #include <iostream>
 using namespace std;
 
-using Cowbells::get_startswith;
+using Cowbells::get_num;
 
-Cowbells::PhysicsList::PhysicsList(const char* physics, float default_cut_value_mm)
+//const char* physics, float default_cut_value_mm)
+Cowbells::PhysicsList::PhysicsList(Cowbells::Json2G4& j2g4)
     : G4VModularPhysicsList()
 {
-    string all("all");
-    if (!physics || all == physics) {
-        physics = "em,op,had";
-    }
-    cerr << "Creating Cowbells::PhysicsList with: \"" << physics << "\"" << endl;
+    Json::Value cfg = j2g4.get("physics");
 
-    defaultCutValue = default_cut_value_mm*mm;
-    //defaultCutValue = 0.1*mm;
-    //defaultCutValue = 0.01*mm;
-
+    defaultCutValue = get_num(cfg["cut"],0.1*mm);
     verboseLevel = 0;
 
     // always
     RegisterPhysics( new Cowbells::PhysicsConsGeneral() );
 
-    if (get_startswith(physics,"em",",","notfound") != "notfound") {
-        cout << "\tusing EM Physics" << endl;
-        RegisterPhysics( new G4EmStandardPhysics(verboseLevel) );
-        //RegisterPhysics( new Cowbells::PhysicsConsEM() );
-        //RegisterPhysics( new Cowbells::PhysicsConsMuon() );
+    Json::Value physlist = cfg["list"];
+    int nphys = physlist.size();
+    if (!nphys) {
+        cerr << "No physics given.  This universe is too boring to exist." << endl;
+        assert (nphys);
     }
-    if (get_startswith(physics,"op",",","notfound") != "notfound") {
-        cout << "\tusing Optical Physics" << endl;
-        RegisterPhysics( new Cowbells::PhysicsConsOp() );
-    }
-    if (get_startswith(physics,"had",",","notfound") != "notfound") {
-        cout << "\tusing Hadronic Physics" << endl;
-        RegisterPhysics( new G4HadronElasticPhysics(verboseLevel) );
+
+    for (int iphys=0; iphys<nphys; ++iphys) {
+        string physname = physlist[iphys].asString();
+        cout << "Registering physics: \"" << physname << "\"" << endl;
+        if (physname == "em") {
+            RegisterPhysics( new G4EmStandardPhysics(verboseLevel) );
+            continue;
+        }
+        if (physname == "op") {
+            RegisterPhysics( new Cowbells::PhysicsConsOp() );
+            continue;
+        }
+        if (physname == "had") {
+            RegisterPhysics( new G4HadronElasticPhysics(verboseLevel) );
+            continue;
+        }
+        cerr << "Unknown physics: \"" << physname << "\"" << endl;
+        // fixme: throw?
     }
 
     SetVerboseLevel(verboseLevel);

@@ -1,12 +1,30 @@
 #include "Cowbells/JsonUtil.h"
 #include "Cowbells/strutil.h"
 
-
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
 using namespace std;
+
+
+float Cowbells::get_num(Json::Value val, float def)
+{
+    if (val.isNull()) { return def; }
+    return val.asFloat();
+}
+
+int Cowbells::get_int(Json::Value val, int def)
+{
+    if (val.isNull()) { return def; }
+    return val.asInt();
+}
+std::string get_str(Json::Value val, std::string def)
+{
+    if (val.isNull()) { return def; }
+    return val.asString();
+}
+
 
 Json::Value Cowbells::json_parse_file(std::string filename)
 {

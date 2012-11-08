@@ -27,8 +27,8 @@ struct Arg: public option::Arg
 
 };
 
-enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oGEOMETRY, oUI, oKIN, 
-                   oNEVENTS, oPHYSICS, oDEFCUT, oCONFIG };
+enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oUI, oKIN, 
+                   oNEVENTS };
 const option::Descriptor usage[] = 
 {
     {oUNKNOWN, 0, "", "", Arg::None, 
@@ -40,9 +40,6 @@ const option::Descriptor usage[] =
     {oOUTPUT, 0, "o","output", Arg::Required, 
      "  --output, -o <outputfile>\tSet output filename"},
 
-    {oGEOMETRY, 0, "g", "geometry", Arg::Required,
-     "  --geometry, -g <geomfile>\tSet the geometry filename"},
-
     {oUI, 0, "u", "interface", Arg::Required,
      "  --interface, -u <interface>\tSet the user interface"},
 
@@ -51,15 +48,6 @@ const option::Descriptor usage[] =
 
     {oNEVENTS, 0, "n", "nevents", Arg::Required,
      "  --nevents, -n <#events>\tSet the number of events to generate"},
-
-    {oPHYSICS, 0, "p", "physics", Arg::Required,
-     "  --physics, -p <phys,list>\tSet the physics list"},
-
-    {oDEFCUT, 0, "", "defcut", Arg::Required,
-     "  --defcut <default_cut_in_mm>\tSet the default cut"},
-
-    {oCONFIG, 0, "c", "config", Arg::Required,
-     "  -config, -c <cfg,file,list>\tSet one or more configuration files"},
 
     {0,0,0,0,0,0}
 };
@@ -86,7 +74,7 @@ option::Option* parse_args(int argc, char* argv[])
         return 0;
     }
 
-    optionIndex required[] = { oGEOMETRY, oOUTPUT, oKIN, oUNKNOWN, oCONFIG };
+    optionIndex required[] = { oOUTPUT, oKIN, oUNKNOWN };
     for (int ind=0; required[ind]; ++ind) {
         optionIndex oi = required[ind];
         option::Option& opt = options[oi];

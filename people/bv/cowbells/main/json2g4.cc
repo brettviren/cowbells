@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     j2g4.read();
 
     cerr << "Making G4 objects:" << endl;
-    j2g4.make();
+    j2g4.construct_detector();
 
     return 0;
 }
