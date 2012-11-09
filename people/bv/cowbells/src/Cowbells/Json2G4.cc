@@ -118,6 +118,58 @@ int Cowbells::Json2G4::elements(Json::Value eles)
     return neles;
 }
 
+static G4Material* make_material(Json::Value mat)
+{
+    Json::Value elelist = mat["elements"], matlist = mat["materials"];
+
+    int nele = elelist.size(), nmat = matlist.size();
+    string matname = mat["name"].asString();
+
+    G4Material* g4mat = new G4Material(matname, mat["density"].asFloat(), nele+nmat);
+
+    cerr << "Making material " << matname << " with " << nele << " elements, " << nmat << " materials" << endl;
+    {
+        Json::ValueIterator it = elelist.begin();
+        for (int ind=0; ind<nele; ++ind, ++it) {
+            Json::Value quant = *it;
+            string symbol = it.key().asString();
+            G4Element* g4ele = GetElementBySymbol(symbol);
+            if (!g4ele) {
+                cerr << "Failed to find element with symbol: \"" << symbol << "\"" << endl;
+                assert(g4ele);
+            }
+            if (quant.isInt()) {
+                g4mat->AddElement(g4ele, quant.asInt());
+            }
+            else {
+                g4mat->AddElement(g4ele, quant.asFloat());
+            }
+        }
+    }
+
+    {
+        Json::ValueIterator it = matlist.begin();
+        for (int ind=0; ind < nmat; ++ind, ++it) {
+            Json::Value quant = *it;
+            string name = it.key().asString();
+            G4Material* g4other_mat = G4Material::GetMaterial(name, false);
+            if (!g4other_mat) {
+                cerr << "Failed to find material " << name << endl;
+                assert(g4other_mat);
+            }
+            if (quant.isInt()) {
+                g4mat->AddMaterial(g4other_mat, quant.asInt());
+            }
+            else {
+                g4mat->AddMaterial(g4other_mat, quant.asFloat());
+            }
+        }
+    }
+
+    return g4mat;
+}
+
+
 int Cowbells::Json2G4::materials(Json::Value mats)
 {
     int nmats = mats.size();
@@ -131,24 +183,7 @@ int Cowbells::Json2G4::materials(Json::Value mats)
             continue;
         }
 
-        Json::Value eles = mat["elements"];
-        int neles = eles.size();
-        g4mat = new G4Material(name, mat["density"].asFloat(), neles);
-
-        Json::ValueIterator eit = eles.begin();
-        for (int iele=0; iele<neles; ++iele, ++eit) {
-            Json::Value quant = *eit;
-            string symbol = eit.key().asString();
-            G4Element* g4ele = GetElementBySymbol(symbol);
-            if (quant.isInt()) {
-                g4mat->AddElement(g4ele, quant.asInt());
-            }
-            else {
-                g4mat->AddElement(g4ele, quant.asFloat());
-            }
-        }
-
-        //cerr << "Material added: " << name << ": " << mat.toStyledString() << endl;
+        make_material(mat);
     }
     return nmats;
 }

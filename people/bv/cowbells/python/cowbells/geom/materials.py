@@ -13,28 +13,48 @@ def get(name):
     return None
 
 class Material(base.Base):
-    def __init__(self, name, density, constituents):
-        self.__dict__ = dict(name=name, density = density)
-        parts={}
-        for e,n in constituents:
-            if isinstance(e,elements.Element): 
-                parts[e.symbol] = n
-                continue
-            ele = elements.get(e)
-            if ele:
-                parts[ele.symbol] = n
-                continue
-            ele = elements.get(e)
-            if ele:
-                parts[ele.symbol] = n
-                continue
-            raise ValueError, 'No element defined named "%s"' % e
-        self.elements = parts
+    def __init__(self, name, density, elelist = None, matlist = None):
         store.append(self)
+        self.__dict__ = dict(name=name, density = density)
+        
+        if elelist:
+            parts={}
+            for e,n in elelist:
+                if isinstance(e,elements.Element): 
+                    parts[e.symbol] = n
+                    continue
+                ele = elements.get(e)
+                if ele:
+                    parts[ele.symbol] = n
+                    continue
+                ele = elements.get(e)
+                if ele:
+                    parts[ele.symbol] = n
+                    continue
+                raise ValueError, 'No element defined named "%s"' % e
+            self.elements = parts
+            pass
+            
+        if matlist:
+            parts = {}
+            for m,n in matlist:
+                if isinstance(m,Material):
+                    parts[m.name] = n
+                    continue
+                mat = get(m)
+                if mat:
+                    parts[mat.name] = n
+                    continue
+                raise ValueError, 'No material defined named "%s"' % m
+            self.materials = parts
+            pass
         return
+
     def __str__(self):
-        return '<Material "%s" dens=%.1f [%s]>' % \
-            (self.name, self.density, ','.join(['(%s:%s)'%c for c in self.elements.iteritems()]))
+        return '<Material "%s" dens=%.1f elements=[%s] materials=[%s]>' % \
+            (self.name, self.density,
+             ','.join(['(%s:%s)'%c for c in self.elements.iteritems()]),
+             ','.join(['(%s:%s)'%c for c in self.materials.iteritems()]))
 
     pass
 
