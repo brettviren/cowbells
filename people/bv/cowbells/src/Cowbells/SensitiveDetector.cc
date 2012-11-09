@@ -81,7 +81,7 @@ static std::string make_touchable_name(G4TouchableHandle& touch)
 int Cowbells::SensitiveDetector::divine_touchable_id(const std::string& tname)
 {
     TouchableNameId_t::iterator it = m_touchNameId.find(tname);
-    if (it == m_touchNameId.end()) { return 0; }
+    if (it == m_touchNameId.end()) { return -1; }
     return it->second;
 }
 
@@ -110,7 +110,7 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     string tname = make_touchable_name(touch);
     cerr << "Hit in: " << tname << " PV:" << pv->GetName() << endl;
     int id = divine_touchable_id(tname);
-    if (!id) {
+    if (id<0) {
         cerr << "Hit: hit in unknown volume: \"" << tname << "\"" << endl;
         for (int ind = touch->GetHistoryDepth(); ind >= 0; --ind) {
             pv = touch->GetVolume(ind);

@@ -4,7 +4,7 @@ Generate geometry for a tub detector.
 '''
 
 import cowbells
-from geom import materials, surfaces
+from geom import materials, surfaces, sensitive
 from geom.volumes import Shape, LogicalVolume
 from geom.placements import PhysicalVolume
 
@@ -213,7 +213,7 @@ class Builder(object):
 
 
         self._surface()
-
+        self._sensors()
         return
 
     def _surface(self):
@@ -256,6 +256,12 @@ class Builder(object):
             continue
 
         return
+
+    def _sensors(self):
+        sd = sensitive.SensitiveDetector('SensitiveDetector', 'HC', 
+                                         self.lvname('PhotoCathode'))
+        print sd.touchables()
+
 
     pass
 
