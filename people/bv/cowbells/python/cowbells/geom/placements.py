@@ -8,6 +8,16 @@ import base, volumes
 store = []
 
 class PhysicalVolume(base.Base):
+    '''
+    Placement of a daughter volume.
+
+    Mother should be specified unless daughter is to be the world volume.
+
+    Rotations are specified by a dictionary with keys named after
+    G4RotationMatrix's methods (eg "rotatez")
+
+    Positions are specified with a tripple of floats.
+    '''
     def __init__(self, name, daughter, mother=None, rot=None, pos=None, copy=0):
 
         if isinstance(daughter, volumes.LogicalVolume):

@@ -37,6 +37,9 @@ class LogicalVolume(base.Base):
         me['shape'] = self.shape.__dict__
         return me
 
+    def __str__(self):
+        return '<LogicalVolume "%s" mat:"%s" shape:"%s">' % \
+            (self.name, self.matname, self.shape.name)
     pass
 
 def get(name):

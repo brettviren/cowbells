@@ -14,6 +14,9 @@
 #include <G4LogicalVolume.hh>
 #include <G4LogicalVolumeStore.hh>
 #include <G4SDManager.hh>
+#include <G4LogicalSkinSurface.hh>
+#include <G4LogicalBorderSurface.hh>
+#include <G4PhysicalVolumeStore.hh>
 
 #include <stdexcept>
 #include <iostream>
@@ -261,17 +264,16 @@ G4VSolid* make_solid(Json::Value v)
                           get_num(v["dz"]),get_num(v["sphi"]), get_num(v["dphi"], 360*degree));
     }
     if (type == "polycone") {
-        if (!v["planes"].isNull()) {
-            int nplanes = v["planes"].size();
+        if (!v["zplane"].isNull()) {
+            int nplanes = v["zplane"].size();
             double *zplane = new double[nplanes];
             double *rinner = new double[nplanes];
             double *router = new double[nplanes];
             
             for (int ind=0; ind<nplanes; ++ind) {
-                Json::Value plane = v["planes"][ind];
-                zplane[ind] = plane["zplane"][ind].asFloat();
-                rinner[ind] = plane["rinner"][ind].asFloat();
-                router[ind] = plane["router"][ind].asFloat();
+                zplane[ind] = v["zplane"][ind].asFloat();
+                rinner[ind] = v["rinner"][ind].asFloat();
+                router[ind] = v["router"][ind].asFloat();
             }
             G4Polycone* pc =  new G4Polycone(name, get_num(v["phistart"]), 
                                              get_num(v["phitotal"], 360*degree), nplanes,
@@ -297,9 +299,10 @@ G4VSolid* make_solid(Json::Value v)
             delete [] z;
             return pc;
         }
-        return 0;
     }
-    cerr << "Failed to make solid of type \"" << type << "\" named \"" << name << "\"" << endl;
+    cerr << "Failed to make solid of type \"" << type << "\" named \"" << name 
+         << "\" using:\n" << v.toStyledString()
+         << endl;
     return 0;
 }
 
@@ -490,6 +493,42 @@ static void make_surface(Json::Value surf)
         string propname = pit.key().asString();
         surface_property(*opsurf, propname, *pit);
     }
+
+    string first = params["first"].asString();
+
+    if (params["second"].isNull()) { // skin
+
+        G4LogicalVolume* lv = G4LogicalVolumeStore::GetInstance()->GetVolume(first.c_str());
+        if (!lv) {
+            cerr << "No logical volume " << first << endl;
+            assert(lv);
+        }
+        new G4LogicalSkinSurface(surfname.c_str(), lv, opsurf);
+        cout << "G4LogicalSkinSurface(\"" << surfname << "\",\""<<first<<"\")" << endl;
+        return;
+    }
+
+    // border surface
+
+    string second = params["second"].asString();
+
+    G4PhysicalVolumeStore* pvs = G4PhysicalVolumeStore::GetInstance();
+    G4VPhysicalVolume* pv1 = pvs->GetVolume(first.c_str());
+    if (!pv1) {
+        cerr << "No first physical volume: " << first << endl;
+        assert(pv1);
+    }
+
+    G4VPhysicalVolume* pv2 = pvs->GetVolume(second.c_str());
+    if (!pv2) {
+        cerr << "No second physical volume: " << second << endl;
+        assert(pv1);
+    }
+
+    // intentional leak
+    new G4LogicalBorderSurface(surfname, pv1, pv2, opsurf);
+    cout << "G4LogicalBorderSurface(\"" << surfname 
+         << "\",\""<<first << "\",\""<<second <<"\")"  << endl;
 }
 
 int Cowbells::Json2G4::surfaces(Json::Value surfs)
