@@ -5,7 +5,7 @@ Generate geometry for a tub detector.
 
 import cowbells
 from geom import materials, surfaces, sensitive
-from geom.volumes import Shape, LogicalVolume
+from geom.volumes import Tubs, Polycone, LogicalVolume
 from geom.placements import PhysicalVolume
 
 hbarc = cowbells.units.clhep_units.hbarc
@@ -135,44 +135,44 @@ class Builder(object):
         window_large_radius = 0.5*(parms.window_full_diameter)
         window_step_z = parms.lid_thickness * parms.step_fraction
 
-        shape = Shape(self.shapename('Sample'), 'tubs', 
-                      dz = outer_hheight, rmax = outer_radius)
+        shape = Tubs(self.shapename('Sample'), 
+                     dz = outer_hheight, rmax = outer_radius)
         sample_lv = LogicalVolume(self.lvname('Sample'),
                                   matname = parts.Sample, shape = shape)
 
-        shape = Shape(self.shapename('TubBottom'), 'tubs',
-                                     dz = parms.tub_thickness, rmax = outer_radius)
+        shape = Tubs(self.shapename('TubBottom'),
+                     dz = parms.tub_thickness, rmax = outer_radius)
         bottom_lv = LogicalVolume(self.lvname('TubBottom'), 
-                                              matname = parts.TubBottom, shape = shape)
+                                  matname = parts.TubBottom, shape = shape)
 
-        shape = Shape(self.shapename('TubSide'), 'tubs', 
-                      dz = inner_hheight, rmin = inner_radius, rmax = outer_radius)
+        shape = Tubs(self.shapename('TubSide'), 
+                     dz = inner_hheight, rmin = inner_radius, rmax = outer_radius)
         side_lv = LogicalVolume(self.lvname('TubSide'), 
                                 matname = parts.TubSide, shape = shape)
 
-        shape = Shape(
-                self.shapename('TubLid'), 'polycone', 
-                zplane = [0.0,window_step_z,
-                          window_step_z,parms.lid_thickness],
-                rinner = [window_small_radius, window_small_radius, 
-                          window_large_radius, window_large_radius],
-                router = [outer_radius]*4)
+        shape = Polycone(
+            self.shapename('TubLid'),
+            zplane = [0.0,window_step_z,
+                      window_step_z,parms.lid_thickness],
+            rinner = [window_small_radius, window_small_radius, 
+                      window_large_radius, window_large_radius],
+            router = [outer_radius]*4)
         lid_lv = LogicalVolume(self.lvname('TubLid'), 
                                matname = parts.TubLid, shape = shape)
 
-        shape = Shape(
-                self.shapename('TubWindow'), 'polycone',
-                zplane = [-parms.window_extend,window_step_z,
-                           window_step_z,parms.lid_thickness],
-                rinner = [0.0]*4,
-                router = [window_small_radius, window_small_radius, 
-                          window_large_radius, window_large_radius])
+        shape = Polycone(
+            self.shapename('TubWindow'), 
+            zplane = [-parms.window_extend,window_step_z,
+                       window_step_z,parms.lid_thickness],
+            rinner = [0.0]*4,
+            router = [window_small_radius, window_small_radius, 
+                      window_large_radius, window_large_radius])
         win_lv = LogicalVolume(self.lvname('TubWindow'), 
                                matname = parts.TubWindow, shape = shape)
 
-        shape = Shape( self.shapename('PhotoCathode'), 'tubs',
-                       dz = 0.5*parms.photocathode_thickness,
-                       rmax = 0.5*parms.photocathode_diameter)
+        shape = Tubs(self.shapename('PhotoCathode'), 
+                     dz = 0.5*parms.photocathode_thickness,
+                     rmax = 0.5*parms.photocathode_diameter)
         pc_lv = LogicalVolume(self.lvname('PhotoCathode'), 
                               matname = parts.PhotoCathode, shape = shape)
 
@@ -191,18 +191,9 @@ class Builder(object):
         side_offset =-0.5*tot_height + p.tub_thickness + 0.5*p.inner_height
         bot_offset = -0.5*tot_height + 0.5*p.tub_thickness
         win_offset = lid_offset - p.window_extend
-        pc_offset = 0.5*(p.lid_thickness + p.window_extend) - p.photocathode_thickness
+        pc_offset = p.lid_thickness + p.window_extend - 0.5*p.photocathode_thickness
 
 
-        PhysicalVolume(self.pvname('TubBottom'),
-                       self.lvname('TubBottom'),self.lvname('Sample'),
-                       pos=[0.0, 0.0, bot_offset])
-        PhysicalVolume(self.pvname('TubSide'),
-                       self.lvname('TubSide'),self.lvname('Sample'),
-                       pos=[0.0, 0.0, side_offset])
-        PhysicalVolume(self.pvname('TubLid'),
-                       self.lvname('TubLid'),self.lvname('Sample'),
-                       pos=[0.0, 0.0, lid_offset])
         PhysicalVolume(self.pvname('TubWindow'),
                        self.lvname('TubWindow'),self.lvname('Sample'),
                        pos=[0.0, 0.0, win_offset])
@@ -210,6 +201,20 @@ class Builder(object):
         PhysicalVolume(self.pvname('PhotoCathode'),
                        self.lvname('PhotoCathode'), self.lvname('TubWindow'),
                        pos=[0.0, 0.0, pc_offset])
+
+        PhysicalVolume(self.pvname('TubLid'),
+                       self.lvname('TubLid'),self.lvname('Sample'),
+                       pos=[0.0, 0.0, lid_offset])
+
+
+        PhysicalVolume(self.pvname('TubBottom'),
+                       self.lvname('TubBottom'),self.lvname('Sample'),
+                       pos=[0.0, 0.0, bot_offset])
+
+        PhysicalVolume(self.pvname('TubSide'),
+                       self.lvname('TubSide'),self.lvname('Sample'),
+                       pos=[0.0, 0.0, side_offset])
+
 
 
         self._surface()

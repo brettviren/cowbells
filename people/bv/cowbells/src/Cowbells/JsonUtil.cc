@@ -1,23 +1,99 @@
 #include "Cowbells/JsonUtil.h"
 #include "Cowbells/strutil.h"
 
+#include "CLHEP/Units/SystemOfUnits.h"
+
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
 using namespace std;
 
+#include "TROOT.h"
+#include "TGlobal.h"
+
+void Cowbells::init_units()
+{
+    static bool been_here = false;
+    if (been_here) { return ; }
+    been_here = true;
+
+    struct Units {
+        const char* name;
+        const char* value;
+    };
+
+    Units units[] = { 
+        // length
+        {"mm","1.0"},  {"cm","mm*10"}, {"m","100*cm"}, {"meter","m"},
+        {"km", "1000*m"}, {"nm","1e-9*m"}, {"angstrom","1e-12*m"},
+        {"inch", "2.54*cm"}, 
+
+        // angle
+        {"radian","1.0"}, {"degree","(3.14159265358979323846/180.0)*radian"},
+        {"rad","radian"}, {"deg","degree"},
+
+        // time
+        {"nanosecond","1.0"}, {"ns","nanosecond"},{"second","1.e+9*ns"},
+        {"millisecond","1.e-3*second"},{"microsecond","1.e-6*second"},
+        {"ms","millisecond"}, {"hertz","1.0/second"},
+ 
+        // electric charge
+        {"eplus","1"},{"e_SI","1.602176487e-19"},{"coulomb","eplus/e_SI"},
+
+        // energy
+        {"megaelectronvolt","1.0"},
+        {"electronvolt", "1.e-6*megaelectronvolt"},
+        {"kiloelectronvolt", "1.e-3*megaelectronvolt"},
+        {"gigaelectronvolt", "1.e+3*megaelectronvolt"},
+        {"teraelectronvolt", "1.e+6*megaelectronvolt"},
+        {"petaelectronvolt", "1.e+9*megaelectronvolt"},
+        {"joule", "electronvolt/e_SI"},
+        {"MeV", "megaelectronvolt"},
+        {"eV", "electronvolt"},
+        {"keV", "kiloelectronvolt"},
+        {"GeV", "gigaelectronvolt"},
+        {"TeV", "teraelectronvolt"},
+        {"PeV", "petaelectronvolt"},
+          
+        // Mass
+        {"kilogram","joule*second*second/(meter*meter)"},
+        {"gram","1.e-3*kilogram"},
+        {"milligram", "1.e-3*gram"},
+        {"kg", "kilogram"},
+        {"g","gram"},
+        {"mg", "milligram"},
+        {0,0}
+    };
+    for (int ind=0; units[ind].name; ++ind) {
+        gROOT->ProcessLine(Form("float %s = %s;", units[ind].name, units[ind].value));
+    }
+
+}
+
 
 float Cowbells::get_num(Json::Value val, float def)
 {
     if (val.isNull()) { return def; }
-    return val.asFloat();
+
+    if (val.isNumeric()) { return val.asFloat(); }
+
+    init_units();
+    gROOT->ProcessLine(Form("float json_util_float_value = %s;", val.asString().c_str()));
+    float ret = *((float*)((TGlobal*)gROOT->GetListOfGlobals()->FindObject("json_util_float_value"))->GetAddress());
+    return ret;
 }
 
 int Cowbells::get_int(Json::Value val, int def)
 {
     if (val.isNull()) { return def; }
-    return val.asInt();
+    if (val.isInt()) { return val.asInt(); }
+
+    init_units();
+    gROOT->ProcessLine(Form("float json_util_int_value = %s;", val.asString().c_str()));
+    int ret = *((int*)((TGlobal*)gROOT->GetListOfGlobals()->FindObject("json_util_int_value"))->GetAddress());
+    return ret;
+
 }
 std::string get_str(Json::Value val, std::string def)
 {

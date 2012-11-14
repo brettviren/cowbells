@@ -36,7 +36,7 @@ G4LogicalVolume* Cowbells::get_LogicalVolume(Json::Value val, G4LogicalVolume* d
 G4ThreeVector Cowbells::get_ThreeVector(Json::Value pos, G4ThreeVector def)
 {
     if (pos.isNull()) { return def; }
-    return G4ThreeVector(pos[0].asFloat(),pos[1].asFloat(),pos[2].asFloat());
+    return G4ThreeVector(get_num(pos[0]),get_num(pos[1]),get_num(pos[2]));
 }
 
 G4RotationMatrix* Cowbells::get_RotationMatrix(Json::Value val, G4RotationMatrix* def)
@@ -113,8 +113,8 @@ int Cowbells::Json2G4::elements(Json::Value eles)
         }
 
         g4ele = new G4Element(name, symbol,
-                              ele["z"].asInt(),
-                              ele["a"].asFloat() *g/mole);
+                              get_int(ele["z"]),
+                              get_num(ele["a"]) *g/mole); // special case of bad unit handling
         //cerr << "Element added: " << symbol << ": "
         //     << ele.toStyledString() << endl;
     }
@@ -128,7 +128,9 @@ static G4Material* make_material(Json::Value mat)
     int nele = elelist.size(), nmat = matlist.size();
     string matname = mat["name"].asString();
 
-    G4Material* g4mat = new G4Material(matname, mat["density"].asFloat(), nele+nmat);
+    G4Material* g4mat = new G4Material(matname, 
+                                       get_num(mat["density"]), // special case bad unit handling
+                                       nele+nmat);
 
     cerr << "Making material " << matname << " with " << nele << " elements, " << nmat << " materials" << endl;
     {
@@ -142,10 +144,10 @@ static G4Material* make_material(Json::Value mat)
                 assert(g4ele);
             }
             if (quant.isInt()) {
-                g4mat->AddElement(g4ele, quant.asInt());
+                g4mat->AddElement(g4ele, get_int(quant)); // count
             }
             else {
-                g4mat->AddElement(g4ele, quant.asFloat());
+                g4mat->AddElement(g4ele, get_num(quant)); // fraction
             }
         }
     }
@@ -161,10 +163,10 @@ static G4Material* make_material(Json::Value mat)
                 assert(g4other_mat);
             }
             if (quant.isInt()) {
-                g4mat->AddMaterial(g4other_mat, quant.asInt());
+                g4mat->AddMaterial(g4other_mat, get_int(quant));// count
             }
             else {
-                g4mat->AddMaterial(g4other_mat, quant.asFloat());
+                g4mat->AddMaterial(g4other_mat, get_num(quant));// fraction
             }
         }
     }
@@ -226,7 +228,7 @@ int Cowbells::Json2G4::optical(Json::Value props)
         
         // scalar
         if (npoints == 1) { 
-            double propval = prop["y"][0].asFloat();
+            double propval = get_num(prop["y"][0]);
             mpt->AddConstProperty(propname.c_str(), propval);
             //cout << "Set " << matname << "/" << propname
             //     << "[" << npoints << "] = " << propval << endl;
@@ -237,8 +239,8 @@ int Cowbells::Json2G4::optical(Json::Value props)
         double *x = new double[npoints];
         double *y = new double[npoints];
         for (int ind=0; ind<npoints; ++ind) {
-            x[ind] = prop["x"][ind].asFloat();
-            y[ind] = prop["y"][ind].asFloat();
+            x[ind] = get_num(prop["x"][ind]);
+            y[ind] = get_num(prop["y"][ind]);
         }
         mpt->AddProperty(propname.c_str(), x, y, npoints);
         //cout << "Set " << matname << "/" << propname
@@ -271,9 +273,9 @@ G4VSolid* make_solid(Json::Value v)
             double *router = new double[nplanes];
             
             for (int ind=0; ind<nplanes; ++ind) {
-                zplane[ind] = v["zplane"][ind].asFloat();
-                rinner[ind] = v["rinner"][ind].asFloat();
-                router[ind] = v["router"][ind].asFloat();
+                zplane[ind] = get_num(v["zplane"][ind]);
+                rinner[ind] = get_num(v["rinner"][ind]);
+                router[ind] = get_num(v["router"][ind]);
             }
             G4Polycone* pc =  new G4Polycone(name, get_num(v["phistart"]), 
                                              get_num(v["phitotal"], 360*degree), nplanes,
@@ -290,8 +292,8 @@ G4VSolid* make_solid(Json::Value v)
 
             for (int ind=0; ind<nrzs; ++ind) {
                 Json::Value rz = v["rz"][ind];
-                r[ind] = rz["r"].asFloat();
-                z[ind] = rz["z"].asFloat();
+                r[ind] = get_num(rz["r"]);
+                z[ind] = get_num(rz["z"]);
             }
             G4Polycone* pc = new G4Polycone(name, get_num(v["phistart"]), 
                                             get_num(v["phitotal"], 360*degree), nrzs, r, z);
@@ -429,13 +431,13 @@ static void surface_parameters(G4OpticalSurface& opsurf, Json::Value params)
     {
         Json::Value val = params["polish"];
         if (!val.isNull()) {
-            opsurf.SetPolish(val.asFloat());
+            opsurf.SetPolish(get_num(val));
         }
     }
     {
         Json::Value val = params["sigmaalpha"];
         if (!val.isNull()) {
-            opsurf.SetSigmaAlpha(val.asFloat());
+            opsurf.SetSigmaAlpha(get_num(val));
         }
     }
 }
@@ -468,8 +470,8 @@ static void surface_property(G4OpticalSurface& opsurf, string propname, Json::Va
     double *x = new double[npoints];
     double *y = new double[npoints];
     for (int ind=0; ind<npoints; ++ind) {
-        x[ind] = prop["x"][ind].asFloat();
-        y[ind] = prop["y"][ind].asFloat();
+        x[ind] = get_num(prop["x"][ind]);
+        y[ind] = get_num(prop["y"][ind]);
     }
     mattab->AddProperty(propname.c_str(), x, y, npoints);
     delete [] x;

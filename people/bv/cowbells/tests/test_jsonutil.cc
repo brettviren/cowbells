@@ -1,11 +1,4 @@
-/**
-
-   
-
- */
-
 #include "Cowbells/JsonUtil.h"
-
 
 #include <iostream>
 #include <string>
@@ -34,7 +27,5 @@ int main(int argc, char *argv[])
         cerr << val.toStyledString() << endl;
     }
 
-
-    
     return 0;
 }

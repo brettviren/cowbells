@@ -40,7 +40,7 @@ void Cowbells::PrimaryGeneratorGun::load_gun(Json::Value cfg)
         particle = G4ParticleTable::GetParticleTable()->FindParticle(name.c_str());
     }
     else if (!cfg["pdgcode"].isNull()) {
-        int pdgcode = cfg["pdgcode"].asInt();
+        int pdgcode = get_int(cfg["pdgcode"]);
         particle = G4ParticleTable::GetParticleTable()->FindParticle(pdgcode);
     }
     if (!particle) {
@@ -55,7 +55,7 @@ void Cowbells::PrimaryGeneratorGun::load_gun(Json::Value cfg)
     G4ThreeVector vertex = get_ThreeVector(cfg["vertex"]);
     G4ThreeVector direction = get_ThreeVector(cfg["direction"], G4ThreeVector(0,0,1));
     G4ThreeVector pol = get_ThreeVector(cfg["pol"]);
-    double energy = cfg["energy"].asFloat(); // no default
+    double energy = get_num(cfg["energy"]);
 
     m_gun->SetParticlePosition(vertex);
     m_gun->SetParticleDefinition(particle);

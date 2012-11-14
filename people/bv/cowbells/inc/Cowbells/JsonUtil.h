@@ -7,6 +7,8 @@
 
 namespace Cowbells {
 
+    void init_units();
+
     float get_num(Json::Value val, float def=0.0);
     int get_int(Json::Value val, int def=0);
     std::string get_str(Json::Value val, std::string def="");

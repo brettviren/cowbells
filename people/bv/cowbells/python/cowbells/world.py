@@ -5,7 +5,7 @@ Generate geometry for the world.
 
 import cowbells
 from geom import materials
-from geom.volumes import Shape, LogicalVolume
+from geom.volumes import Box, LogicalVolume
 from geom.placements import PhysicalVolume
 
 meter = cowbells.units.meter
@@ -26,7 +26,7 @@ class Builder(object):
     def top(self):
         if self._top: return self._top
 
-        shape = Shape('world_shape', 'box', x=self.size, y=self.size, z=self.size)
+        shape = Box('world_shape', x=self.size, y=self.size, z=self.size)
         lv = LogicalVolume('lvWorld', matname = self.material, shape=shape)
         pv = PhysicalVolume('pvWorld', 'lvWorld')
         self._top = lv

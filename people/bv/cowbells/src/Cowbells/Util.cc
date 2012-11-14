@@ -15,10 +15,24 @@ using namespace std;
 
 string Cowbells::pv2str(G4VPhysicalVolume& pv)
 {
+    G4LogicalVolume* lv_mother = pv.GetMotherLogical();
+    string mother = "(none)";
+    if (lv_mother) {
+        mother = lv_mother->GetName();
+    }
+
+    G4LogicalVolume* lv_daughter = pv.GetLogicalVolume();
+    string daughter = "(none)";
+    if (lv_daughter) {
+        daughter = lv_daughter->GetName();
+    }
+
+
     stringstream ss;
     ss << "PV(@0x" << (void*)&pv << "):" << pv.GetName() << " "
        << "mul:" << pv.GetMultiplicity() << " "
-       << "cop:" << pv.GetCopyNo();
+       << "copy:" << pv.GetCopyNo()
+       << "lv:[\"" << mother << "\"|<-|\"" << daughter << "]\"";
     return ss.str();
 }
 

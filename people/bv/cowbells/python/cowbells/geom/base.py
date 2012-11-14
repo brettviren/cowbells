@@ -5,7 +5,7 @@ Base functionality
 
 class Base(object):
     def pod(self): 
-        return self.__dict__
+        return dict(self.__dict__)
 
 
 def pod(store=None):

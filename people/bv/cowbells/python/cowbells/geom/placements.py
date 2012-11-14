@@ -4,6 +4,7 @@ Describe placements (physical volumes)
 '''
 
 import base, volumes
+from cowbells import units
 
 store = []
 
@@ -34,6 +35,13 @@ class PhysicalVolume(base.Base):
                            rot=rot, pos=pos, copy=copy)
         store.append(self)
         return
+    def pod(self):
+        p = super(PhysicalVolume,self).pod()
+        if self.rot:
+            p['rot'] = ['%f * degree' % (a/units.degree) for a in self.rot]
+        if self.pos:
+            p['pos'] = ['%f * mm' % (l/units.mm) for l in self.pos]
+        return p
     pass
 
 
