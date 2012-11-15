@@ -141,7 +141,7 @@ class Builder(object):
                                   matname = parts.Sample, shape = shape)
 
         shape = Tubs(self.shapename('TubBottom'),
-                     dz = parms.tub_thickness, rmax = outer_radius)
+                     dz = 0.5*parms.tub_thickness, rmax = outer_radius)
         bottom_lv = LogicalVolume(self.lvname('TubBottom'), 
                                   matname = parts.TubBottom, shape = shape)
 
@@ -175,14 +175,13 @@ class Builder(object):
                      rmax = 0.5*parms.photocathode_diameter)
         pc_lv = LogicalVolume(self.lvname('PhotoCathode'), 
                               matname = parts.PhotoCathode, shape = shape)
-
+        
         return sample_lv
 
     def place(self):
         '''
         Do internal placements.
         '''
-
         p = Struct(**self.params) # just for abbreviation
 
         tot_height = p.lid_thickness + p.inner_height + p.tub_thickness
@@ -190,8 +189,8 @@ class Builder(object):
         lid_offset = +0.5*tot_height - p.lid_thickness # polycone builds up from 0.
         side_offset =-0.5*tot_height + p.tub_thickness + 0.5*p.inner_height
         bot_offset = -0.5*tot_height + 0.5*p.tub_thickness
-        win_offset = lid_offset - p.window_extend
-        pc_offset = p.lid_thickness + p.window_extend - 0.5*p.photocathode_thickness
+        win_offset = lid_offset
+        pc_offset = p.lid_thickness - 0.5*p.photocathode_thickness
 
 
         PhysicalVolume(self.pvname('TubWindow'),

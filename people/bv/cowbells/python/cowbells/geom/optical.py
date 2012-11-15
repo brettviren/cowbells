@@ -11,7 +11,8 @@ class MaterialProperty(base.Base):
     def __init__(self, matname, propname, x, y):
         if isinstance(matname, materials.Material):
             matname = matname.name
-        self.__dict__ = dict(matname=matname, propname=propname, x=x, y=y)
+        self.__dict__ = dict(matname=matname, propname=propname, 
+                             x=map(float,x), y=map(float,y))
         store.append(self)
         return
     def __str__(self):

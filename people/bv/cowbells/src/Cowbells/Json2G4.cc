@@ -263,7 +263,7 @@ G4VSolid* make_solid(Json::Value v)
     }
     if (type == "tubs") {
         return new G4Tubs(name, get_num(v["rmin"]), get_num(v["rmax"]),
-                          get_num(v["dz"]),get_num(v["sphi"]), get_num(v["dphi"], 360*degree));
+                          get_num(v["dz"]),get_num(v["sphi"]), get_num(v["dphi"], 2*M_PI*radian));
     }
     if (type == "polycone") {
         if (!v["zplane"].isNull()) {
@@ -278,7 +278,7 @@ G4VSolid* make_solid(Json::Value v)
                 router[ind] = get_num(v["router"][ind]);
             }
             G4Polycone* pc =  new G4Polycone(name, get_num(v["phistart"]), 
-                                             get_num(v["phitotal"], 360*degree), nplanes,
+                                             get_num(v["phitotal"], 2*M_PI*radian), nplanes,
                                              zplane, rinner, router);
             delete [] zplane;
             delete [] rinner;
@@ -296,7 +296,7 @@ G4VSolid* make_solid(Json::Value v)
                 z[ind] = get_num(rz["z"]);
             }
             G4Polycone* pc = new G4Polycone(name, get_num(v["phistart"]), 
-                                            get_num(v["phitotal"], 360*degree), nrzs, r, z);
+                                            get_num(v["phitotal"], 2*M_PI*radian), nrzs, r, z);
             delete [] r;
             delete [] z;
             return pc;

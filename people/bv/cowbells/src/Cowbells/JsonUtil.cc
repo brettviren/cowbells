@@ -66,21 +66,21 @@ void Cowbells::init_units()
         {0,0}
     };
     for (int ind=0; units[ind].name; ++ind) {
-        gROOT->ProcessLine(Form("float %s = %s;", units[ind].name, units[ind].value));
+        gROOT->ProcessLine(Form("double %s = %s;", units[ind].name, units[ind].value));
     }
 
 }
 
 
-float Cowbells::get_num(Json::Value val, float def)
+double Cowbells::get_num(Json::Value val, double def)
 {
     if (val.isNull()) { return def; }
 
-    if (val.isNumeric()) { return val.asFloat(); }
+    if (val.isDouble()) { return val.asDouble(); }
 
     init_units();
-    gROOT->ProcessLine(Form("float json_util_float_value = %s;", val.asString().c_str()));
-    float ret = *((float*)((TGlobal*)gROOT->GetListOfGlobals()->FindObject("json_util_float_value"))->GetAddress());
+    gROOT->ProcessLine(Form("double json_util_double_value = %s;", val.asString().c_str()));
+    double ret = *((double*)((TGlobal*)gROOT->GetListOfGlobals()->FindObject("json_util_double_value"))->GetAddress());
     return ret;
 }
 
@@ -90,7 +90,7 @@ int Cowbells::get_int(Json::Value val, int def)
     if (val.isInt()) { return val.asInt(); }
 
     init_units();
-    gROOT->ProcessLine(Form("float json_util_int_value = %s;", val.asString().c_str()));
+    gROOT->ProcessLine(Form("int json_util_int_value = %s;", val.asString().c_str()));
     int ret = *((int*)((TGlobal*)gROOT->GetListOfGlobals()->FindObject("json_util_int_value"))->GetAddress());
     return ret;
 

@@ -1,0 +1,15 @@
+/vis/open HepRepFile 
+/vis/drawVolume
+/vis/scene/add/axes            0 0 0 100 mm
+/vis/viewer/flush
+/vis/scene/add/axes            0 0 0 100 mm
+/vis/scene/add/trajectories rich
+/vis/modeling/trajectories/create/drawByParticleID
+/vis/modeling/trajectories/drawByParticleID-0/set e- blue
+/vis/modeling/trajectories/drawByParticleID-0/set e+ cyan
+/vis/modeling/trajectories/drawByParticleID-0/set proton red
+/vis/modeling/trajectories/drawByParticleID-0/set neutron green
+/vis/modeling/trajectories/drawByParticleID-0/set opticalphoton white
+
+
+/run/beamOn 1

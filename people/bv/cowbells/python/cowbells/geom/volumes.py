@@ -3,6 +3,7 @@
 Describe shapes and logical volumes.
 '''
 
+import math
 import base, materials
 
 from cowbells import units
@@ -20,33 +21,35 @@ class Shape(object):
         return
     def pod(self):
         'Return data as dictionary of plain old data'
-        return dict(self.__dict__)
+
+        p = dict(self.__dict__)
+
+        # Look for length dimensions:
+        for l in ('x','y','z','rmin','rmax','dz'):
+            if not p.has_key(l): continue
+            p[l] = "%f * mm" % (p[l] / units.mm)
+
+        # Look for angle dimensions
+        for a in ['sphi','dphi']:
+            if not p.has_key(a): continue
+            p[a] = "%.14f * radian" % (p[a] / units.radian)
+
+        return p
 
     pass
 
 class Box(Shape):
     def __init__(self, name, x, y, z):
         super(Box, self).__init__(name,x=x,y=y,z=z)
-    def pod(self):
-        p = super(Box, self).pod()
-        for a in ('x','y','z'):
-            p[a] = "%f * mm" % (self.__dict__[a] / units.mm)
-        return p
 
 class Tubs(Shape):
-    def __init__(self, name, rmax, dz, rmin=0.0, sphi=0.0, dphi=360*units.degree):
+    def __init__(self, name, rmax, dz, rmin=0.0, sphi=0.0, dphi=math.pi*2*units.radian):
         super(Tubs, self).__init__(name, rmax=rmax, dz=dz, rmin=rmin, sphi=sphi, dphi=dphi)
-    def pod(self):
-        p = super(Tubs, self).pod()
-        for l in ['rmin','rmax','dz','sphi','dphi']:
-            p[l] = "%f * mm" % (self.__dict__[l] / units.mm)
-        for a in ['sphi','dphi']:
-            p[a] = "%f * degree" % (self.__dict__[a] / units.degree)
-        return p
 
 class Polycone(Shape):
-    def __init__(self, name, zplane, rinner, router):
-        super(Polycone, self).__init__(name, zplane=zplane, rinner=rinner, router=router)
+    def __init__(self, name, zplane, rinner, router, sphi=0.0, dphi=math.pi*2*units.radian):
+        super(Polycone, self).__init__(name, zplane=zplane, rinner=rinner, router=router,
+                                       sphi=sphi, dphi=dphi)
     def pod(self):
         p = super(Polycone, self).pod()
         p['zplane'] = ['%f * mm'%(l/units.mm) for l in self.zplane]
