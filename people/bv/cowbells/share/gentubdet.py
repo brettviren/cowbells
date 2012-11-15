@@ -4,7 +4,8 @@ Main program for generating a single tub detector.
 '''
 import argparse
 
-from cowbells import geom, default, world, tubdet
+from cowbells import geom, default
+from cowbells.builder import tubdet, world
     
 
 def parse_args(argv):
@@ -21,6 +22,10 @@ def parse_args(argv):
     return parser.parse_args()
     
 def gen(args):
+    '''
+    Generate the geometry.
+    '''
+    # FIXME: in principle this should be turned into a builder itself
 
     default.all()
 
@@ -30,6 +35,8 @@ def gen(args):
 
     worldlv = worldb.top()      # needs to come first
     td = tdb.top()
+
+    geom.placements.PhysicalVolume('pvWorld',worldlv)    
     geom.placements.PhysicalVolume('pvTub',td,worldlv)
     tdb.place()
     return

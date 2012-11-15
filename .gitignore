@@ -37,3 +37,6 @@ pdf/
 *.pyc
 
 *-build
+*.tar.gz
+*.log
+log

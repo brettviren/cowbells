@@ -4,9 +4,9 @@ Generate geometry for a trigger counter
 '''
 import cowbells
 import base
-from geom import materials, surfaces, sensitive
-from geom.volumes import Tubs, Polycone, LogicalVolume
-from geom.placements import PhysicalVolume
+from cowbells.geom import surfaces, sensitive
+from cowbells.geom.volumes import Box, LogicalVolume
+from cowbells.geom.placements import PhysicalVolume
 
 hbarc = cowbells.units.clhep_units.hbarc
 inch = cowbells.units.inch
@@ -15,7 +15,7 @@ mm = cowbells.units.mm
 cm = cowbells.units.cm
 
 class Builder(base.Builder):
-    default_parameters = {
+    default_params = {
 
         # The width transverse to the beam
         'width': 2.0*cm,
@@ -28,33 +28,41 @@ class Builder(base.Builder):
 
     # map part to material
     default_parts = {
-        'Scintillator': 'Scintillator',
-        'PhotoCathode': 'Glass',
+        'TCScintillator': 'Scintillator',
+        'TCPhotoCathode': 'Glass',
         }
 
     def make_logical_volumes(self):
 
-        parms,parts = self.pp()
+        p = self.pp()[0]
 
-        hwidth = 0.5*parms.width
-        hdepth = 0.5*parms.depth
+        hwidth = 0.5*p.width
+        hdepth = 0.5*p.depth
         thick = p.thickness
 
-        shape = Box(self.shapename('PhotoCathode'),
+        part = 'TCPhotoCathode'
+        shape = Box(self.shapename(part),
                     x=hwidth+thick, y=hwidth+thick, z=hdepth+thick)
-        pc_lv = LogicalVolume(self.lvname('PhotoCathode'),
-                              matname = parts.PhotoCathode, shape = shape)
+        pc_lv = LogicalVolume(self.lvname(part),
+                              matname = self.parts[part], shape = shape)
 
-        
-        shape = Box(self.shapename('Scintillator'),
+        part = 'TCScintillator'
+        shape = Box(self.shapename(part),
                     x=hwidth, y=hwidth, z=hdepth)
-        sc_lv = LogicalVolume(self.lvname('Scintillator'),
-                              matname = parts.Scintillator, shape = shape)
+        sc_lv = LogicalVolume(self.lvname(part),
+                              matname = self.parts[part], shape = shape)
 
         return pc_lv
 
     def place(self):
-        PhysicalVolume(self.pvname('Scintillator'),
-                       self.lvname('Scintillator'),self.lvname('PhotoCathode'))
+        PhysicalVolume(self.pvname('TCScintillator'),
+                       self.lvname('TCScintillator'),self.lvname('TCPhotoCathode'))
 
+        self._sensors()
         return
+    
+    def _sensors(self):
+        sd = sensitive.SensitiveDetector('SensitiveDetector', 'TC_HC', 
+                                         self.lvname('TCPhotoCathode'))
+        print sd.touchables()
+        

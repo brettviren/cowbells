@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''
-Base for a builder of geometry
+Base for a generator and  builder of geometry
 '''
 from cowbells.geom import materials
 
@@ -89,3 +89,4 @@ class Builder(object):
         Subclass may do any internal placements.
         '''
         return
+

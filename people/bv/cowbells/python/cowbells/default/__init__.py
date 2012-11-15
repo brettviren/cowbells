@@ -39,10 +39,10 @@ def materials():
     m('Teflon', 2.2*gpercm3, elelist=[('C',0.759814), ('F',0.240186)])
     m('Acrylic', 1.18*gpercm3, elelist=[("C",0.59984),  ("H",0.08055), ("O", 0.31961)])
     m('Aluminum', 2.7*gpercm3, elelist=[('Al',1.0)])
-    m('Scintilator', 1.032*gpercm3, elelist=[('C',9), ('H',10)])
+    m('Scintillator', 1.032*gpercm3, elelist=[('C',9), ('H',10)])
     m('Bialkali', 0.1*gpercm3, elelist=[('Na',0.375), ('K',0.1875), ('Cs',0.1875), ('Sb',0.25)])
 
-    # 1% Water-based Liquid Scintilator
+    # 1% Water-based Liquid Scintillator
     m('WBLS01', 0.9945*gpercm3, elelist = [('H', 0.1097),
                                            ('O', 0.8234),
                                            ('S', 0.0048),
@@ -65,7 +65,7 @@ def optical():
     '''
     # geom.optical.MaterialProperty('Air', 'RINDEX', x=[1.329,1.425], y=[1.0,1.0])
 
-    for matname in ['water','wbls','acrylic','bialkali']:
+    for matname in ['water','wbls','acrylic','bialkali','scintillator']:
         exec ('import %s' % matname)
         mod = eval (matname)
         mod.optical()
