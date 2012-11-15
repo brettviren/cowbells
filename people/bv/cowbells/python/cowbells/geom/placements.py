@@ -37,8 +37,11 @@ class PhysicalVolume(base.Base):
         return
     def pod(self):
         p = super(PhysicalVolume,self).pod()
-        if self.rot:
-            p['rot'] = ['%f * degree' % (a/units.degree) for a in self.rot]
+        if self.rot:            # dictionary
+            newrot = {}
+            for k,v in self.rot.items():
+                newrot[k] = '%f *radian' % (v/units.radian)
+            p['rot'] = newrot
         if self.pos:
             p['pos'] = ['%f * mm' % (l/units.mm) for l in self.pos]
         return p

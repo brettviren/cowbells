@@ -10,9 +10,7 @@ from cowbells.geom.volumes import Tubs, Polycone, LogicalVolume
 from cowbells.geom.placements import PhysicalVolume
 
 hbarc = cowbells.units.clhep_units.hbarc
-inch = cowbells.units.inch
-meter = cowbells.units.meter
-mm = cowbells.units.mm
+from cowbells.units import inch, meter, mm
 
 
 class Builder(base.Builder):
@@ -208,7 +206,7 @@ class Builder(base.Builder):
     def _sensors(self):
         sd = sensitive.SensitiveDetector('SensitiveDetector', 'HC', 
                                          self.lvname('PhotoCathode'))
-        print sd.touchables()
+        print 'TubDet touchables:',sd.touchables()
 
 
     pass

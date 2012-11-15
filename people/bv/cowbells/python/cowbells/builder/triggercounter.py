@@ -8,11 +8,9 @@ from cowbells.geom import surfaces, sensitive
 from cowbells.geom.volumes import Box, LogicalVolume
 from cowbells.geom.placements import PhysicalVolume
 
+from cowbells.units import inch, meter, mm, cm
 hbarc = cowbells.units.clhep_units.hbarc
-inch = cowbells.units.inch
-meter = cowbells.units.meter
-mm = cowbells.units.mm
-cm = cowbells.units.cm
+
 
 class Builder(base.Builder):
     default_params = {
@@ -64,5 +62,5 @@ class Builder(base.Builder):
     def _sensors(self):
         sd = sensitive.SensitiveDetector('SensitiveDetector', 'TC_HC', 
                                          self.lvname('TCPhotoCathode'))
-        print sd.touchables()
+        print 'TriggerCounter touchables:',sd.touchables()
         
