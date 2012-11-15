@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
 
     std::string outputfile = opt(oOUTPUT);
     if ("none" != outputfile) {
-        dr = new Cowbells::DataRecorder(outputfile.c_str());
+        dr = new Cowbells::DataRecorder(outputfile.c_str(), j2g4.get("sensitive"));
         dr->save_steps();
     }
 

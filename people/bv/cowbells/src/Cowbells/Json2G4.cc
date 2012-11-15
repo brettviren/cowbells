@@ -112,11 +112,13 @@ int Cowbells::Json2G4::elements(Json::Value eles)
             continue;
         }
 
-        g4ele = new G4Element(name, symbol,
-                              get_int(ele["z"]),
-                              get_num(ele["a"]) *g/mole); // special case of bad unit handling
-        //cerr << "Element added: " << symbol << ": "
-        //     << ele.toStyledString() << endl;
+        int z = get_int(ele["z"]);
+        double a = get_num(ele["a"]);
+
+        g4ele = new G4Element(name, symbol, z, a);
+        cerr << "Element added: " 
+             << name << "(" << symbol << ") z=" << z
+             << " a= " << a/(g/mole) << " g/mole" << endl;
     }
     return neles;
 }
@@ -127,12 +129,13 @@ static G4Material* make_material(Json::Value mat)
 
     int nele = elelist.size(), nmat = matlist.size();
     string matname = mat["name"].asString();
+    double dens = get_num(mat["density"]);
 
-    G4Material* g4mat = new G4Material(matname, 
-                                       get_num(mat["density"]), // special case bad unit handling
-                                       nele+nmat);
+    G4Material* g4mat = new G4Material(matname, dens, nele+nmat);
 
-    cerr << "Making material " << matname << " with " << nele << " elements, " << nmat << " materials" << endl;
+    cerr << "Making material " << matname 
+         << " density=" << dens/(g/cm3) << " g/cm3"
+         << " with " << nele << " elements, " << nmat << " materials" << endl;
     {
         Json::ValueIterator it = elelist.begin();
         for (int ind=0; ind<nele; ++ind, ++it) {

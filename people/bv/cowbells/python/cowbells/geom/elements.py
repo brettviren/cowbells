@@ -5,6 +5,9 @@ Describe Atomic Elements
 
 import base
 
+from cowbells import units
+gpermole = units.gram/units.mole
+
 store = []
 
 class Element(base.Base):
@@ -14,6 +17,10 @@ class Element(base.Base):
         return
     def __str__(self):
         return '<Element "%s" (%s) a=%d z=%.1f>' % (self.name, self.symbol, self.z, self.a)
+    def pod(self):
+        p = dict(self.__dict__)
+        p['a'] = '%f * gram/mole' % (self.a / gpermole)
+        return p
     pass
 
 

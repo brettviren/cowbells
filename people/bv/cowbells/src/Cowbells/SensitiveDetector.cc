@@ -108,7 +108,17 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     fHC->insert(new Cowbells::GHit(hit));
 
     string tname = make_touchable_name(touch);
-    cerr << "Hit in: " << tname << " PV:" << pv->GetName() << endl;
+    if (false) {
+        cerr << "Hit in #"<<hcid<<"("<<collectionName[0]<<"): " 
+             << tname << " PV:" << pv->GetName() 
+             << " trackid: " << track->GetTrackID()
+             << " from: " << track->GetParentID()
+             << " energy: " << track->GetTotalEnergy()
+             << " t=" << psp->GetGlobalTime()
+             << " v=[" << pos.x() << "," << pos.y() << "," << pos.z() << "]"
+             << endl;
+    }
+
     int id = divine_touchable_id(tname);
     if (id<0) {
         cerr << "Hit: hit in unknown volume: \"" << tname << "\"" << endl;

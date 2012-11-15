@@ -67,7 +67,7 @@ class Builder(object):
         'TubSide' : 'Teflon',
         'TubLid' : 'Teflon',
         'TubWindow' : 'Acrylic',
-        'PhotoCathode': 'Acrylic',
+        'PhotoCathode': 'Bialkali',
         'Sample': 'WBLS01',
         }
 

@@ -8,17 +8,32 @@ using namespace std;
 
 static Cowbells::DataRecorder* singleton = 0;
 
-Cowbells::DataRecorder::DataRecorder(const char* filename)
+Cowbells::DataRecorder::DataRecorder(const char* filename, Json::Value cfg)
     : m_file(0)
     , m_tree(0)
     , m_event(0)
     , m_save_steps(false)
 {
+    if (!singleton) { singleton = this; } // first one wins
     if (filename) {
         this->set_output_file(filename);
     }
+    this->apply_json_cfg(cfg);
+}
 
-    if (!singleton) { singleton = this; } // first one wins
+void Cowbells::DataRecorder::apply_json_cfg(Json::Value cfg)
+{
+    int nsens = cfg.size();
+    for (int ind=0; ind<nsens; ++ind) {
+        Json::Value sens = cfg[ind];
+        Json::Value name = sens["hcname"];
+        if (name.isNull()) {
+            cerr << "Failed to get \"hcname\" from: " << sens.toStyledString() << endl;
+            continue;
+        }
+
+        this->add_hc(name.asString());
+    }
 }
 
 Cowbells::DataRecorder::~DataRecorder()

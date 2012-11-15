@@ -22,6 +22,7 @@ angstrom = nm/10.0
 inch = 2.54*cm
 parsec = clhep_units.parsec/vgm_length
 
+cm3 = clhep_units.cm3
 
 ## Time
 
@@ -38,9 +39,11 @@ GeV = clhep_units.GeV
 ## Mass
 
 gram = clhep_units.gram
-
+g = gram
 
 ## Angle
 
 radian = clhep_units.radian
 degree = clhep_units.degree
+
+mole = clhep_units.mole

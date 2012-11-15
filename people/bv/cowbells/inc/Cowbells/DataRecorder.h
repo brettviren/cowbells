@@ -21,6 +21,8 @@
 #include <TFile.h>
 #include <TTree.h>
 
+#include <json/json.h>
+
 #include <vector>
 #include <string>
 
@@ -29,8 +31,10 @@ namespace Cowbells {
     class DataRecorder
     {
     public:
-        DataRecorder(const char* filename = 0);
+        DataRecorder(const char* filename=0, Json::Value cfg = Json::Value());
         virtual ~DataRecorder();
+
+        void apply_json_cfg(Json::Value cfg);
 
         // Tell data to record hit collection 
         void add_hc(const std::string& hcname);

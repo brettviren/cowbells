@@ -28,6 +28,9 @@ void Cowbells::init_units()
         {"mm","1.0"},  {"cm","mm*10"}, {"m","100*cm"}, {"meter","m"},
         {"km", "1000*m"}, {"nm","1e-9*m"}, {"angstrom","1e-12*m"},
         {"inch", "2.54*cm"}, 
+        {"cm2", "cm*cm"},
+        {"cm3", "cm*cm*cm"},
+        {"cc", "cm*cm*cm"},
 
         // angle
         {"radian","1.0"}, {"degree","(3.14159265358979323846/180.0)*radian"},
@@ -63,6 +66,9 @@ void Cowbells::init_units()
         {"kg", "kilogram"},
         {"g","gram"},
         {"mg", "milligram"},
+
+        {"mole","1.0"},
+
         {0,0}
     };
     for (int ind=0; units[ind].name; ++ind) {

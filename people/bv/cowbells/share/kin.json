@@ -4,7 +4,7 @@
 	"count" : 1,
 	"particle": "proton",
 	"vertex": [0.0, 0.0, 0.0],
-	"direction": [0.0, 0.0, 1.0],
+	"direction": [0.0, 1.0, 1.0],
 	"energy": "500*MeV"
     }
 

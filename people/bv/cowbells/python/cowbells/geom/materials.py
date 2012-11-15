@@ -3,6 +3,9 @@
 Describe materials
 '''
 
+from cowbells import units
+gpercm3 = units.gram/units.cm3
+
 import base, elements
 
 store = []
@@ -55,6 +58,11 @@ class Material(base.Base):
             (self.name, self.density,
              ','.join(['(%s:%s)'%c for c in self.elements.iteritems()]),
              ','.join(['(%s:%s)'%c for c in self.materials.iteritems()]))
+
+    def pod(self):
+        p = dict(self.__dict__)
+        p['density'] = '%f * gram/cm3' % (self.density / gpercm3)
+        return p
 
     pass
 
