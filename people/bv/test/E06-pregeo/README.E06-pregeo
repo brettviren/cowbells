@@ -1,7 +1,0 @@
-E06-pregeo
-
-This area has a version of the Ex06 example from geant4_vmc that
-builds the geometry outside the application and stores it in an
-intermediate ROOT file.
-
-
