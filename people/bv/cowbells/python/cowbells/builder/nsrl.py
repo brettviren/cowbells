@@ -58,19 +58,19 @@ class Builder(base.Builder):
     def place(self):
         p = self.pp()[0]
         tc_start = p.td_offset - 0.5*p.td_separation # starting point for first TC
-        rot = { 'rotateX': 90*degree }
+        tubrot = { 'rotatex': 90*degree }
 
         to_place = [
-            (self.lvs[1],p.bw_offset,0), # beam window
-            (self.lvs[2],tc_start,                  1),    # TC1
-            (self.lvs[2],tc_start+p.td_separation,  2),    # TC2
-            (self.lvs[2],tc_start+p.td_separation*2,3),    # TC3
-            (self.lvs[3],p.td_offset,0),                   # Tub1
-            (self.lvs[4],p.td_offset+p.td_separation,0),   # Tub2
+            (self.lvs[1],p.bw_offset,0,None), # beam window
+            (self.lvs[2],tc_start,                  1,None), # TC1
+            (self.lvs[2],tc_start+p.td_separation,  2,None), # TC2
+            (self.lvs[2],tc_start+p.td_separation*2,3,None), # TC3
+            (self.lvs[3],p.td_offset,0,tubrot),              # Tub1
+            (self.lvs[4],p.td_offset+p.td_separation,0,tubrot), # Tub2
             ]
 
         world_lv = self.lvs[0]
-        for lv,z,cp in to_place:
+        for lv,z,cp,rot in to_place:
             name = lv.name.replace('lv','pv',1)
             #print 'Placing %s #%d at z=%f cm' % (name,cp,z/cm) 
             PhysicalVolume(name, lv, world_lv, rot=rot, pos=[0.0,0.0,z], copy=cp)

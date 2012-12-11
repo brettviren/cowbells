@@ -44,9 +44,15 @@ G4RotationMatrix* Cowbells::get_RotationMatrix(Json::Value val, G4RotationMatrix
     if (val.isNull()) { return 0; }
 
     G4RotationMatrix* rot = new G4RotationMatrix();
-    rot->rotateX(degree * get_num(val["rotatex"]));
-    rot->rotateY(degree * get_num(val["rotatey"]));
-    rot->rotateZ(degree * get_num(val["rotatez"]));
+    if (!val["rotatex"].isNull()) {
+        rot->rotateX(get_num(val["rotatex"]));
+    }
+    if (!val["rotatey"].isNull()) {
+        rot->rotateY(get_num(val["rotatey"]));
+    }
+    if (!val["rotatez"].isNull()) {
+        rot->rotateZ(get_num(val["rotatez"]));
+    }
     return rot;
 }
 
