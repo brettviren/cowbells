@@ -1,0 +1,17 @@
+<lcgdict>
+  <selection>
+
+    <variable pattern="units::*"/>
+    <variable pattern="units::CLHEP::*"/>
+
+    <!-- Data classes -->
+    <class name="Cowbells::Event"/>
+    <class name="Cowbells::Hit"/>
+    <class name="Cowbells::Step"/>
+    <class name="std::vector<Cowbells::Hit*>"/>
+    <class name="std::vector<Cowbells::Step*>"/>
+
+    <class pattern="HepMC::Gen*"/>
+    <class name="std::deque<HepMC::GenEvent*>"/>
+  </selection>
+</lcgdict>

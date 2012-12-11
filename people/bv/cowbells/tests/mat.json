@@ -1,0 +1,76 @@
+{
+    "elements" : {
+	"H": {"name":"Hydrogen", "z":1 , "a": 1.01},
+	"C": {"name":"Carbon"  , "z":6 , "a":12.01},
+	"N": {"name":"Nitrogen", "z":7 , "a":14.01},
+	"O": {"name":"Oxygen"  , "z":8 , "a":16.00},
+	"F": {"name":"Florine" , "z":9 , "a":19.00},
+	"Al":{"name":"Aluminum", "z":13, "a":26.98},
+	"S": {"name":"Sulfur"  , "z":16 ,"a":32.07}
+    },
+    "materials" : {
+	"Acrylic" : {
+	    "density" : 1.18,
+	    "elements" : {
+		"C": 5,
+		"H": 8,
+		"O": 2
+	    }
+	},
+	"Air": {
+	    "density": 0.00129,
+	    "elements" : { 
+		"N" : 0.7,
+		"O" : 0.3
+	    }		
+	},
+	"Aluminum" : {
+	    "density" : 2.7,
+	    "elements" : {
+		"Al" : 1
+	    }
+	},
+	"Glass" : {
+	    "density" : 1.032,
+	    "elements" : {
+		"C" : 0.91533,
+		"H" : 0.08467
+	    }
+	},
+	"Scintillator" : {
+	    "density" : 1.032,
+	    "elements" : {
+		"C" : 9,
+		"H" :10
+	    }
+	},
+	"Teflon" : {
+	    "density" : 2.2,
+	    "elements" : {
+		"C" : 0.759814,
+		"F" : 0.240186
+	    }
+	},
+	"Water" : {
+	    "density" : 1.0,
+	    "elements" : {
+		"H" : 2,
+		"O" : 1
+	    }
+	},
+	"WBLS" : {
+	    "density" : 0.9945,
+	    "elements" : {
+		"H": 0.1097,
+		"O": 0.8234,
+		"S": 0.0048,
+		"N": 0.0001,
+		"C": 0.0620
+	    }
+	}
+    }
+}
+
+
+	
+	

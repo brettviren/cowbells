@@ -1,0 +1,64 @@
+{
+    "detector" : {
+	"world" : { 
+	    "size" : { "value": 10.0, "unit":"m" },
+	    "material": "Air"
+	},
+	"beam_window" : { 
+	    "material" : "Aluminum",
+	    "radius" : { "value": 2.0, "unit":"cm" },
+	    "thickness" : { "value": 0.381, "unit":"mm"},
+	    "zoff": { "value":-5.0, "unit":"m"}
+	},
+	"trigger_counters" : {
+	    "pc_material": "Glass",
+	    "scint_material": "Scintillator",
+	    "number" : 3,
+	    "width" : { "value":2.0, "unit":"cm" },
+	    "thickness" : { "value":0.5, "unit":"cm" },
+	    "pc_thickness" : { "value":1, "unit":"mm" },
+	    "separation": { "value":40, "unit":"cm" },
+	    "zoff" : { "value":-20.0, "unit":"cm" }
+
+	},
+	"tubdets" : { 
+	    "tub_materials" : [ "Teflon", "Aluminum" ],
+
+	    "separation" : { "value":40., "unit":"cm" },
+	    "zoff" : { "value":0.0, "unit":"cm" },
+
+	    "wall_thickness" : { "value":0.25, "unit":"inch" },
+	    "lid_thickness" : { "value":0.75, "unit":"inch" },
+	    "sample_radius" : { "value":2.75, "unit":"inch" },
+	    "sample_height" : { "value":6   , "unit":"inch" },
+	    "window_material" : "Acrylic",
+	    "window_full_radius" : { "value":1.375, "unit":"inch" },
+	    "window_step_radius" : { "value":1.062, "unit":"inch" },
+	    "window_thickness" : { "value":0.75, "unit":"inch" },
+	    "window_step_fraction" : 0.333333,
+	    "pc_material": "Acrylic",
+            "pc_radius" : { "value":1.0, "unit":"inch" },
+            "pc_thickness" : { "value":0.01, "unit":"inch"}
+	},
+	"samples" : [ "Water", "Water" ]
+    },
+    "sensitive" : [
+	{
+	    "hitcollection": "TUB_PC_HC",
+	    "volume" : "lvTubPC",
+	    "touchables" : [
+		"World:1/TubTeflon:1/TubdetWindow:1/PC:1",
+		"World:1/TubAluminum:1/TubdetWindow:1/PC:1"
+	    ]
+	},
+	{
+	    "hitcollection": "TC_PC_HC",
+	    "volume" : "lvTCPC",
+	    "touchables": [
+		"World:1/Triggercounter:1/TriggerCounterScint:1/TriggerCounter:1",
+		"World:1/Triggercounter:1/TriggerCounterScint:1/TriggerCounter:2",
+		"World:1/Triggercounter:1/TriggerCounterScint:1/TriggerCounter:3"
+	    ]
+	}
+    ]
+}
