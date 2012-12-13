@@ -1,8 +1,6 @@
 
 #include "Cowbells/DataRecorder.h"
 #include "Cowbells/DetConsBase.h"
-//#include "Cowbells/BuildFromRoot.h"
-//#include "Cowbells/BuildFromGdml.h"
 //#include "Cowbells/PrimaryGenerator.h"
 #include "Cowbells/PhysicsList.h"
 #include "Cowbells/SensitiveDetector.h"
@@ -10,14 +8,6 @@
 #include "Cowbells/EventAction.h"
 #include "Cowbells/Event.h"
 #include "Cowbells/Hit.h"
-
-#include "Cowbells/TestDetectorConstruction.h"
-#include "Cowbells/TestPhysicsList.h"
-#include "Cowbells/TestPrimaryGeneratorAction.h"
-#include "Cowbells/TestRunAction.h"
-#include "Cowbells/TestStackingAction.h"
-#include "Cowbells/TestSteppingVerbose.h"
-//#include "Cowbells/TestMain.h"
 
 // Exposed Geant4 classes
 #include <G4RunManager.hh>
