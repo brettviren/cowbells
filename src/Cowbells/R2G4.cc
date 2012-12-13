@@ -212,7 +212,9 @@ bool Cowbells::SetOpSurfParameter(G4OpticalSurface& opsurf,
         const char* models[] = { "glisur", "unified", "LUT", 0 };
         for (int ind=0; models[ind]; ++ind) {
             if (value == models[ind]) {
-                opsurf.SetModel((G4OpticalSurfaceModel)ind);
+                // no more model in g4.9.6
+                // https://geant4.web.cern.ch/geant4/support/ReleaseNotes4.9.6.html
+                // opsurf.SetModel((G4OpticalSurfaceModel)ind);
                 return true;
             }
         }

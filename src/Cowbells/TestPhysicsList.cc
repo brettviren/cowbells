@@ -242,8 +242,10 @@ void Cowbells::TestPhysicsList::ConstructOp()
     G4EmSaturation* emSaturation = G4LossTableManager::Instance()->EmSaturation();
     theScintillationProcess->AddSaturation(emSaturation);
 
-    G4OpticalSurfaceModel themodel = unified;
-    theBoundaryProcess->SetModel(themodel);
+    // G4OpticalSurfaceModel themodel = unified;
+    // no more model in g4.9.6
+    // https://geant4.web.cern.ch/geant4/support/ReleaseNotes4.9.6.html
+    //theBoundaryProcess->SetModel(themodel);
 
     theParticleIterator->reset();
     while( (*theParticleIterator)() ){

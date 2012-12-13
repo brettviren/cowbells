@@ -253,7 +253,10 @@ G4VPhysicalVolume* Cowbells::TestDetectorConstruction::Construct()
   G4OpticalSurface* OpWaterSurface = new G4OpticalSurface("WaterSurface");
   OpWaterSurface->SetType(dielectric_dielectric);
   OpWaterSurface->SetFinish(ground);
-  OpWaterSurface->SetModel(unified);
+
+  // no more model in g4.9.6
+  // https://geant4.web.cern.ch/geant4/support/ReleaseNotes4.9.6.html
+  // OpWaterSurface->SetModel(unified);
 
   new G4LogicalBorderSurface("WaterSurface",
                                  waterTank_phys,expHall_phys,OpWaterSurface);
@@ -263,7 +266,9 @@ G4VPhysicalVolume* Cowbells::TestDetectorConstruction::Construct()
   G4OpticalSurface* OpAirSurface = new G4OpticalSurface("AirSurface");
   OpAirSurface->SetType(dielectric_dielectric);
   OpAirSurface->SetFinish(polished);
-  OpAirSurface->SetModel(glisur);
+  // no more model in g4.9.6
+  // https://geant4.web.cern.ch/geant4/support/ReleaseNotes4.9.6.html
+  // OpAirSurface->SetModel(glisur);
 
   G4LogicalSkinSurface* AirSurface = 
 	  new G4LogicalSkinSurface("AirSurface", bubbleAir_log, OpAirSurface);

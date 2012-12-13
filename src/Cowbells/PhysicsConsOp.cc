@@ -66,7 +66,9 @@ void Cowbells::PhysicsConsOp::ConstructProcess()
     //pManager->AddDiscreteProcess(theRayleighScattering);
     //pManager->AddDiscreteProcess(theMieHGScatteringProcess);
 
-    theBoundaryProcess->SetModel(glisur);
+    // no more model in g4.9.6
+    // https://geant4.web.cern.ch/geant4/support/ReleaseNotes4.9.6.html
+    //theBoundaryProcess->SetModel(glisur);
     //theBoundaryProcess->SetModel(unified);
     pManager->AddDiscreteProcess(theBoundaryProcess);
 

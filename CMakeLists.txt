@@ -15,15 +15,16 @@ project(cowbells)
 
 SET(CMAKE_COLOR_MAKEFILE ON)
 
-# Hook into Geant4
-find_package(Geant4 REQUIRED vis_opengl_x11)
-include(${Geant4_USE_FILE})
-
 # Hook into ROOT
 find_package(ROOT REQUIRED)
+message("found ROOT_USE_FILE=\"${ROOT_USE_FILE}\"")
 include(${ROOT_USE_FILE})
 #include_directories(${ROOT_INCLUDE_DIRS})
 
+
+# Hook into Geant4
+find_package(Geant4 REQUIRED vis_opengl_x11)
+include(${Geant4_USE_FILE})
 
 # -DHEPMC_DIR:STRING=/path/to/hepmc
 include_directories(${HEPMC_DIR}/include)
@@ -67,6 +68,7 @@ target_link_libraries(json2g4.exe cowbellsDict cowbells ${hepmc} ${Geant4_LIBRAR
 # reflex dictionary - handles C++ but don't forget an initial 
 # import PyCintex
 # somewhere early in your Python code
+set(ROOT_genreflex_cmd genreflex)
 REFLEX_GENERATE_DICTIONARY(cowbells ${PROJECT_SOURCE_DIR}/dict/selection.h SELECTION dict/selection.xml )
 #add_library(cowbellsDict MODULE cowbells_dict.cpp)
 add_library(cowbellsDict SHARED cowbells_dict.cpp)
