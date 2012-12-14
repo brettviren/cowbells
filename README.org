@@ -1,4 +1,35 @@
-Cowbells simulation a simple but flexible Geant4-based detector simulation.
+#+TITLE: Cowbells simulation a simple but flexible Geant4-based detector simulation.
+#+AUTHOR: Brett Viren
+#+EMAIL: bv@bnl.gov
+
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \hypersetup{
+#+LATEX_HEADER:   hyperindex=true,
+#+LATEX_HEADER:   plainpages=false,
+#+LATEX_HEADER:   colorlinks=true,
+#+LATEX_HEADER:   linkcolor=black
+#+LATEX_HEADER: }
+
+#+DESCRIPTION:
+#+KEYWORDS:
+#+LANGUAGE:  en
+#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LINK_UP:
+#+LINK_HOME:
+#+XSLT:
+
+The Cowbells package started as a green-field Geant4-based simulation
+of the cosmic-ray test stand constructed for research and development
+on water-based liquid scintilator at Brookhaven National Laboratory.
+It was extended to handle the configuration used for beam tests at the
+NASA Space Radiation Lab at BNL and then made general enough to
+support any, with some small development, novel detector
+configurations.
+
 
 * Installation
 
@@ -34,13 +65,145 @@ This example assumes they have been built with =grinst= and the
 environment has been setup as above.
 
 #+BEGIN_EXAMPLE
-cd /path/to/build_dir
-cmake \
-      -DHEPMC_DIR=$hepmc_install_dir \
-      /path/to/source_dir
+cd /path/to/build/area/
+cmake -DHEPMC_DIR=$hepmc_install_dir /path/to/source_dir
 make 
 #+END_EXAMPLE
 
 
 * Configuration 
+
+The simulation is configured through the command line and by one or
+more configuration files written in JSON[fn:json] format.  These files
+can be written by any means but a suite of modules are provided by the
+=cowbells= Python package to make generating them easier.
+
+At top-level, the file schema is that of a single (anonymous) JSON
+dictionary.  Each item of the dictionary has a key that determines the
+schema of the item and how the item's data is used by cowbells.
+Multiple files can be given on the command line.  If any section is
+found in more than one file the ordering of the files determine which
+section is used.  The first one found "wins".
+
+Next, an overview of how to use the =cowbells= Python modules to make
+produce configuration files is given.  Following that is a description
+of each configuration section.
+
+[fn:json] http://www.json.org/
+
+** Python configuration modules
+
+The Python modules are used to build up a description of the detector
+geometry in memory in an organized and reusable fashion and to persist
+this description to the JSON configuration files.  
+
+*** =cowbells.geom= 
+
+The =cowbells.geom= module provides a submodule for each configuration
+section related to geometry.  It contains submodules and their classes
+for materials, optical surfaces and properties and sensitive
+detectors.  These classes implement a very similar interface and
+naming convention as used by the Geant4 geometry model.  The
+similarity is not complete but intends to cover the more commonly used
+aspects.
+
+Most of the classes implement the method =.pod()= which will emit a
+"plain old data" (/pod/) structure that represents how the instance
+has been configured.  These /pod/ structures can be aggregated and
+finally fed to Python's =json= module in order to produce the JSON
+configuration files.  These two tasks are handled by the next module
+described.
+
+Each of the =geom.*= submodule maintains a =store= data member which
+collects every instance of its classes that are created.  All stores
+can be dumped to a JSON file with code like:
+
+#+BEGIN_SRC Python
+from cowbells import geom
+# ... populate the geometry
+fp = open("somefile.json", "w")
+fp.write(geom.dumps_json())
+fp.close()
+#+END_SRC
+
+It is in this manner that most applications that produce configuration
+code are expected to operate.
+
+*** =cowbells.builder=
+
+The =cowbells.builder== module defines and implements several
+=Builder= classes.  Instances of these create aggregate descriptions
+based on input parameters of some major element of a detector
+description.
+
+The interface to a Builder is defined in the =Builder= base class and
+is expected to be called by a top-level script or by a Builder that
+aggregates other (finer grained) builders.  Using a builder proceeds
+in three parts:
+
+ - creating :: all builder constructors may take keyword parameters
+               that modify their default behavior.
+
+ - building :: a top-level logical volume and all that it encompasses.
+
+ - placing :: the top logical volume must be placed in some parent
+              volume by the caller.  
+
+*** =cowbells.default= 
+
+The =cowbells.default= module provides pre-defined instances of some
+=cowbells.geom= classes.  These modules are used by calling special
+functions which will populate the geometry with whatever objects they
+define.  The supported functions are:
+
+ - =optical()= :: define optical material properties.  An optional
+                  material name may be given.
+
+
+** Configuration sections for geometry
+
+The configuration sections are described briefly.  The provided
+[[./tests/test_geom.py][test_geom.py]] gives examples of the Python code needed.  By running it
+the file =test_geom.json= will be produced giving an example of a JSON
+configuration file.
+
+ - =elements= :: list of elementary atoms
+
+ - =materials= :: list of aggregations of elements or other materials
+
+ - =volumes= :: list of logical volumes each bringing together a shape and a material
+
+ - =placements= :: list of physical volumes each bringing together
+                   daughter and mother (unless its a world placement)
+                   volumes and a transformation between them
+
+ - =optical= :: list of optical properties associated with a named material
+
+ - =surfaces= :: list of optical surfaces
+
+ - =sensitive= :: list of sensitive detectors each associating a
+                  (Geant4 sensitive detector) class with a logical
+                  volume and a set of touchables.
+
+In addition there are several =cowbells.geom.volumes.Shape= classes
+that assist in defining a logical volume instance.  However, these
+have no explicit section and instead are subsumed into an element of
+the =volumes= list.
+
+** Non-geometry configuration
+
+In addition to describing the geometry, JSON configuration files can
+describe these aspects:
+
+ - =physics= :: what physics to simulate
+
+ - =kinematics= :: how to produce the initial particle kinematics
+
+** Command line
+
+The main command line program produced by the Cowbells package is
+=cowbells.exe=.  Running it with no arguments produces a brief help
+message.
+
+
 
