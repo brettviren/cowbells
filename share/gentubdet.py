@@ -2,13 +2,11 @@
 '''
 Main program for generating a single tub detector.
 '''
-import argparse
 
-from cowbells import geom, default
-from cowbells.builder import tubdet, world
     
 
 def parse_args(argv):
+    import argparse
     parser = argparse.ArgumentParser(
         description = 'Generate a JSON file for a stand-alone "tub" detector')
     parser.add_argument('-s','--sample',default='Water',
@@ -17,7 +15,7 @@ def parse_args(argv):
                         help='Specify the tub material')
     parser.add_argument('-c','--color',default='white',
                         help='Specify the "color" of the Teflon coating (black or white)')
-    parser.add_argument('file', nargs="+", default='/dev/stdout',
+    parser.add_argument('file', nargs="?", default='/dev/stdout',
                         help="Specify the output file")
     return parser.parse_args()
     
@@ -26,6 +24,9 @@ def gen(args):
     Generate the geometry.
     '''
     # FIXME: in principle this should be turned into a builder itself
+
+    from cowbells import geom, default
+    from cowbells.builder import tubdet, world
 
     default.all()
 
@@ -44,13 +45,14 @@ def gen(args):
 def write(outfile):
     print 'Writing to "%s"' % outfile
     fp = open(outfile, "w")
+    from cowbells import geom
     fp.write(geom.dumps_json())
     fp.close()
     return
 
 def main(args):
     args = parse_args(args)
-    outfile = args.file[0]
+    outfile = args.file
     gen(args)
     write(outfile)
     return

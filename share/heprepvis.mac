@@ -10,6 +10,5 @@
 /vis/modeling/trajectories/drawByParticleID-0/set proton red
 /vis/modeling/trajectories/drawByParticleID-0/set neutron green
 /vis/modeling/trajectories/drawByParticleID-0/set opticalphoton white
-
-
 /run/beamOn 1
+
