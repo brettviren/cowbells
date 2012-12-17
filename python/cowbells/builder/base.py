@@ -38,7 +38,7 @@ class Builder(object):
 
         unused = set(params.keys()).difference(used)
         if unused:
-            print 'Warning: unknown arguments: %s' % unused
+            print 'Warning: unknown builder arguments: %s' % unused
 
         # check all needed materials are defined
         for part,mat in self.parts.items():
@@ -60,21 +60,37 @@ class Builder(object):
         _top = self.make_logical_volumes()
         return _top
 
+    def basename(self):
+        return ""
+
     def pvname(self,part):
-        assert part in self.parts.keys(), 'Unkown part: %s'%part
-        return 'pv'+self.parts[part]+part
+        assert part in self.parts.keys(), 'Unknown part: %s'%part
+        return 'pv'+self.basename()+self.parts[part]+part
 
     def lvname(self,part):
-        assert part in self.parts.keys(), 'Unkown part: %s'%part
-        return 'lv'+self.parts[part]+part
+        assert part in self.parts.keys(), 'Unknown part: %s'%part
+        return 'lv'+self.basename()+self.parts[part]+part
 
     def shapename(self, part):
-        assert part in self.parts.keys(), 'Unkown part: %s'%part
-        return self.parts[part].lower()+'_'+part.lower()+'_shape'
+        assert part in self.parts.keys(), 'Unknown part: %s'%part
+        b = self.basename().lower()
+        if b: b += '_'
+        return b+self.parts[part].lower()+'_'+part.lower()+'_shape'
 
     def surfname(self, part):
-        assert part in self.parts.keys(), 'Unkown part: %s'%part
-        return self.parts[part].lower()+'_'+part.lower()+'_surface'
+        assert part in self.parts.keys(), 'Unknown part: %s'%part
+        b = self.basename().lower()
+        if b: b += '_'
+        return b+self.parts[part].lower()+'_'+part.lower()+'_surface'
+
+    def sensname(self, part):
+        assert part in self.parts.keys(), 'Unknown part: %s'%part
+        return self.basename() + self.parts[part]+part+'_SD'
+
+    def hitcolname(self, part):
+        assert part in self.parts.keys(), 'Unknown part: %s'%part
+        return self.basename() + self.parts[part]+part+'_HC'
+        
 
     def make_logical_volumes(self):
         '''

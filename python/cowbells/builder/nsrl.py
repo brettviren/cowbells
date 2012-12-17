@@ -46,10 +46,10 @@ class Builder(base.Builder):
             world.Builder(),
             beamwindow.Builder(),
             triggercounter.Builder(),
-            tubdet.Builder(TubBottom = p.tub1, TubSide = p.tub1,
-                           TubLid = p.tub1, Sample = p.sample1),            
-            tubdet.Builder(TubBottom = p.tub2, TubSide = p.tub2,
-                           TubLid = p.tub2, Sample = p.sample2)
+            tubdet.Builder(base_name = 'Tub1', Bottom = p.tub1, Side = p.tub1,
+                           Lid = p.tub1, Sample = p.sample1),
+            tubdet.Builder(base_name = 'Tub2', Bottom = p.tub2, Side = p.tub2,
+                           Lid = p.tub2, Sample = p.sample2)
             ]
 
         self.lvs = [b.top() for b in self.builders]

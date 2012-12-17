@@ -38,7 +38,9 @@ class SensitiveDetector(base.Base):
                 continue
             ret.add('/'.join(path))
             continue
-        return list(ret)
+        ret = list(ret)
+        ret.sort()
+        return ret
 
     def pod(self):
         '''

@@ -54,19 +54,23 @@ class Builder(base.Builder):
         # Color of the teflon coating (or material)
         'teflon_color' : 'white',
 
-        'sensitive_detector' : None,
+        # Provide an extra name in order to make unique if needed and
+        # not otherwise achieved.
+        'base_name' : "Tub",
         }
 
     # map part to material
     default_parts = {
-        'TubBottom' : 'Teflon',
-        'TubSide' : 'Teflon',
-        'TubLid' : 'Teflon',
-        'TubWindow' : 'Acrylic',
+        'Bottom' : 'Teflon',
+        'Side' : 'Teflon',
+        'Lid' : 'Teflon',
+        'Window' : 'Acrylic',
         'PhotoCathode': 'Bialkali',
         'Sample': 'WBLS01',
         }
 
+    def basename(self):
+        return self.params['base_name']
 
     def make_logical_volumes(self):
 
@@ -85,35 +89,35 @@ class Builder(base.Builder):
         sample_lv = LogicalVolume(self.lvname('Sample'),
                                   matname = parts.Sample, shape = shape)
 
-        shape = Tubs(self.shapename('TubBottom'),
+        shape = Tubs(self.shapename('Bottom'),
                      dz = 0.5*parms.tub_thickness, rmax = outer_radius)
-        bottom_lv = LogicalVolume(self.lvname('TubBottom'), 
-                                  matname = parts.TubBottom, shape = shape)
+        bottom_lv = LogicalVolume(self.lvname('Bottom'), 
+                                  matname = parts.Bottom, shape = shape)
 
-        shape = Tubs(self.shapename('TubSide'), 
+        shape = Tubs(self.shapename('Side'), 
                      dz = inner_hheight, rmin = inner_radius, rmax = outer_radius)
-        side_lv = LogicalVolume(self.lvname('TubSide'), 
-                                matname = parts.TubSide, shape = shape)
+        side_lv = LogicalVolume(self.lvname('Side'), 
+                                matname = parts.Side, shape = shape)
 
         shape = Polycone(
-            self.shapename('TubLid'),
+            self.shapename('Lid'),
             zplane = [0.0,window_step_z,
                       window_step_z,parms.lid_thickness],
             rinner = [window_small_radius, window_small_radius, 
                       window_large_radius, window_large_radius],
             router = [outer_radius]*4)
-        lid_lv = LogicalVolume(self.lvname('TubLid'), 
-                               matname = parts.TubLid, shape = shape)
+        lid_lv = LogicalVolume(self.lvname('Lid'), 
+                               matname = parts.Lid, shape = shape)
 
         shape = Polycone(
-            self.shapename('TubWindow'), 
+            self.shapename('Window'), 
             zplane = [-parms.window_extend,window_step_z,
                        window_step_z,parms.lid_thickness],
             rinner = [0.0]*4,
             router = [window_small_radius, window_small_radius, 
                       window_large_radius, window_large_radius])
-        win_lv = LogicalVolume(self.lvname('TubWindow'), 
-                               matname = parts.TubWindow, shape = shape)
+        win_lv = LogicalVolume(self.lvname('Window'), 
+                               matname = parts.Window, shape = shape)
 
         shape = Tubs(self.shapename('PhotoCathode'), 
                      dz = 0.5*parms.photocathode_thickness,
@@ -137,25 +141,25 @@ class Builder(base.Builder):
         pc_offset = p.lid_thickness - 0.5*p.photocathode_thickness
 
 
-        PhysicalVolume(self.pvname('TubWindow'),
-                       self.lvname('TubWindow'),self.lvname('Sample'),
+        PhysicalVolume(self.pvname('Window'),
+                       self.lvname('Window'),self.lvname('Sample'),
                        pos=[0.0, 0.0, win_offset])
 
         PhysicalVolume(self.pvname('PhotoCathode'),
-                       self.lvname('PhotoCathode'), self.lvname('TubWindow'),
+                       self.lvname('PhotoCathode'), self.lvname('Window'),
                        pos=[0.0, 0.0, pc_offset])
 
-        PhysicalVolume(self.pvname('TubLid'),
-                       self.lvname('TubLid'),self.lvname('Sample'),
+        PhysicalVolume(self.pvname('Lid'),
+                       self.lvname('Lid'),self.lvname('Sample'),
                        pos=[0.0, 0.0, lid_offset])
 
 
-        PhysicalVolume(self.pvname('TubBottom'),
-                       self.lvname('TubBottom'),self.lvname('Sample'),
+        PhysicalVolume(self.pvname('Bottom'),
+                       self.lvname('Bottom'),self.lvname('Sample'),
                        pos=[0.0, 0.0, bot_offset])
 
-        PhysicalVolume(self.pvname('TubSide'),
-                       self.lvname('TubSide'),self.lvname('Sample'),
+        PhysicalVolume(self.pvname('Side'),
+                       self.lvname('Side'),self.lvname('Sample'),
                        pos=[0.0, 0.0, side_offset])
 
 
@@ -195,7 +199,7 @@ class Builder(base.Builder):
             energy.append(hbarc/nm)
             continue
 
-        for part in ['TubBottom','TubSide','TubLid']:
+        for part in ['Bottom','Side','Lid']:
             s = make_surf(self.surfname(part), first = self.lvname(part),
                           model="glisur", type='dielectric_metal', finish="polished")
             s.add_property("REFLECTIVITY",  x=energy, y=reflectivity)
@@ -205,9 +209,12 @@ class Builder(base.Builder):
         return
 
     def sensitive(self):
-        sd = sensitive.SensitiveDetector('SensitiveDetector', 'HC', 
-                                         self.lvname('PhotoCathode'))
-        print 'TubDet touchables:',sd.touchables()
+        what = 'PhotoCathode'
+        sdname = self.sensname(what)
+        hcname = self.hitcolname(what)
+        lvname = self.lvname(what)
+        sd = sensitive.SensitiveDetector(sdname,hcname,lvname)
+        print sdname, 'touchables:', sd.touchables()
 
 
     pass

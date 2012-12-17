@@ -99,7 +99,7 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     G4LogicalVolume* lv = pv->GetLogicalVolume();
 
     if (!fHC) {
-        cerr  << "No hit collection for PV:" << pv->GetName() << endl;
+        cerr  << "No hit collection for PV: " << pv->GetName() << endl;
         return true;
     }
     int hcid = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);

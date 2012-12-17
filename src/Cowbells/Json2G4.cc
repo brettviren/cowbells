@@ -575,8 +575,10 @@ int Cowbells::Json2G4::sensitive(Json::Value sens)
             tv.push_back(touchables[itouch].asString());
         }
         
-        Cowbells::SensitiveDetector* csd = new Cowbells::SensitiveDetector(sdname, hcname, tv);
+        Cowbells::SensitiveDetector* csd 
+            = new Cowbells::SensitiveDetector(sdname, hcname, tv);
         sdm->AddNewDetector(csd);
+
         G4LogicalVolume* lv = G4LogicalVolumeStore::GetInstance()->GetVolume(lvname);
         if (!lv) {
             cerr << "No LV for " << lvname << " for sensitive detector " << sdname << endl;
@@ -588,6 +590,7 @@ int Cowbells::Json2G4::sensitive(Json::Value sens)
         for (int itouch=0; itouch<ntouchables; ++itouch) {
             cerr << "\t#" << ind << ": " << touchables[itouch].asString();
         }
+        cerr << endl;
         
     }
     return nsens;
