@@ -1,4 +1,3 @@
-#include "Cowbells/JsonUtil.h"
 #include "Cowbells/PhysicsList.h"
 #include "Cowbells/PhysicsConsGeneral.h"
 #include "Cowbells/PhysicsConsOp.h"
@@ -16,29 +15,25 @@
 #include <iostream>
 using namespace std;
 
-using Cowbells::get_num;
-
 //const char* physics, float default_cut_value_mm)
-Cowbells::PhysicsList::PhysicsList(Cowbells::Json2G4& j2g4)
+
+Cowbells::PhysicsList::PhysicsList(ConfigPhysicsList phys_list, double default_cut)
     : G4VModularPhysicsList()
 {
-    Json::Value cfg = j2g4.get("physics");
-
-    defaultCutValue = get_num(cfg["cut"],0.1*mm);
+    defaultCutValue = default_cut;
     verboseLevel = 0;
 
     // always
     RegisterPhysics( new Cowbells::PhysicsConsGeneral() );
 
-    Json::Value physlist = cfg["list"];
-    int nphys = physlist.size();
+    int nphys = phys_list.size();
     if (!nphys) {
         cerr << "No physics given.  This universe is too boring to exist." << endl;
         assert (nphys);
     }
 
     for (int iphys=0; iphys<nphys; ++iphys) {
-        string physname = physlist[iphys].asString();
+        string physname = phys_list[iphys];
         cout << "Registering physics: \"" << physname << "\"" << endl;
         if (physname == "em") {
             RegisterPhysics( new G4EmStandardPhysics(verboseLevel) );
@@ -53,7 +48,7 @@ Cowbells::PhysicsList::PhysicsList(Cowbells::Json2G4& j2g4)
             continue;
         }
         cerr << "Unknown physics: \"" << physname << "\"" << endl;
-        // fixme: throw?
+        assert(0);              // fixme: change to a throw
     }
 
     SetVerboseLevel(verboseLevel);

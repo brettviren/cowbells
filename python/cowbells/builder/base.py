@@ -90,3 +90,8 @@ class Builder(object):
         '''
         return
 
+    def sensitive(self):
+        '''
+        Subclass may define and return sensitive detector touchables.
+        '''
+        return

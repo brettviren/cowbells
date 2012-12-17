@@ -48,17 +48,28 @@ class PhysicalVolume(base.Base):
     pass
 
 
-def get(pv):
+def get(pv, copy=None):
+    '''
+    Return a list of PhysicalVolumes with name matching the given one
+    and, optionally copy number.
+
+    If pv may be a PhysicalVolume in which case its name will be used.
+    '''
+
+    pvname = pv
     if isinstance(pv, PhysicalVolume):
-        return pv
+        pvname = pv.name
+
+    ret = []
     for vol in store:
-        if vol.name == pv:
-            return vol
-    return None
+        if vol.name == pvname:
+            if copy is None or copy == vol.copy:
+                ret.append(vol)
+    return ret
 
 def placed(lv):
     '''
-    Return all physical volumes placed into the mother lv.
+    Return all PhysicalVolumes objects placed into the mother lv.
     '''
     lv = volumes.get(lv)
 
@@ -66,18 +77,26 @@ def placed(lv):
     for pv in store:
         if pv.mother == lv.name:
             ret.append(pv)
-    return [p.name for p in ret]
+    return ret
 
-def walk(pv):
-    pv = get(pv)
-    
-    pvs = placed(pv.daughter)
-    yield [pv.name],pv.daughter
-    for daughter_pv in pvs:
-        for ps,l in walk(daughter_pv):
-            yield [pv.name]+ps,l
+def walk(top):
+    '''
+    Iterate through the physical volume hierarchy.  
+
+    Returns a sequence of [pvs],lv where [pvs] is a list of parent
+    PhysicalVolume objects and lv is a daughter LogicalVolume object.
+
+    Elements are PhysicalVolume objects
+    '''
+
+    for pv in get(top):
+        pvs = placed(pv.daughter)
+        yield [pv],volumes.get(pv.daughter)
+        for daughter_pv in pvs:
+            for ps,l in walk(daughter_pv):
+                yield [pv]+ps,volumes.get(l)
+                continue
             continue
-        continue
     return
 
 def pod(): return base.pod(store)

@@ -17,6 +17,7 @@ def gen():
     #print 'Placing world volume: %s' % worldlv.name
     geom.placements.PhysicalVolume('pvWorld',worldlv)    
     b.place()
+    b.sensitive()
 
 def write(outfile):
     fp = open(outfile, "w")

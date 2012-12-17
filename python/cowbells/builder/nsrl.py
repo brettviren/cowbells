@@ -72,7 +72,7 @@ class Builder(base.Builder):
         world_lv = self.lvs[0]
         for lv,z,cp,rot in to_place:
             name = lv.name.replace('lv','pv',1)
-            #print 'Placing %s #%d at z=%f cm' % (name,cp,z/cm) 
+            print 'Placing %s #%d at z=%f cm' % (name,cp,z/cm) 
             PhysicalVolume(name, lv, world_lv, rot=rot, pos=[0.0,0.0,z], copy=cp)
             continue
 
@@ -81,4 +81,7 @@ class Builder(base.Builder):
 
         return
 
+    def sensitive(self):
+        for b in self.builders:
+            b.sensitive()
 

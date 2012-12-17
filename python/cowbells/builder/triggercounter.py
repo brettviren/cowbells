@@ -56,10 +56,9 @@ class Builder(base.Builder):
         PhysicalVolume(self.pvname('TCScintillator'),
                        self.lvname('TCScintillator'),self.lvname('TCPhotoCathode'))
 
-        self._sensors()
         return
     
-    def _sensors(self):
+    def sensitive(self):
         sd = sensitive.SensitiveDetector('SensitiveDetector', 'TC_HC', 
                                          self.lvname('TCPhotoCathode'))
         print 'TriggerCounter touchables:',sd.touchables()

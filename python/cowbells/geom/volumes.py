@@ -84,12 +84,18 @@ class LogicalVolume(base.Base):
             (self.name, self.matname, self.shape.name)
     pass
 
-def get(name):
-    if isinstance(name, LogicalVolume):
-        name = name.name
-    for lv in store:
-        if lv.name == name:
-            return lv
+def get(lv):
+    '''
+    Return the LogicalVolume with a name matching the given one.
+
+    If lv itself is a LogicalVolume its name will be used for the search.
+    '''
+
+    if isinstance(lv, LogicalVolume):
+        return lv
+    for vol in store:
+        if vol.name == lv:
+            return vol
         continue
     return None
 

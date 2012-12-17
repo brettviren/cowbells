@@ -26,21 +26,19 @@ class SensitiveDetector(base.Base):
 
     def touchables(self):
         '''
-        Return the touchable path from the world PV to the placement
+        Return the touchable path from the world PV to the placements
         of the logvol.
         '''
-        ret = []
-        for pvs, lvname in placements.walk(self.world_pv):
-            if lvname != self.logvol: continue
-
+        ret = set()
+        for pvs, lv in placements.walk(self.world_pv):
+            if lv.name != self.logvol: continue
             path = []
-            for pvname in pvs:
-                pv = placements.get(pvname)
-                path.append('%s:%d'%(pvname,pv.copy))
+            for pv in pvs:
+                path.append('%s:%d'%(pv.name,pv.copy))
                 continue
-            ret.append('/'.join(path))
+            ret.add('/'.join(path))
             continue
-        return ret
+        return list(ret)
 
     def pod(self):
         '''

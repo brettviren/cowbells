@@ -22,6 +22,8 @@
 #+LINK_HOME:
 #+XSLT:
 
+#+MACRO: fixme *FIXME*: /$1/
+
 The Cowbells package started as a green-field Geant4-based simulation
 of the cosmic-ray test stand constructed for research and development
 on water-based liquid scintilator at Brookhaven National Laboratory.
@@ -32,6 +34,8 @@ configurations.
 
 
 * Installation
+
+Cowbells is available from https://github.com/brettviren/cowbells.
 
 ** Prereq
 
@@ -190,6 +194,21 @@ that assist in defining a logical volume instance.  However, these
 have no explicit section and instead are subsumed into an element of
 the =volumes= list.
 
+*** Sensitive detectors
+
+Ultimately sensitive detectors are implemented by Geant4 C++ classes
+provided by cowbells.  They record hits that occur in one or more
+placements of a given logical volume in to a named hit collection.  In
+order to assign in which placement a hit occurred the sensitive
+detectors must be given a list of /touchables/.  Each touchable is
+written as a path of placements from the world placement down to the
+placement of the sensitive volume.  For example, the tub detector's
+photocathode touchable may look like:
+
+#+BEGIN_EXAMPLE
+"pvWorld:0/pvWaterSample:0/pvAcrylicTubWindow:0/pvBialkaliPhotoCathode:0", 
+#+END_EXAMPLE
+
 
 ** Non-geometry configuration
 
@@ -215,6 +234,7 @@ The supported codes are:
  - =op= :: optical processes
  - =had= :: hadronic processes
 
+
 *** Kinematics
 
 The initial kinematics are specified by "type".  Depending on the type
@@ -237,8 +257,52 @@ The main command line program produced by the Cowbells package is
 =cowbells.exe=.  Running it with no arguments produces a brief help
 message.
 
+#+BEGIN_EXAMPLE
+Usage: cowbells [options]
+
+Options:
+  --help                     Print usages and exit
+  --output, -o <outputfile>  Set output filename
+  --interface, -u <interface>Set the user interface
+  --kinematics, -k <kindesc> Set the kinematics descriptor
+  --physics, -p <physics,list>Set the physics list
+  --nevents, -n <#events>    Set the number of events to generate
+#+END_EXAMPLE
+
+Some options, in particular the kinematics and physics, may be set in
+configuration files as well.
+
+*** User interface
+
+{{{fixme(This is a work in progress.)}}}
+
+Set Geant4 UI.  
+
+*** Kinematics
+
+{{{fixme(This feature is not complete.)}}}  
+
+The command line can override kinematics that may be otherwise set in
+a configuration file.  They are specified in the form of a URL, for
+example:
+
+#+BEGIN_EXAMPLE
+cowbells.exe --kinematics \
+  'kin://beam?vertex=0,0,0&name=proton&direction=1,0,0&energy=500'
+#+END_EXAMPLE
+
+Note, you will likely need to protect the characters =?= and =&= from
+your shell by encasing the option in quotes.
 
 
+*** Physics List
+
+The command line can override any physics list that is otherwise
+provided in configuration files. For example with:
+
+#+BEGIN_EXAMPLE
+cowbells.exe --physics em,op,had [...]
+#+END_EXAMPLE
 
 
 ** Geant4 macros
@@ -267,9 +331,11 @@ and a command line like:
 
 #+BEGIN_EXAMPLE
 cowbells.exe -o td.root opts.json td.json heprepvis.mac
+java -jar /path/to/HepRApp.jar G4Data0.heprep
 #+END_EXAMPLE
 
 [fn:heprapp] http://www.slac.stanford.edu/BFROOT/www/Computing/Graphics/Wired/
+
 
 * Examples
 
@@ -291,5 +357,37 @@ Placing the above =physics= and =kinematics= into a file =opts.json= one example
 #+BEGIN_EXAMPLE
 gentubdet.py -s Water -t Aluminum -c black td.json
 cowbells.exe -n 10 -o td.root opts.json td.json
-java -jar /path/to/HepRApp.jar G4Data0.heprep
 #+END_EXAMPLE
+
+** NSRL setup with tub detectors
+
+The first run at NSRL with tub detectors consisted of these elements
+in the beam line:
+
+#+BEGIN_EXAMPLE
+|     (o)  -   []  -   []  - 
+W      V   H1  T1  H2  T2  H3
+#+END_EXAMPLE
+
+ - =W= :: beam window
+ - =V= :: hole-veto counter
+ - =Hn= :: hodoscope trigger counter #n
+ - =Tn= :: tub detector #n
+
+{{{fixme(Hole-veto not yet implemented.)}}}
+
+
+The elements are rotated so that the beam runs along the Z-axis.  The
+center of the first tub detector is the global origin.  To generate
+this geometry configuration file the =gennsrl.py= script is used.
+
+#+BEGIN_EXAMPLE
+gennsrl.py file
+cowbells.exe \
+  -k 'kin://beam?vertex=0,0,-510&name=proton&direction=0,0,1&energy=500' \
+  -p em,op -n 10 -o nsrl.root nsrl.json
+#+END_EXAMPLE
+
+{{{fixme(No command line hooks yet exist to change the sample material.)}}} 
+
+

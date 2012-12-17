@@ -27,7 +27,7 @@ struct Arg: public option::Arg
 
 };
 
-enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oUI, oKIN, oNEVENTS };
+enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oUI, oKIN, oPHYS, oNEVENTS };
 const option::Descriptor usage[] = 
 {
     {oUNKNOWN, 0, "", "", Arg::None, 
@@ -44,6 +44,9 @@ const option::Descriptor usage[] =
 
     {oKIN, 0, "k", "kinematics", Arg::Required,
      "  --kinematics, -k <kindesc>\tSet the kinematics descriptor"},
+
+    {oPHYS, 0, "p", "physics", Arg::Required,
+     "  --physics, -p <physics,list>\tSet the physics list"},
 
     {oNEVENTS, 0, "n", "nevents", Arg::Required,
      "  --nevents, -n <#events>\tSet the number of events to generate"},

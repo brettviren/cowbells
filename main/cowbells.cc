@@ -1,4 +1,5 @@
 #include "Cowbells/Json2G4.h"
+#include "Cowbells/JsonUtil.h"
 #include "Cowbells/PhysicsList.h"
 #include "Cowbells/PrimaryGeneratorGun.h"
 #include "Cowbells/PrimaryGeneratorBeam.h"
@@ -24,9 +25,34 @@
 #include "cmdline.h"
 
 using namespace std;
-using Cowbells::uri_split;
+
+using Cowbells::uri_split;      // strutil.h
+using Cowbells::split;          // strutil.h
+using Cowbells::get_num;        // JsonUtil.h
 
 
+// unpack config/cmdline into a physics list object
+G4VModularPhysicsList* make_physicslist(Json::Value cfg, const char* ophys)
+{
+    Cowbells::PhysicsList::ConfigPhysicsList phys_list;
+    if (ophys) {
+        phys_list = split(ophys, ",");
+    } 
+    else {
+        Json::Value physlist = cfg["list"];
+        int nphys = physlist.size();
+        for (int iphys=0; iphys<nphys; ++iphys) {
+            string physname = physlist[iphys].asString();
+            phys_list.push_back(physname);
+        }
+    }
+
+    double default_cut =  get_num(cfg["cut"],0.1*mm);
+
+    return new Cowbells::PhysicsList(phys_list, default_cut);
+}
+
+// unpack config/cmdline into a primary generator object
 G4VUserPrimaryGeneratorAction* make_generator(Json::Value cfg, const char* okin)
 {
     if (okin) {                 // command line take precedence
@@ -81,7 +107,6 @@ int main(int argc, char *argv[])
 {
     ROOT::Cintex::Cintex::Enable();
 
-
     if (!parse_args(argc, argv)) {
         return 1;
     }
@@ -104,7 +129,7 @@ int main(int argc, char *argv[])
 
     G4RunManager rm;
     
-    Cowbells::PhysicsList* pl = new Cowbells::PhysicsList(j2g4);
+    G4VModularPhysicsList* pl = make_physicslist(j2g4.get("physics"), opt(oPHYS));
     rm.SetUserInitialization(pl);
     
     G4VUserPrimaryGeneratorAction* pg = make_generator(j2g4.get("kinematics"), opt(oKIN));

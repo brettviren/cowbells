@@ -53,6 +53,8 @@ class Builder(base.Builder):
 
         # Color of the teflon coating (or material)
         'teflon_color' : 'white',
+
+        'sensitive_detector' : None,
         }
 
     # map part to material
@@ -159,7 +161,6 @@ class Builder(base.Builder):
 
 
         self._surface()
-        self._sensors()
         return
 
     def _surface(self):
@@ -203,7 +204,7 @@ class Builder(base.Builder):
 
         return
 
-    def _sensors(self):
+    def sensitive(self):
         sd = sensitive.SensitiveDetector('SensitiveDetector', 'HC', 
                                          self.lvname('PhotoCathode'))
         print 'TubDet touchables:',sd.touchables()

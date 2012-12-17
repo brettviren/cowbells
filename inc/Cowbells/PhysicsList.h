@@ -20,14 +20,18 @@
 #ifndef COWBELLS_PHYSICSLIST_H
 #define COWBELLS_PHYSICSLIST_H
 
-#include "Cowbells/Json2G4.h"
 #include <G4VModularPhysicsList.hh>
+
+#include <vector>
+#include <string>
 
 namespace Cowbells {
 
     class PhysicsList : public G4VModularPhysicsList {
     public:
-        PhysicsList(Cowbells::Json2G4& j2g4);
+        typedef std::vector<std::string> ConfigPhysicsList;
+
+        PhysicsList(ConfigPhysicsList phys_list, double default_cut = 0.1*mm);
         virtual ~PhysicsList();
 
         void SetCuts();
