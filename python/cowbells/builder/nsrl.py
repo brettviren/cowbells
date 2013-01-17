@@ -30,6 +30,8 @@ class Builder(base.Builder):
         'sample2': 'Water',
         'tub1': 'Teflon',
         'tub2': 'Aluminum',
+        'tub1_color' : 'white',
+        'tub2_color' : 'black',
 
         'bw_offset': -5*meter,
         'td_offset': 0*meter,
@@ -47,9 +49,9 @@ class Builder(base.Builder):
             beamwindow.Builder(),
             triggercounter.Builder(),
             tubdet.Builder(base_name = 'Tub1', Bottom = p.tub1, Side = p.tub1,
-                           Lid = p.tub1, Sample = p.sample1),
+                           Lid = p.tub1, Sample = p.sample1, teflon_color = p.tub1_color),
             tubdet.Builder(base_name = 'Tub2', Bottom = p.tub2, Side = p.tub2,
-                           Lid = p.tub2, Sample = p.sample2)
+                           Lid = p.tub2, Sample = p.sample2, teflon_color = p.tub2_color)
             ]
 
         self.lvs = [b.top() for b in self.builders]

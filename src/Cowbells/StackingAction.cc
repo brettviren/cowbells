@@ -5,34 +5,30 @@
 #include "G4Track.hh"
 #include "G4ios.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 Cowbells::StackingAction::StackingAction()
-  : gammaCounter(0)
+    : G4UserStackingAction()
+    , m_dr(0)
 {
     G4cout << "Constructing Cowbells::StackingAction" << G4endl;
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 Cowbells::StackingAction::~StackingAction()
 {
     G4cout << "Destructing Cowbells::StackingAction" << G4endl;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 G4ClassificationOfNewTrack
 Cowbells::StackingAction::ClassifyNewTrack(const G4Track * aTrack)
 {
-    if(aTrack->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition()
-       && aTrack->GetParentID()>0) {
-        gammaCounter++;
-    }
+    m_dr->add_stack(aTrack);
+
+    // if(aTrack->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition()
+    //    && aTrack->GetParentID()>0) {
+    //     gammaCounter++;
+    // }
     return fUrgent;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void Cowbells::StackingAction::NewStage()
 {
@@ -40,9 +36,10 @@ void Cowbells::StackingAction::NewStage()
 //           << gammaCounter << G4endl;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void Cowbells::StackingAction::PrepareNewEvent()
-{ gammaCounter = 0; }
+{
+}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+

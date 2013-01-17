@@ -136,12 +136,14 @@ int main(int argc, char *argv[])
     assert(pg);
     rm.SetUserAction(pg);
     
-    Cowbells::DataRecorder* dr = 0;
+    Cowbells::DataRecorder* dr = Cowbells::DataRecorder::Get();
 
     std::string outputfile = opt(oOUTPUT);
-    if ("none" != outputfile) {
-        dr = new Cowbells::DataRecorder(outputfile.c_str(), j2g4.get("sensitive"));
-        dr->save_steps();
+    if (opt(oOUTPUT) && "none" != outputfile) {
+        dr->set_output(outputfile);
+        dr->set_module("hits", j2g4.get("sensitive"));
+        dr->set_module("steps", Json::Value(true));
+        dr->set_module("stacks", Json::Value(true));
     }
 
     Cowbells::DetectorConstruction* detcon = new Cowbells::DetectorConstruction(j2g4);
@@ -156,6 +158,7 @@ int main(int argc, char *argv[])
     rm.SetUserAction(ea);
 
     Cowbells::StackingAction* sta = new Cowbells::StackingAction();
+    if (dr) { sta->set_recorder(dr); }
     rm.SetUserAction(sta);
 
     if (dr) {

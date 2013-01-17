@@ -3,8 +3,8 @@
  *
  * \brief Record results from simulation running.
  *
- * This is given to the run and event actions to save simulation
- * results to output.
+ * This is given to and used by the actions to save simulation
+ * intermediate truth.
  *
  * bv@bnl.gov Tue Aug  7 09:07:52 2012
  *
@@ -17,6 +17,7 @@
 
 #include "Cowbells/Event.h"
 #include "G4Event.hh"
+#include "G4Track.hh"
 
 #include <TFile.h>
 #include <TTree.h>
@@ -31,38 +32,38 @@ namespace Cowbells {
     class DataRecorder
     {
     public:
-        DataRecorder(const char* filename=0, Json::Value cfg = Json::Value());
+        DataRecorder();
         virtual ~DataRecorder();
-
-        void apply_json_cfg(Json::Value cfg);
-
-        // Tell data to record hit collection 
-        void add_hc(const std::string& hcname);
 
         static DataRecorder* Get();
 
+        void set_output(std::string output_filename);
+        void set_module(std::string module, Json::Value cfg = Json::Value());
+
         // call once an event
-        void fill(const G4Event* event);
+        void add_event(const G4Event* event);
+        // call once per step
+        void add_step(const G4Step* step);
+        // call once per StackingAction::ClassifyNewStep()
+        void add_stack(const G4Track* track);
 
         // call at end of run
         void close();
-
-        // Add a step to the current event
-        void add_step(Cowbells::Step* step);
-
-        // Set true to actually save steps to output file.  If not
-        // called, default is false
-        void save_steps(bool save = true) { m_save_steps = save; }
 
     private:
         TFile* m_file;
         TTree* m_tree;
         Cowbells::Event* m_event;
-        bool m_save_steps;
         std::vector<std::string> m_hcnames;
 
+        bool m_save_hits;
+        bool m_save_steps;
+        bool m_save_stacks;
+
+        typedef std::map<int, Cowbells::Stack*> TrackStackMap_t;
+        TrackStackMap_t m_track2stack;
+
         void clear();
-        void set_output_file(std::string filename);
     };
 }
 #endif  // DATARECORDER_H

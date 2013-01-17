@@ -32,8 +32,10 @@ namespace Cowbells {
     public:
         int trackid;          // g4 track id number
         int parentid;         // track ID number of parent;
+        int proctype;         // // g4 process type
         int pdgid;            // pdg particle id
         int mat1, mat2;       // material index before/after the step
+        int stepnum;          // step number in track
         float energy1;        // kinetic energy before the step
         float energy2;        // kinetic energy after the step
         float dist;           // the distance stepped
@@ -45,13 +47,32 @@ namespace Cowbells {
         Step();
     };
 
+    // Record some truth at staking time.  Only record per-particle
+    // info for non-opticalphotons.
+    class Stack {
+    public:
+        // initial values at stacking
+        int trackid;          // g4 track id number
+        int parentid;         // track ID number of parent;
+        int pdgid;            // pdg particle id
+        int mat;              // material number where the stack happened
+        float energy;           // kinetic energy at stacking
+
+        // accumulated values.
+        int nscint;           // number of scintilating photons
+        int nceren;           // number of cernkov photons
+        Stack();
+    };
+
     class Event {
     public:
         Event(Cowbells::EventKinematics* kin = 0);
         ~Event();
 
         void clear();
+        void clear_hits();
         void clear_steps();
+        void clear_stacks();
 
         // Set the event kinematics, takes ownership
         // void set_kinematics(Cowbells::EventKinematics* kin);
@@ -66,6 +87,7 @@ namespace Cowbells {
 
         std::vector<Cowbells::Hit*> hc;
         std::vector<Cowbells::Step*> steps;
+        std::vector<Cowbells::Stack*> stacks;
     };
 
 

@@ -43,21 +43,21 @@ void Cowbells::SensitiveDetector::Initialize(G4HCofThisEvent* hce)
 
     int hcid = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
     hce->AddHitsCollection(hcid, fHC);
-    cout << "SensitiveDetector::Initialize() hcid=" << hcid
-         << ", SD name=" << this->SensitiveDetectorName 
-         << ", HC name=" << this->collectionName[0] << " with "
-         <<  this->collectionName.size() << " collections:" << endl;
-    for (size_t ind=0; ind < this->collectionName.size(); ++ind) {
-        cout << "\t#" << ind << ": " << this->collectionName[ind] << endl;
-    }
+    // cout << "SensitiveDetector::Initialize() hcid=" << hcid
+    //      << ", SD name=" << this->SensitiveDetectorName 
+    //      << ", HC name=" << this->collectionName[0] << " with "
+    //      <<  this->collectionName.size() << " collections:" << endl;
+    // for (size_t ind=0; ind < this->collectionName.size(); ++ind) {
+    //     cout << "\t#" << ind << ": " << this->collectionName[ind] << endl;
+    // }
 
 }
 
 void Cowbells::SensitiveDetector::EndOfEvent(G4HCofThisEvent*)
 {
-    cerr << "End of event for \""
-         << this->SensitiveDetectorName << "\"/\"" << this->collectionName[0] << "\" with "
-         << fHC->entries() << " entries" << endl;
+//    cerr << "End of event for \""
+//         << this->SensitiveDetectorName << "\"/\"" << this->collectionName[0] << "\" with "
+//         << fHC->entries() << " entries" << endl;
 }
 
 static std::string make_touchable_name(G4TouchableHandle& touch)

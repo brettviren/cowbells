@@ -28,7 +28,7 @@ void Cowbells::EventAction::EndOfEventAction(const G4Event* event)
 {
     //G4cout << "Cowbells::EventAction::EndOfEventAction()" << G4endl;
     if (!m_dr) return;
-    m_dr->fill(event);
+    m_dr->add_event(event);
 }
 
 
