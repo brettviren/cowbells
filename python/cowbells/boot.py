@@ -15,7 +15,7 @@ def root_load_lib(lib):
     ok = ROOT.gSystem.Load(lib)
     if ok < 0:
         raise RuntimeError, 'Failed to load "%s"' % lib
-    print 'Loaded "%s"' % lib
+    #print 'Loaded "%s"' % lib
     return
 
 # boot ROOT and load extra libs

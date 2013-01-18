@@ -5,6 +5,7 @@ Generate geometry for a tub detector.
 
 import cowbells
 import base
+import world
 from cowbells.geom import materials, surfaces, sensitive
 from cowbells.geom.volumes import Tubs, Polycone, LogicalVolume
 from cowbells.geom.placements import PhysicalVolume
@@ -219,6 +220,47 @@ class Builder(base.Builder):
 
     pass
 
+class World(base.Builder):
+    '''
+    Put a single tubdet in the world
+    '''
+    default_params = {
+        'sample': 'Water',
+        'tub': 'Teflon',
+        }
+
+    def make_logical_volumes(self):
+        p = self.pp()[0]
+
+        if p.tub == 'Teflon':
+            teflon_color = 'white'
+        if p.tub == 'Aluminum':
+            teflon_color = 'black'
+        self.builders = [
+            world.Builder(),
+            Builder( Bottom = p.tub, Side = p.tub, Lid = p.tub, Sample = p.sample )            
+            ]
+
+        self.lvs = [b.top() for b in self.builders]
+        return self.lvs[0]
+
+    def place(self):
+
+        world_lv = self.lvs[0]
+        for lv in self.lvs[1:]:
+            name = lv.name.replace('lv','pv',1)
+            PhysicalVolume(name, lv, world_lv)
+            continue
+
+        for b in self.builders:
+            b.place()
+
+    def sensitive(self):
+        for b in self.builders:
+            b.sensitive()
+        
+            
+
 if '__main__' == __name__:
-    tdb = Builder()
+    tdb = World()
     print tdb.top().pod()

@@ -38,7 +38,7 @@ class Builder(object):
 
         unused = set(params.keys()).difference(used)
         if unused:
-            print 'Warning: unknown builder arguments: %s' % unused
+            print 'Warning: unknown builder arguments in Builder "%s": %s' % (self.basename(), unused)
 
         # check all needed materials are defined
         for part,mat in self.parts.items():
