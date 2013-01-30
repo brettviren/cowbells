@@ -3,6 +3,8 @@
 
 #include <G4Step.hh>
 #include <G4SDManager.hh>
+#include <Randomize.hh>
+#include <G4Material.hh>
 
 #include <iostream>
 using namespace std;
@@ -93,6 +95,20 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     CLHEP::Hep3Vector pos = psp->GetPosition();
     G4TouchableHandle touch = psp->GetTouchableHandle();
     G4Track* track = aStep->GetTrack();
+
+    G4Material* mat = track->GetMaterial();
+    G4MaterialPropertiesTable* mattab = mat->GetMaterialPropertiesTable();
+    G4MaterialPropertyVector* qevec = mattab->GetProperty("QE");
+    double energy = track->GetTotalEnergy();
+    double qe = qevec->Value(energy);
+    double live_or_die =  G4UniformRand();
+    cerr << "energy=" << energy << ", qe=" << qe << ", rand=" << live_or_die;
+    if (live_or_die > qe) {
+        cerr << " DIE" << endl;
+        // die, little photon, die
+        return true;
+    }
+    cerr << " LIVE" << endl;
 
     int depth = touch->GetHistoryDepth();
     G4VPhysicalVolume* pv = touch->GetVolume();
