@@ -239,8 +239,8 @@ int Cowbells::Json2G4::optical(Json::Value props)
         if (npoints == 1) { 
             double propval = get_num(prop["y"][0]);
             mpt->AddConstProperty(propname.c_str(), propval);
-            //cout << "Set " << matname << "/" << propname
-            //     << "[" << npoints << "] = " << propval << endl;
+            cout << "Set " << matname << "/" << propname
+                 << "[" << npoints << "] = " << propval << endl;
             continue;
         }
 
@@ -252,9 +252,9 @@ int Cowbells::Json2G4::optical(Json::Value props)
             y[ind] = get_num(prop["y"][ind]);
         }
         mpt->AddProperty(propname.c_str(), x, y, npoints);
-        //cout << "Set " << matname << "/" << propname
-        //     << "[" << npoints << "] : (" << y[0] << " - "
-        //     << y[npoints-1] << ")" << endl;
+        cout << "Set " << matname << "/" << propname
+             << "[" << npoints << "] : (" << y[0] << " - "
+             << y[npoints-1] << ")" << endl;
         delete [] x;
         delete [] y;
     }
