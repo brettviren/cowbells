@@ -6,9 +6,8 @@ from cowbells import units
 
 def test_length():
     '''
-    Make sure length conforms to what vgm expects
     '''
-    assert units.cm == 1.0, 'Weird value for cm: %f' % units.cm
+    assert units.mm == 1.0, 'Weird value for mm: %f' % units.mm
     
 
 def test_angles():

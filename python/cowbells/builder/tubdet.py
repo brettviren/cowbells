@@ -237,7 +237,7 @@ class World(base.Builder):
         if p.tub == 'Aluminum':
             teflon_color = 'black'
         self.builders = [
-            world.Builder(),
+            world.Builder( size = 1*meter),
             Builder( Bottom = p.tub, Side = p.tub, Lid = p.tub, Sample = p.sample )
             ]
 

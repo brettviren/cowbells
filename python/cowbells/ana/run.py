@@ -62,6 +62,7 @@ class BaseRun(object):
         '''
         base = '%(study)s-%(sample)s-%(particle)s-%(energy)sMeV-%(nevents)sevts'
         base = self.p.string(base)
+        base = base.lower()
         if ext:
             return '.'.join([base,ext])
         return base

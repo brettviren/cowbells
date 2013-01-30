@@ -9,5 +9,5 @@ boot.everything()               # boot all the things!
 
 import geo
 
-import units
-
+import PyCintex
+units = PyCintex.Namespace("units").CLHEP
