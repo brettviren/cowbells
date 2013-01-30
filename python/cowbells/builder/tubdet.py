@@ -238,7 +238,7 @@ class World(base.Builder):
             teflon_color = 'black'
         self.builders = [
             world.Builder(),
-            Builder( Bottom = p.tub, Side = p.tub, Lid = p.tub, Sample = p.sample )            
+            Builder( Bottom = p.tub, Side = p.tub, Lid = p.tub, Sample = p.sample )
             ]
 
         self.lvs = [b.top() for b in self.builders]

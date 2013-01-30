@@ -13,6 +13,7 @@ class MaterialProperty(base.Base):
             matname = matname.name
         self.__dict__ = dict(matname=matname, propname=propname, 
                              x=map(float,x), y=map(float,y))
+
         store.append(self)
         return
     def __str__(self):

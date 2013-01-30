@@ -14,16 +14,16 @@ def get(**kwds):
 
     default = dict(
         # for 'config' stage
-        study='under',
+        study='eloss',
         sample='Water', 
-        particle='proton',
+        particle='gamma',
         tub='Teflon',
 
         # for 'sim' stage
-        physics = "op,em",
-        energy=500*MeV,  # MeV
+        physics='em',
+        energy=1.2*MeV,
         nevents=10,
-        x=-100*mm,y=0,z=0,
+        x=-1000*mm,y=0,z=0,
         dx=1,dy=0,dz=0,
 
         # for 'plot' stage

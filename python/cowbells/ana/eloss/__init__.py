@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 '''
-Check the number of optical photons produced by muons and protons
-under Cerenkov theshold
+Check the energy loss.
 '''
 
 # satisfy ana.run's interface to a study
@@ -10,6 +9,4 @@ from params import get as params
 from cowbells.ana.run import ConfigSingleTubRun as ConfigRun
 from cowbells.ana.run import SimRun
 from plot import PlotRun
-
-
 

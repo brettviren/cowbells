@@ -17,17 +17,11 @@ c_thresh = {'proton': 480.0,
           'electron': 0.262}
 
 
-from cowbells.ana.run import BaseRun
-class PlotRun(BaseRun):
-    def __init__(self, params):
-        super(PlotRun,self).__init__("root", "pdf", params)
-        return
+from cowbells.ana.run import TreePlotRun
+class PlotRun(TreePlotRun):
     
     def run(self):
         print 'Running PlotRun'
-        self.tfile = ROOT.TFile.Open(self.p.infile)
-        self.tree = self.tfile.Get(self.p.tree)
-        self.canvas = ROOT.TCanvas("canvas","canvas")
         ROOT.gStyle.SetOptStat(1110) # http://root.cern.ch/root/html/TPaveStats.html
 
         self.cprint("[")
@@ -36,10 +30,6 @@ class PlotRun(BaseRun):
         self.cprint("]")
         return
 
-
-
-    def cprint(self, extra=""):
-        self.canvas.Print(self.p.outfile+extra,'pdf')
 
     def do_nceren(self):
         '''
@@ -111,18 +101,3 @@ class PlotRun(BaseRun):
             self.cprint()
             continue
         return
-
-    def canvas_get_hist(self, newname, oldname = 'htemp'):
-        h = self.canvas.GetPrimitive(oldname)
-        if not h: 
-            raise RuntimeError, 'Failed to get histogram "%s"' % oldname
-        return h.Clone(newname)
-
-    def dress_hist(self, hist, **params):
-        p = StringParams(**params)
-        hist.SetTitle(p.get('title', hist.GetTitle()))
-        hist.SetXTitle(p.get('xtitle', hist.GetXaxis().GetTitle()))
-        hist.SetYTitle(p.get('ytitle', hist.GetYaxis().GetTitle()))
-        hist.SetLineColor(int(p.get('color',hist.GetLineColor())))
-        return hist
-

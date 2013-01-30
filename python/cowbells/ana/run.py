@@ -4,6 +4,9 @@ Run the study
 '''
 import os
 import sys
+import ROOT
+
+from util import StringParams
 
 class BaseRun(object):
 
@@ -15,14 +18,34 @@ class BaseRun(object):
         if out_ext:
             self.p.outfile = self.filename(out_ext)
 
+    def dorun(self):
+        'Decide if we should run'
+        if self.p.force:        
+            return True         
+        if not self.p.outfile: 
+            return True
+        if not os.path.exists(self.p.outfile):
+            return True
+        
+        ostat = os.stat(self.p.outfile)
+        if not ostat.st_size:
+            return True
+
+        if self.p.infile:       # last chance, if input is newer than output
+            istat = os.stat(self.p.infile)
+            if istat.st_mtime > ostat.st_mtime:
+                return True
+
+        return False            # do not run
+
+
+
     def __call__(self):
         if self.p.infile and not os.path.exists(self.p.infile):
             raise RuntimeError, 'No input file: %s' % self.p.infile
             
-        print 'do run?', self.p.force, self.p.outfile, os.path.exists(self.p.outfile), self.p.force or not self.p.outfile or not os.path.exists(self.p.outfile)
-        doit = self.p.force or not self.p.outfile or not os.path.exists(self.p.outfile)
-        if doit:
-            self.run()
+        if self.dorun():        # da doo run run run, 
+            self.run()          # da doo run run
 
         if not self.p.outfile:
             print 'No output requested'
@@ -43,6 +66,37 @@ class BaseRun(object):
             return '.'.join([base,ext])
         return base
 
+class ConfigSingleTubRun(BaseRun):
+    '''
+    Generate the config file for a single Tub
+    '''
+    def __init__(self, params):
+        super(ConfigSingleTubRun,self).__init__(None, "json", params)
+        return
+
+    def run(self):
+        from cowbells import geom, default
+        from cowbells.builder import tubdet, world
+
+        default.all()
+
+        b = tubdet.World( tub = self.p.tub.capitalize(),
+                          sample = self.p.sample.capitalize(),
+                          inner_diameter = self.p.inner_diameter,
+                          inner_height = self.p.inner_height,                          
+                          )
+
+        worldlv = b.top()
+        geom.placements.PhysicalVolume('pvWorld',worldlv)    
+        b.place()
+        b.sensitive()
+
+        print 'Writing %s' % self.p.outfile
+        fp = open(self.p.outfile, 'w')
+        fp.write(geom.dumps_json())
+        fp.close()
+        return 
+
 
 class SimRun(BaseRun):
     '''
@@ -50,7 +104,7 @@ class SimRun(BaseRun):
     '''
 
     prog = "cowbells.exe"   
-    args = "-k kin://beam?vertex=%(x)f,%(y)f,%(x)f&name=%(particle)s&direction=%(dx)f,%(dy)f,%(dz)f&energy=%(energy)s -p em,op  -o %(outfile)s -n %(nevents)s %(infile)s"
+    args = "-k kin://beam?vertex=%(x)f,%(y)f,%(z)f&name=%(particle)s&direction=%(dx)f,%(dy)f,%(dz)f&energy=%(energy)s -p %(physics)s  -o %(outfile)s -n %(nevents)s %(infile)s"
 
     def __init__(self, params):
         super(SimRun,self).__init__("json", "root", params)
@@ -85,6 +139,36 @@ class SimRun(BaseRun):
             break
 
         return
+
+
+class TreePlotRun(BaseRun):
+    def __init__(self, params):
+        super(TreePlotRun,self).__init__("root","pdf", params)
+        self.tfile = ROOT.TFile.Open(self.p.infile)
+        self.tree = self.tfile.Get(self.p.tree) # set in params
+        self.canvas = ROOT.TCanvas("canvas","canvas")
+        return
+
+    def cprint(self, extra=""):
+        self.canvas.Print(self.p.outfile+extra,'pdf')
+        return
+
+
+    def canvas_get_hist(self, newname, oldname = 'htemp'):
+        h = self.canvas.GetPrimitive(oldname)
+        if not h: 
+            raise RuntimeError, 'Failed to get histogram "%s"' % oldname
+        return h.Clone(newname)
+
+    def dress_hist(self, hist, **params):
+        p = StringParams(**params)
+        hist.SetTitle(p.get('title', hist.GetTitle()))
+        hist.SetXTitle(p.get('xtitle', hist.GetXaxis().GetTitle()))
+        hist.SetYTitle(p.get('ytitle', hist.GetYaxis().GetTitle()))
+        hist.SetLineColor(int(p.get('color',hist.GetLineColor())))
+        return hist
+
+    pass
 
 
 

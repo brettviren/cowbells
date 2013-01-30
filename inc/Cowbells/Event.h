@@ -41,7 +41,7 @@ namespace Cowbells {
         float dist;           // the distance stepped
         float dt;             // time spanned in the step
         float edep;           // total energy deposted during the step
-        float enoni;          // non-ionization energy deposite 
+        float enoni;          // non-ionization energy deposited
         // positions before/after the step
         float x1,y1,z1,x2,y2,z2;
         Step();
