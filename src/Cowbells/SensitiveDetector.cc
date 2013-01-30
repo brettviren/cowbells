@@ -102,13 +102,10 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     double energy = track->GetTotalEnergy();
     double qe = qevec->Value(energy);
     double live_or_die =  G4UniformRand();
-    cerr << "energy=" << energy << ", qe=" << qe << ", rand=" << live_or_die;
     if (live_or_die > qe) {
-        cerr << " DIE" << endl;
         // die, little photon, die
         return true;
     }
-    cerr << " LIVE" << endl;
 
     int depth = touch->GetHistoryDepth();
     G4VPhysicalVolume* pv = touch->GetVolume();
