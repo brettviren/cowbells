@@ -10,6 +10,8 @@ from util import StringParams
 
 class BaseRun(object):
 
+    file_pattern = '%(study)s-%(sample)s-%(particle)s-%(energy)sMeV-%(nevents)sevts'
+
     def __init__(self, in_ext, out_ext, params):
         self.p = params
         self.p.infile = self.p.outfile = ""
@@ -38,8 +40,6 @@ class BaseRun(object):
 
         return False            # do not run
 
-
-
     def __call__(self):
         if self.p.infile and not os.path.exists(self.p.infile):
             raise RuntimeError, 'No input file: %s' % self.p.infile
@@ -60,7 +60,7 @@ class BaseRun(object):
         '''
         Return the filename associated with my parameters
         '''
-        base = '%(study)s-%(sample)s-%(particle)s-%(energy)sMeV-%(nevents)sevts'
+        base = self.file_pattern
         base = self.p.string(base)
         base = base.lower()
         if ext:
