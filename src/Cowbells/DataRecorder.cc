@@ -141,11 +141,11 @@ void Cowbells::DataRecorder::add_event(const G4Event* event)
 
 static int get_mat_index(G4VPhysicalVolume* pv)
 {
-    if (!pv) return -1;
+    if (!pv) return -2;
     G4LogicalVolume* lv = pv->GetLogicalVolume();
-    if (!lv) return -1;
+    if (!lv) return -3;
     G4Material* mat = lv->GetMaterial();
-    if (!mat) return -1;
+    if (!mat) return -4;
     return mat->GetIndex();
 }
 
