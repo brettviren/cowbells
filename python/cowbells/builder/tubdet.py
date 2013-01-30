@@ -207,6 +207,7 @@ class Builder(base.Builder):
             s.add_property("TRANSMITTANCE", x=energy, y=transmittance)
             continue
 
+        print 'Config for "%s" tub' % color
         return
 
     def sensitive(self):
@@ -232,13 +233,17 @@ class World(base.Builder):
     def make_logical_volumes(self):
         p = self.pp()[0]
 
-        if p.tub == 'Teflon':
+        if p.tub.lower() == 'teflon':
             teflon_color = 'white'
-        if p.tub == 'Aluminum':
+        elif p.tub.lower() == 'aluminum':
             teflon_color = 'black'
+        else:
+            raise ValueError, 'Unknown tub material: "%s"' % p.tub
+
         self.builders = [
             world.Builder( size = 1*meter),
-            Builder( Bottom = p.tub, Side = p.tub, Lid = p.tub, Sample = p.sample )
+            Builder( Bottom = p.tub, Side = p.tub, Lid = p.tub, Sample = p.sample,
+                     teflon_color = teflon_color)
             ]
 
         self.lvs = [b.top() for b in self.builders]
