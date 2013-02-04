@@ -128,14 +128,14 @@ void Cowbells::DataRecorder::add_event(const G4Event* event)
         for (int ind = 0; ind < nhits; ++ind) {
             GHit* ghit = dynamic_cast<Cowbells::GHit*>(hc->GetHit(ind));
             assert(ghit);
-            m_event->hc.push_back(ghit->get());
+            m_event->hc.push_back(*ghit->get());
         }
         nhits_total += nhits;
     }
 
     m_tree->Fill();
     m_event->clear();
-    m_track2stack.clear();
+    m_track2stack_index.clear();
 
     if (false) {
         cerr << "Filled tree with " << nhits_total << " hits in "
@@ -177,22 +177,21 @@ void Cowbells::DataRecorder::add_stack(const G4Track* track)
     // non-optical
     if (track->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()) {
 
-        TrackStackMap_t::iterator it = m_track2stack.find(track_id);
-        if (it != m_track2stack.end()) { // got it already
+        TrackStackMap_t::iterator it = m_track2stack_index.find(track_id);
+        if (it != m_track2stack_index.end()) { // got it already
             return;
         }
-        Cowbells::Stack* cb_stack = new Cowbells::Stack();
-        m_event->stacks.push_back(cb_stack);
-        m_track2stack[track_id] = cb_stack;
-
-        cb_stack->trackid = track_id;
-        cb_stack->parentid = track->GetParentID();
+        Cowbells::Stack cb_stack;
+        cb_stack.trackid = track_id;
+        cb_stack.parentid = track->GetParentID();
         G4ParticleDefinition* particle = track->GetDefinition();
-        cb_stack->pdgid = particle->GetPDGEncoding();
+        cb_stack.pdgid = particle->GetPDGEncoding();
 
-        cb_stack->mat = -1;
-        cb_stack->energy = track->GetKineticEnergy();
+        cb_stack.mat = -1;
+        cb_stack.energy = track->GetKineticEnergy();
 
+        m_track2stack_index[track_id] = m_event->stacks.size();
+        m_event->stacks.push_back(cb_stack);
         return;
     }
 
@@ -204,14 +203,15 @@ void Cowbells::DataRecorder::add_stack(const G4Track* track)
     }
 
     int parent_id = track->GetParentID();
-    Cowbells::Stack* cb_stack = m_track2stack[parent_id];
-    assert(cb_stack);           // say what?!
+    TrackStackMap_t::iterator it = m_track2stack_index.find(parent_id);
+    assert(it != m_track2stack_index.end());
+    Cowbells::Stack& cb_stack = m_event->stacks[it->second];
 
     if (proc->GetProcessName() == "Cerenkov") {
-        cb_stack->nceren += 1;
+        cb_stack.nceren += 1;
     }
     if (proc->GetProcessName() == "Scintillation") {
-        cb_stack->nscint += 1;
+        cb_stack.nscint += 1;
     }
 }
 
@@ -225,7 +225,7 @@ void Cowbells::DataRecorder::add_step(const G4Step* step)
     G4StepPoint* prepoint = step->GetPreStepPoint();
     G4StepPoint* pstpoint= step->GetPostStepPoint();
 
-    G4ParticleDefinition* particle = track->GetDefinition();
+    //G4ParticleDefinition* particle = track->GetDefinition();
 
     G4VPhysicalVolume* prephy = prepoint->GetPhysicalVolume();
     G4VPhysicalVolume* pstphy = pstpoint->GetPhysicalVolume();
@@ -235,50 +235,53 @@ void Cowbells::DataRecorder::add_step(const G4Step* step)
     // string pstname = "NONE";
     // if (pstphy) pstname = pstphy->GetName();
 
-    Cowbells::Step* cb_step = new Cowbells::Step();
-    m_event->steps.push_back(cb_step);
+    Cowbells::Step cb_step;
 
-    cb_step->trackid = track->GetTrackID();
-    cb_step->parentid = track->GetParentID();
+    cb_step.trackid = track->GetTrackID();
+    cb_step.parentid = track->GetParentID();
     const G4VProcess* proc = track->GetCreatorProcess();
     if (proc) {
-        cb_step->proctype = proc->GetProcessType();
+        cb_step.proctype = proc->GetProcessType();
     }
 
-    cb_step->stepnum = track->GetCurrentStepNumber();
+    cb_step.stepnum = track->GetCurrentStepNumber();
 
-    cb_step->pdgid = get_pdgid(track);
-    cb_step->mat1 = get_mat_index(prephy);
-    cb_step->mat2 = get_mat_index(pstphy);
-    cb_step->energy1 = prepoint->GetKineticEnergy();
-    cb_step->energy2 = pstpoint->GetKineticEnergy();
+    cb_step.pdgid = get_pdgid(track);
+    cb_step.mat1 = get_mat_index(prephy);
+    cb_step.mat2 = get_mat_index(pstphy);
+    cb_step.energy1 = prepoint->GetKineticEnergy();
+    cb_step.energy2 = pstpoint->GetKineticEnergy();
 
-    cb_step->edep = step->GetTotalEnergyDeposit();
-    cb_step->enoni = step->GetNonIonizingEnergyDeposit();
-    cb_step->dist = step->GetStepLength();
-    cb_step->dt = step->GetDeltaTime();
+    cb_step.edep = step->GetTotalEnergyDeposit();
+    cb_step.enoni = step->GetNonIonizingEnergyDeposit();
+    cb_step.dist = step->GetStepLength();
+    cb_step.dt = step->GetDeltaTime();
 
     G4ThreeVector r1 = prepoint->GetPosition();
     G4ThreeVector r2 = pstpoint->GetPosition();
-    cb_step->x1 = r1.x();
-    cb_step->y1 = r1.y();
-    cb_step->z1 = r1.z();
-    cb_step->x2 = r2.x();
-    cb_step->y2 = r2.y();
-    cb_step->z2 = r2.z();
+    cb_step.x1 = r1.x();
+    cb_step.y1 = r1.y();
+    cb_step.z1 = r1.z();
+    cb_step.x2 = r2.x();
+    cb_step.y2 = r2.y();
+    cb_step.z2 = r2.z();
 
 
     // patch up what could not be collected at stacking time:
-    if (cb_step->stepnum == 1) {
+    if (cb_step.stepnum == 1) {
         if (track->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()) {
-            Cowbells::Stack* cb_stack = m_track2stack[cb_step->trackid];
-            if (!cb_stack) {
-                cerr << "Stepping track #"<< cb_step->trackid
+
+            TrackStackMap_t::iterator it = m_track2stack_index.find(cb_step.trackid);
+            if (it == m_track2stack_index.end()) {
+                cerr << "Stepping track #"<< cb_step.trackid
                      << " before it's been stacked?" << endl;
             }
             else {
-                cb_stack->mat = cb_step->mat1;
+                Cowbells::Stack& cb_stack = m_event->stacks[it->second];
+                cb_stack.mat = cb_step.mat1;
             }
         }
     }
+
+    m_event->steps.push_back(cb_step);
 }

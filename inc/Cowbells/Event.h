@@ -85,9 +85,9 @@ namespace Cowbells {
         
         // EventKinematics* m_kine;
 
-        std::vector<Cowbells::Hit*> hc;
-        std::vector<Cowbells::Step*> steps;
-        std::vector<Cowbells::Stack*> stacks;
+        std::vector<Cowbells::Hit> hc;
+        std::vector<Cowbells::Step> steps;
+        std::vector<Cowbells::Stack> stacks;
     };
 
 

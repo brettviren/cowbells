@@ -58,17 +58,17 @@ void Cowbells::Event::clear_hits()
 void Cowbells::Event::clear_steps()
 {
     //cerr << "Deleting " << steps.size() << " steps" << endl;
-    for (size_t ind=0; ind<steps.size(); ++ind) {
-        delete steps[ind];
-    }
+    //for (size_t ind=0; ind<steps.size(); ++ind) {
+    //    delete steps[ind];
+    //}
     steps.clear();
 }
 void Cowbells::Event::clear_stacks()
 {
     //cerr << "Deleting " << steps.size() << " steps" << endl;
-    for (size_t ind=0; ind<stacks.size(); ++ind) {
-        delete stacks[ind];
-    }
+    //for (size_t ind=0; ind<stacks.size(); ++ind) {
+    //    delete stacks[ind];
+    //}
     stacks.clear();
 }
 

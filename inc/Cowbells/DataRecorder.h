@@ -61,8 +61,8 @@ namespace Cowbells {
         bool m_save_steps;
         bool m_save_stacks;
 
-        typedef std::map<int, Cowbells::Stack*> TrackStackMap_t;
-        TrackStackMap_t m_track2stack;
+        typedef std::map<int, int> TrackStackMap_t;
+        TrackStackMap_t m_track2stack_index;
 
         void clear();
     };

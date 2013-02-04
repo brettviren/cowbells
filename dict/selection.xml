@@ -9,9 +9,14 @@
     <class name="Cowbells::Hit"/>
     <class name="Cowbells::Step"/>
     <class name="Cowbells::Stack"/>
+    <!-- 
     <class name="std::vector<Cowbells::Hit*>"/>
     <class name="std::vector<Cowbells::Step*>"/>
     <class name="std::vector<Cowbells::Stack*>"/>
+    -->
+    <class name="std::vector<Cowbells::Hit>"/>
+    <class name="std::vector<Cowbells::Step>"/>
+    <class name="std::vector<Cowbells::Stack>"/>
 
     <class pattern="HepMC::Gen*"/>
     <class name="std::deque<HepMC::GenEvent*>"/>
