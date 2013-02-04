@@ -67,6 +67,32 @@ class BaseRun(object):
             return '.'.join([base,ext])
         return base
 
+class ConfigNsrlRun(BaseRun):
+    '''
+    Generate the config file for NSRL setup
+    '''
+    def __init__(self, params):
+        super(ConfigNsrlRun,self).__init__(None, "json", params)
+        return
+    
+    def run(self):
+        from cowbells import geom, default
+        from cowbells.builder import nsrl
+
+        default.all()
+
+        b = nsrl.Builder()
+        worldlv = b.top()
+        geom.placements.PhysicalVolume('pvWorld',worldlv)    
+        b.place()
+        b.sensitive()
+
+        print 'Writing %s' % self.p.outfile
+        fp = open(self.p.outfile, 'w')
+        fp.write(geom.dumps_json())
+        fp.close()
+        return 
+
 class ConfigSingleTubRun(BaseRun):
     '''
     Generate the config file for a single Tub
@@ -105,7 +131,7 @@ class SimRun(BaseRun):
     '''
 
     prog = "cowbells.exe"   
-    args = "-k kin://beam?vertex=%(x)f,%(y)f,%(z)f&name=%(particle)s&direction=%(dx)f,%(dy)f,%(dz)f&energy=%(energy)s -p %(physics)s  -o %(outfile)s -n %(nevents)s %(infile)s"
+    args = "-k kin://beam?vertex=%(x)s,%(y)s,%(z)s&name=%(particle)s&direction=%(dx)s,%(dy)s,%(dz)s&energy=%(energy)s -p %(physics)s  -o %(outfile)s -n %(nevents)s %(infile)s"
 
     def __init__(self, params):
         super(SimRun,self).__init__("json", "root", params)
@@ -114,6 +140,7 @@ class SimRun(BaseRun):
     def run(self):
         from subprocess import Popen, PIPE, STDOUT
 
+        print self.args
         args = self.p.string(self.args)
         cmd = "%s %s" % (self.prog, args)
 

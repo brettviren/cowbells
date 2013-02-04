@@ -6,6 +6,7 @@
 #include <Randomize.hh>
 #include <G4Material.hh>
 
+#include <cassert>
 #include <iostream>
 using namespace std;
 
@@ -87,6 +88,47 @@ int Cowbells::SensitiveDetector::divine_touchable_id(const std::string& tname)
     return it->second;
 }
 
+bool pass_qe(G4Track* track)
+{
+    G4Material* mat = track->GetMaterial();
+    if (!mat) {
+        cerr << "Fail QE due to no material" << endl;
+        assert(mat);
+        return false;
+    }
+
+    G4MaterialPropertiesTable* mattab = mat->GetMaterialPropertiesTable();
+    if (!mattab) {
+        cerr << "Fail QE due to not material property in " << mat->GetName() << endl;
+        assert(mattab);
+        return false;
+    }
+    
+    G4MaterialPropertyVector* qevec = mattab->GetProperty("QE");
+    if (!qevec) {
+        cerr << "Fail QE due to not QE table in " << mat->GetName() << endl;
+        assert(qevec);
+        return false;
+    }
+
+    double energy = track->GetTotalEnergy();
+    double qe = qevec->Value(energy);
+    double live_or_die =  G4UniformRand();
+
+    // extreme debugging
+    if (false) {
+        cerr << "energy=" << energy << ", qe=" << qe << ", rand=" << live_or_die;
+        if (live_or_die < qe) {
+            cerr << " LIVE!" << endl;
+        }
+        else {
+            cerr << " DIE!" << endl;
+        }
+    }
+
+    return live_or_die < qe;
+}
+
 G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory* /*nada*/)
 {
     // fixme: don't accept all particles, return false for the losers
@@ -96,16 +138,7 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     G4TouchableHandle touch = psp->GetTouchableHandle();
     G4Track* track = aStep->GetTrack();
 
-    G4Material* mat = track->GetMaterial();
-    G4MaterialPropertiesTable* mattab = mat->GetMaterialPropertiesTable();
-    G4MaterialPropertyVector* qevec = mattab->GetProperty("QE");
-    double energy = track->GetTotalEnergy();
-    double qe = qevec->Value(energy);
-    double live_or_die =  G4UniformRand();
-    if (live_or_die > qe) {
-        // die, little photon, die
-        return true;
-    }
+    if (!pass_qe(track)) { return true; }
 
     int depth = touch->GetHistoryDepth();
     G4VPhysicalVolume* pv = touch->GetVolume();

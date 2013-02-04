@@ -23,7 +23,7 @@ class PlotRun(TreePlotRun):
     def do_npe(self):
         p = self.p.copy(what = '@hc.size()',
                         cuts = '',
-                        title = 'Number of PE %(energy)s MeV %(particle)s (%(nevents)s events, %(tub)s tub, %(sample)s sample)',
+                        title = 'Number of PE %(energy)s MeV %(particle)s ("%(label)s", %(nevents)s events, %(tub)s tub, %(sample)s sample)',
                         xtitle = 'Number of PE',
                         ytitle = 'Number of Events',
                         )
@@ -38,7 +38,7 @@ class PlotRun(TreePlotRun):
     def do_time(self):
         p = self.p.copy(what = 'hc.t',
                         cuts = 'hc.hcid == 0',
-                        title = 'PE times for %(energy)s MeV %(particle)s (%(nevents)s events, %(tub)s tub, %(sample)s sample)',
+                        title = 'PE times for %(energy)s MeV %(particle)s ("%(label)s", %(nevents)s events, %(tub)s tub, %(sample)s sample)',
                         xtitle = 'time (ns)',
                         ytitle = '',
                         )

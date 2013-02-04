@@ -14,6 +14,7 @@ def get(**kwds):
 
     default = dict(
         # for 'config' stage
+        label='nominal',
         study='hits',
         sample='water', 
         particle='gamma',

@@ -67,8 +67,8 @@ class PlotRun(TreePlotRun):
         '''
         Requires the "steps" DataRecorder branch was written.
         '''
-        p = self.p.copy(what = 'energy1',
-                        cuts = 'stepnum==1 && pdgid==%(cut_pdgid)d',
+        p = self.p.copy(what = 'steps.energy1',
+                        cuts = 'steps.stepnum==1 && steps.pdgid==%(cut_pdgid)d',
                         title = 'First step of %(cut_particle)s in %(sample)s',
                         xtitle = 'Kinetic Energy (MeV)')
 

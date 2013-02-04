@@ -39,12 +39,17 @@ kindex = [1.5]*4
 index_energy = [x*eV for x in [1.55,6.20,10.33,15.5]]
     
 
-def optical(material = 'Bialkali'):
+def _optical(material = 'Bialkali'):
     from cowbells import geom
     geom.optical.MaterialProperty(material, 'RINDEX',    x=index_energy, y=rindex);
     geom.optical.MaterialProperty(material, 'KINDEX',    x=index_energy, y=kindex);
     geom.optical.MaterialProperty(material, 'QE', x=eff_energy, y=efficiency);
-    geom.optical.MaterialProperty(material, 'QE', x=full_eff_en, y=full_eff);
+    #geom.optical.MaterialProperty(material, 'QE', x=full_eff_en, y=full_eff);
     #geom.optical.MaterialProperty(material, 'ABSLENGTH', x=abslength, y=eff_energy);
-
     return
+def optical(material = None):
+    material = material or ['Bialkali', 'TCBialkali']
+    if isinstance(material, str):
+        material = [material]
+    for mat in material:
+        _optical(mat)

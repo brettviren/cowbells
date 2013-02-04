@@ -9,7 +9,7 @@ from params import get as params
 
 from cowbells.ana.run import BaseRun
 
-BaseRun.file_pattern = '%(study)s-%(sample)s-%(tub)s-%(particle)s-%(energy)sMeV-%(nevents)sevts'
+BaseRun.file_pattern = '%(study)s-%(label)s-%(sample)s-%(tub)s-%(particle)s-%(energy)sMeV-%(nevents)sevts'
 
 
 from cowbells.ana.run import ConfigSingleTubRun as ConfigRun

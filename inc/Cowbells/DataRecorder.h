@@ -54,6 +54,7 @@ namespace Cowbells {
         TFile* m_file;
         TTree* m_tree;
         Cowbells::Event* m_event;
+
         std::vector<std::string> m_hcnames;
 
         bool m_save_hits;

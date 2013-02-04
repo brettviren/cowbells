@@ -36,14 +36,17 @@ void Cowbells::DataRecorder::set_module(std::string module, Json::Value cfg)
         if (m_hcnames.size() > 0) {
             m_save_hits = true;
         }
+        cerr << "DataRecorder: Saving Hits" << endl;
         return;
     }
     if (module == "steps") {    // expect True/False
         m_save_steps = cfg.asBool();
+        cerr << "DataRecorder: Saving Steps" << endl;
         return;
     }
     if (module == "stacks") {   // expect True/False
         m_save_stacks = cfg.asBool();
+        cerr << "DataRecorder: Saving Stacks" << endl;
         return;
     }
 
@@ -55,6 +58,7 @@ void Cowbells::DataRecorder::set_module(std::string module, Json::Value cfg)
 void Cowbells::DataRecorder::set_output(std::string filename)
 {
     this->close();
+
     m_file = TFile::Open(filename.c_str(),"recreate");
     m_file->cd();
     m_tree = new TTree("cowbells","Cowbells Simulation Truth Tree");
@@ -99,6 +103,7 @@ void Cowbells::DataRecorder::add_event(const G4Event* event)
         cerr << "No hit collections requested for storage." << endl;
     }
 
+    int nhits_total = 0;
     for (size_t hcind = 0; hcind < m_hcnames.size(); ++hcind) {
         std::string hcName = m_hcnames[hcind];
         int hcID = G4SDManager::GetSDMpointer()->GetCollectionID(hcName);
@@ -125,13 +130,18 @@ void Cowbells::DataRecorder::add_event(const G4Event* event)
             assert(ghit);
             m_event->hc.push_back(ghit->get());
         }
+        nhits_total += nhits;
     }
 
     m_tree->Fill();
     m_event->clear();
     m_track2stack.clear();
 
-    //cerr << "Filled tree with " << nhits << " hits" << endl;
+    if (false) {
+        cerr << "Filled tree with " << nhits_total << " hits in "
+             << m_hcnames.size() << " collections"
+             << endl;
+    }
 }
 
 #include <G4Step.hh>

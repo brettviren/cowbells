@@ -14,6 +14,6 @@ abslength = [1*mm]*3
 
 def optical(material = 'Teflon'):
     from cowbells import geom
-    geom.optical.MaterialProperty(material, 'RINDEX',    x=energy, y=rindex);
-    geom.optical.MaterialProperty(material, 'ABSLENGTH', x=energy, y=abslength);
+    #geom.optical.MaterialProperty(material, 'RINDEX',    x=energy, y=rindex);
+    #geom.optical.MaterialProperty(material, 'ABSLENGTH', x=energy, y=abslength);
     return
