@@ -3,7 +3,7 @@
 Describe placements (physical volumes)
 '''
 
-import base, volumes
+import base, volumes, rotpos
 from cowbells import units
 
 store = []
@@ -37,13 +37,7 @@ class PhysicalVolume(base.Base):
         return
     def pod(self):
         p = super(PhysicalVolume,self).pod()
-        if self.rot:            # dictionary
-            newrot = {}
-            for k,v in self.rot.items():
-                newrot[k] = '%f *radian' % (v/units.radian)
-            p['rot'] = newrot
-        if self.pos:
-            p['pos'] = ['%f * mm' % (l/units.mm) for l in self.pos]
+        p.update(rotpos.pod(self.rot, self.pos))
         return p
     pass
 

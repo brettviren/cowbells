@@ -124,6 +124,35 @@ class ConfigSingleTubRun(BaseRun):
         fp.close()
         return 
 
+class ConfigSingleBoxRun(BaseRun):
+    '''
+    Generate the config file for a single Box detector
+    '''
+    def __init__(self, params):
+        super(self.__class__, self).__init__(None, "json", params)
+        return
+
+    def run(self):
+        from cowbells import geom, default
+        from cowbells.builder import boxdet, world
+
+        default.all()
+
+        b = boxdet.World( box = self.p.box.capitalize(),
+                          sample = self.p.sample.capitalize(),
+                          )
+        
+        worldlv = b.top()
+        geom.placements.PhysicalVolume('pvWorld',worldlv)    
+        b.place()
+        b.sensitive()
+
+        print 'Writing %s' % self.p.outfile
+        fp = open(self.p.outfile, 'w')
+        fp.write(geom.dumps_json())
+        fp.close()
+        return 
+
 
 class SimRun(BaseRun):
     '''

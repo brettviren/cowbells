@@ -48,6 +48,7 @@ namespace Cowbells {
         int elements(Json::Value v);
         int materials(Json::Value v);
         int optical(Json::Value v);
+        int shapes(Json::Value v);
         int volumes(Json::Value v);
         int placements(Json::Value v);
         int surfaces(Json::Value v);

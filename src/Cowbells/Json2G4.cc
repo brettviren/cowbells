@@ -17,6 +17,10 @@
 #include <G4LogicalSkinSurface.hh>
 #include <G4LogicalBorderSurface.hh>
 #include <G4PhysicalVolumeStore.hh>
+#include <G4SolidStore.hh>
+#include <G4UnionSolid.hh>
+#include <G4IntersectionSolid.hh>
+#include <G4SubtractionSolid.hh>
 
 #include <stdexcept>
 #include <iostream>
@@ -28,9 +32,11 @@ using Cowbells::get_num;
 
 G4LogicalVolume* Cowbells::get_LogicalVolume(Json::Value val, G4LogicalVolume* def)
 {
-    if (val.isNull()) { return 0; }
+    if (val.isNull()) { return def; }
     G4LogicalVolumeStore* lvs = G4LogicalVolumeStore::GetInstance();
-    return lvs->GetVolume(val.asString(), false);
+    G4LogicalVolume* ret = lvs->GetVolume(val.asString(), false);
+    if (ret) return ret;
+    return def;
 }
 
 G4ThreeVector Cowbells::get_ThreeVector(Json::Value pos, G4ThreeVector def)
@@ -41,7 +47,7 @@ G4ThreeVector Cowbells::get_ThreeVector(Json::Value pos, G4ThreeVector def)
 
 G4RotationMatrix* Cowbells::get_RotationMatrix(Json::Value val, G4RotationMatrix* def)
 {
-    if (val.isNull()) { return 0; }
+    if (val.isNull()) { return def; }
 
     G4RotationMatrix* rot = new G4RotationMatrix();
     if (!val["rotatex"].isNull()) {
@@ -261,12 +267,21 @@ int Cowbells::Json2G4::optical(Json::Value props)
     return nprops;
 }
 
-// Make a G4VSolid based on shape data in "v"
+// Make a G4VSolid based on shape data in "v".
 G4VSolid* make_solid(Json::Value v)
 {
-    string type = v["type"].asString();
+    G4SolidStore* ss = G4SolidStore::GetInstance();
+
     string name = v["name"].asString();
-    
+    {
+        G4VSolid* g4solid = ss->GetSolid(name, false);
+        if (g4solid) {
+            cerr << "Warning: already made a solid called \"" << name << "\"" << endl;
+            return g4solid;
+        }
+    }
+    string type = v["type"].asString();
+
     if (type == "box") {
         return new G4Box(name, get_num(v["x"]), get_num(v["y"]), get_num(v["z"]));
     }
@@ -311,6 +326,34 @@ G4VSolid* make_solid(Json::Value v)
             return pc;
         }
     }
+    if (type == "boolean") {
+        string booltype = v["booltype"].asString();
+        string n1 = v["shape1"].asString();
+        string n2 = v["shape2"].asString();
+        G4VSolid* s1 = ss->GetSolid(n1); // potential race condition, need
+        G4VSolid* s2 = ss->GetSolid(n2); // these solids already defined
+
+        if (! (s1 && s2)) { 
+            cerr << "Failed to find both daughter solids for " << booltype
+                 << " boolean shape " << name << ": " << n1 << " and " << n2 << endl;
+            return 0;
+        }
+
+        G4RotationMatrix* rot = Cowbells::get_RotationMatrix(v["rot"]);
+        G4ThreeVector pos = Cowbells::get_ThreeVector(v["pos"]);
+
+        if (booltype == "union") {
+            return new G4UnionSolid(name, s1, s2, rot, pos);
+        }
+        if (booltype == "intersection") {
+            return new G4IntersectionSolid(name, s1, s2, rot, pos);
+        }
+        if (booltype == "subtraction") {
+            return new G4SubtractionSolid(name, s1, s2, rot, pos);
+        }
+        cerr << "Unknown boolean shape type " << booltype << " for " << name << endl;
+        return 0;
+    }
     cerr << "Failed to make solid of type \"" << type << "\" named \"" << name 
          << "\" using:\n" << v.toStyledString()
          << endl;
@@ -318,8 +361,36 @@ G4VSolid* make_solid(Json::Value v)
 }
 
 
+int Cowbells::Json2G4::shapes(Json::Value shs)
+{
+    // save non-booleans for last
+
+    vector<Json::Value> bools;
+    {
+        int nshs = shs.size();
+        for (int ish = 0; ish<nshs; ++ish) {
+            Json::Value sh = shs[ish];
+            if (sh["type"].asString() == "boolean") {
+                bools.push_back(sh);
+                continue;
+            }
+            make_solid(sh);
+        }
+    }
+    {
+        int nshs = bools.size();
+        for (int ish = 0; ish < nshs; ++ish) {
+            Json::Value sh = bools[ish];
+            make_solid(sh);
+        }
+    }
+    return shs.size();
+}
+
 int Cowbells::Json2G4::volumes(Json::Value vols)
 {
+    G4SolidStore* ss = G4SolidStore::GetInstance();
+
     int nvols = vols.size();
     for (int ivol=0; ivol < nvols; ++ivol) {
         Json::Value vol = vols[ivol];
@@ -332,7 +403,7 @@ int Cowbells::Json2G4::volumes(Json::Value vols)
             assert(mat);
         }
 
-        G4VSolid* solid = make_solid(vol["shape"]);
+        G4VSolid* solid = ss->GetSolid(vol["shape"].asString());
         new G4LogicalVolume(solid, mat, lvname);
     }
     return nvols;
@@ -599,7 +670,7 @@ int Cowbells::Json2G4::sensitive(Json::Value sens)
 G4VPhysicalVolume* Cowbells::Json2G4::construct_detector()
 {
     string parts[] = {
-        "elements", "materials", "optical", "volumes",
+        "elements", "materials", "optical", "shapes", "volumes",
         "placements", "surfaces", "sensitive", "",
     };
 
@@ -617,6 +688,7 @@ G4VPhysicalVolume* Cowbells::Json2G4::construct_detector()
                 if (parts[ipart] == "elements")   nmade = this->elements(val);
                 if (parts[ipart] == "materials")  nmade = this->materials(val);
                 if (parts[ipart] == "optical")    nmade = this->optical(val);
+                if (parts[ipart] == "shapes")     nmade = this->shapes(val);
                 if (parts[ipart] == "volumes")    nmade = this->volumes(val);
                 if (parts[ipart] == "placements") nmade = this->placements(val);
                 if (parts[ipart] == "surfaces")   nmade = this->surfaces(val);

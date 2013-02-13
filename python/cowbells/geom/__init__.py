@@ -3,8 +3,8 @@
 Describe detector geometry
 '''
 
-import elements, materials, optical, volumes, placements, surfaces, sensitive
-mods = [elements, materials, optical, volumes, placements, surfaces, sensitive]
+import elements, materials, optical, shapes, volumes, placements, surfaces, sensitive
+mods = [elements, materials, optical, shapes, volumes, placements, surfaces, sensitive]
 
 
 def pod():

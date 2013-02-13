@@ -5,12 +5,10 @@ Generate geometry for a trigger counter
 import cowbells
 import base
 from cowbells.geom import surfaces, sensitive
-from cowbells.geom.volumes import Box, LogicalVolume
+from cowbells.geom.shapes import Box
+from cowbells.geom.volumes import LogicalVolume
 from cowbells.geom.placements import PhysicalVolume
-
-from cowbells.units import inch, meter, mm, cm
-hbarc = cowbells.units.clhep_units.hbarc
-
+from cowbells.units import inch, meter, mm, cm, hbarc
 
 class Builder(base.Builder):
     default_params = {

@@ -6,7 +6,8 @@ Generate geometry for the world.
 import cowbells
 import base
 
-from cowbells.geom.volumes import Box, LogicalVolume
+from cowbells.geom.shapes import Box
+from cowbells.geom.volumes import LogicalVolume
 
 meter = cowbells.units.meter
 

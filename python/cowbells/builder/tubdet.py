@@ -7,11 +7,11 @@ import cowbells
 import base
 import world
 from cowbells.geom import materials, surfaces, sensitive
-from cowbells.geom.volumes import Tubs, Polycone, LogicalVolume
+from cowbells.geom.shapes import Tubs, Polycone
+from cowbells.geom.volumes import LogicalVolume
 from cowbells.geom.placements import PhysicalVolume
 
-hbarc = cowbells.units.clhep_units.hbarc
-from cowbells.units import inch, meter, mm
+from cowbells.units import inch, meter, mm, hbarc
 
 
 class Builder(base.Builder):
@@ -267,5 +267,7 @@ class World(base.Builder):
             
 
 if '__main__' == __name__:
+    from cowbells import default, geom
+    default.all()
     tdb = World()
-    print tdb.top().pod()
+    print geom.dumps_json()

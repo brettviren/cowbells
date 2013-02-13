@@ -6,7 +6,8 @@ import cowbells
 import base
 
 from cowbells.units import mm, cm
-from cowbells.geom.volumes import Tubs, LogicalVolume
+from cowbells.geom.shapes import Tubs
+from cowbells.geom.volumes import LogicalVolume
 
 
 class Builder(base.Builder):
