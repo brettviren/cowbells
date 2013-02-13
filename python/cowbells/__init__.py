@@ -8,6 +8,7 @@ import boot
 boot.everything()               # boot all the things!
 
 import geo
-
-import PyCintex
-units = PyCintex.Namespace("units").CLHEP
+import units
+for key in units.clhep_units.__dict__.keys():
+    units.__dict__[key] = eval("units.clhep_units.%s" % (key,))
+units.inch = 2.54*units.cm
