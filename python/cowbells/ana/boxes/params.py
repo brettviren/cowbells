@@ -20,6 +20,14 @@ def get(**kwds):
         particle='proton',
         box='Teflon',
 
+        layout='simple',
+
+        # layout='multi',
+        ndets=3,                           # number of detectors
+        period = 2*10*mm + 10*mm + 2*inch, # periodicity between two detectors
+        absorber_material = 'Lead',        # needs to sync with det thickness
+        absorber_thickness = 10*mm,        # and absorber thickness
+
         # for 'sim' stage
         physics = "op,em",
         energy=500*MeV,  # MeV

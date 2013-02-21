@@ -26,6 +26,7 @@ def elements():
     e('potassium','K',19 , 39.10*gpermole)
     e('antimony','Sb',51 ,121.76*gpermole)
     e('cesium',  'Cs',55 ,132.91*gpermole)
+    e('lead',    'Pb',82 ,207.2*gpermole)
     return
 
 def materials():
@@ -58,6 +59,7 @@ def materials():
     m('Glass', 2.23*gpercm3,matlist=[('SiO2',0.806),('B2O3',0.130),
                                      ('Na2O',0.040),('Al2O3',0.024)])
 
+    m('Lead', 11.35*gpercm3, elelist=[('Pb',1.0)])
     return
 
 def optical():

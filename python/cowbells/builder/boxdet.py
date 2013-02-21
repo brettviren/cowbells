@@ -257,6 +257,36 @@ class Builder(base.Builder):
         sd = sensitive.SensitiveDetector(sdname,hcname,lvname)
         print sdname, 'touchables:', sd.touchables()
 
+class AbsorberBuilder(base.Builder):
+    '''
+    A simple rectangular box
+    '''
+    default_params = {
+        'thickness': 10*mm,
+        'width': 6.0*inch,
+        'height': 6.0*inch,
+
+        'base_name': 'Absorber',
+        }
+
+    default_parts = {
+        'Absorber': 'Lead',
+        }
+
+    def basename(self):
+        return self.params['base_name']
+
+    def make_logical_volumes(self):
+        parms,parts = self.pp()
+
+        shape = Box(self.shapename('Absorber'), 
+                    x=parms.thickness/2.0, y=parms.width/2.0, z=parms.height/2.0)
+        lv = LogicalVolume(self.lvname('Absorber'),
+                           matname = parts.Absorber, shape = shape)
+        return lv
+
+    pass
+
 # fixme: this is also largely copied from tubdet.  Needs refactoring.
 class World(base.Builder):
     '''
@@ -265,6 +295,13 @@ class World(base.Builder):
     default_params = {
         'sample': 'Water',
         'box': 'Teflon',
+        'layout': 'single',     # to be added
+
+        # layout:'multi',
+        'ndets': 3,               # number of detectors
+        'absorber_material': 'Lead',
+        'absorber_thickness': 10*mm,
+        'period': 2*10*mm + 10*mm + 2*inch, # spacing between two detectors
         }
 
     def make_logical_volumes(self):
@@ -284,19 +321,47 @@ class World(base.Builder):
                      Sample = p.sample, teflon_color = teflon_color)
             ]
 
+        if p.layout != 'single':
+            self.builders.append(AbsorberBuilder(Absorber=p.absorber_material, 
+                                                 thickness=p.absorber_thickness))
+
         self.lvs = [b.top() for b in self.builders]
         return self.lvs[0]
 
     def place(self):
-
-        world_lv = self.lvs[0]
-        for lv in self.lvs[1:]:
-            name = lv.name.replace('lv','pv',1)
-            PhysicalVolume(name, lv, world_lv)
-            continue
-
+        p = self.pp()[0]
+        print 'Boxdet layout: "%s"' % p.layout
+        meth = getattr(self,'place_%s' % p.layout)
+        meth()
         for b in self.builders:
             b.place()
+        return
+
+    def place_single(self):
+        print 'Single boxdet'
+        world_lv = self.lvs[0]
+        lv = self.lvs[1]
+        name = lv.name.replace('lv','pv',1)
+        PhysicalVolume(name, lv, world_lv)
+        return
+
+    def place_multi(self):
+        p = self.pp()[0]
+        print 'Multiple (%d) boxdets' % p.ndets
+        world_lv = self.lvs[0]
+        det_lv = self.lvs[1]
+        abs_lv = self.lvs[2]
+
+        for ndet in range(p.ndets):
+            x_det = ndet*p.period
+            if ndet:
+                x_abs = x_det - 0.5*p.period
+                name = abs_lv.name.replace('lv','pv',1)
+                PhysicalVolume(name, abs_lv, world_lv, pos=[x_abs,0,0], copy=ndet)
+            name = det_lv.name.replace('lv','pv',1)
+            PhysicalVolume(name, det_lv, world_lv, pos=[x_det,0,0], copy=ndet+1)
+                
+        return
 
     def sensitive(self):
         for b in self.builders:
