@@ -64,6 +64,7 @@ tq_desc = dict(
 
     qpeak=      ('f',4,'Sum of bins in highest peak'),
     qwid=       ('f',4,'Number of bins in highest peak'),
+    qnpeaks=    ('i',4,'Number of qpeaks found'),
 
     qpeaks3=    ('f',4,'Sum of bins in peaks above 3 signam from mean'),
     qpeaks4=    ('f',4,'Sum of bins in peaks above 4 signam from mean'),
@@ -166,13 +167,15 @@ class TreeSpinner(object):
         # make positive pulse with mean pedestal at 0.
         pulse = [mean - s for s in sig] 
         ps = peaks.downhills(pulse, 0.0, 3*sigma)
+        saved_peaks = []
+        self.obj.qnpeaks[chn] = len(ps)
         for count, (l,r) in enumerate(ps):
             peak = pulse[l:r]
             totq = sum(peak)
             if not count:
                 self.obj.qpeak[chn] = totq
                 self.obj.qwid[chn] = len(peak)
-                self.saved_peaks.append({'t':l, 'q':peak})
+                saved_peaks.append({'t':l, 'q':peak})
 
             maxq = max(pulse[l:r])
             if maxq < 3*sigma:
@@ -184,7 +187,8 @@ class TreeSpinner(object):
             if maxq < 5*sigma:
                 continue
             self.obj.qpeaks5[chn] += totq
-            
+            continue
+        self.saved_peaks.append(saved_peaks)
         return
 
 def make(filename, name="tq", title=None):
