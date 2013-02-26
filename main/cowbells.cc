@@ -28,6 +28,7 @@ using namespace std;
 
 using Cowbells::uri_split;      // strutil.h
 using Cowbells::split;          // strutil.h
+using Cowbells::get_startswith; // strutil.h
 using Cowbells::get_num;        // JsonUtil.h
 
 
@@ -141,9 +142,27 @@ int main(int argc, char *argv[])
     std::string outputfile = opt(oOUTPUT);
     if (opt(oOUTPUT) && "none" != outputfile) {
         dr->set_output(outputfile);
-        dr->set_module("hits", j2g4.get("sensitive"));
-        dr->set_module("steps", Json::Value(true));
-        dr->set_module("stacks", Json::Value(true));
+        std::string modules = "kine,hits,steps,stacks";
+        if (opt(oMODULES)) {
+            modules = opt(oMODULES);
+        }
+        cout << "Output modules: " << modules << endl;
+        if (get_startswith(modules,"kine",",","NOTFOUND") != "NOTFOUND") {
+            cout << "Using output module for kinematics" << endl;
+            dr->set_module("kine", Json::Value(true));
+        }
+        if (get_startswith(modules,"hit",",","NOTFOUND") != "NOTFOUND") {
+            cout << "Using output module for hits" << endl;
+            dr->set_module("hits", j2g4.get("sensitive"));
+        }
+        if (get_startswith(modules,"step",",","NOTFOUND") != "NOTFOUND") {
+            cout << "Using output module for steps" << endl;
+            dr->set_module("steps", Json::Value(true));
+        }
+        if (get_startswith(modules,"stack",",","NOTFOUND") != "NOTFOUND") {
+            cout << "Using output module for stacks" << endl;
+            dr->set_module("stacks", Json::Value(true));
+        }
     }
 
     Cowbells::DetectorConstruction* detcon = new Cowbells::DetectorConstruction(j2g4);

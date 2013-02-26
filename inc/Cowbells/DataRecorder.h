@@ -57,6 +57,7 @@ namespace Cowbells {
 
         std::vector<std::string> m_hcnames;
 
+        bool m_save_kine;
         bool m_save_hits;
         bool m_save_steps;
         bool m_save_stacks;

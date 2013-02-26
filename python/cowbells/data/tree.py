@@ -6,6 +6,50 @@ Interface with WBLS DAQ ROOT trees
 import ROOT
 from array import array
 
+def py2root_typecode(py_typecode):
+    '''Translate Python array typecodes ROOT typecodes.  Not all
+    typecodes are supported.  May raise KeyError'''
+
+    return {
+        'b':'B',                # 1-byte   signed char
+        'B':'b',                # 1-byte unsigned char
+        'h':'S',                # 2-byte   signed short
+        'H':'s',                # 2-byte unsigned short
+        'i':'I',                # 4-byte   signed int
+        'I':'i',                # 4-byte unsigned int
+        'l':'L',                # 8-byte   signed int
+        'L':'l',                # 8-byte unsigned int
+        'f':'F',                # 4-byte float
+        'd':'D',                # 8-byte float
+        }[py_typecode]
+
+
+def branch(tree, **fields):
+    '''
+    Branch a given tree with the given fields.  The fields are keyword
+    arguments specifying (typecode, length, description) triples.
+
+    Return a namedtuple representing the fields and holding an object
+    that provides the branch memory.
+    '''
+
+
+    names = sorted(fields.keys())    
+    values = []
+    for name in names:
+        py_typecode, length, title = fields[name]
+        root_typecode = py2root_typecode(py_typecode)
+
+        initval = 0.0 if typecode() in ['f','d'] else 0
+        val = array(py_typecode, length * [initval])
+        values.append(val)
+
+        s = "" if length == 1 else "[%d]"%length
+        desc = "%s%s/%s" % (name, s, root_typecode)
+        branch = tree.Branch(name,val,desc)
+        branch.SetTitle(title)
+    return namedtuple(tree.GetName(), names)(*values)
+
 class WblsDaqTree(object):
 
     fadc_desc = [

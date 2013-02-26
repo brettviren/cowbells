@@ -110,7 +110,8 @@ class ConfigSingleTubRun(BaseRun):
         b = tubdet.World( tub = self.p.tub.capitalize(),
                           sample = self.p.sample.capitalize(),
                           inner_diameter = self.p.inner_diameter,
-                          inner_height = self.p.inner_height,                          
+                          inner_height = self.p.inner_height,
+                          reflectivity = self.p.reflectivity,
                           )
 
         worldlv = b.top()
@@ -130,9 +131,10 @@ class SimRun(BaseRun):
     '''
 
     prog = "cowbells.exe"   
-    args = "-k kin://beam?vertex=%(x)s,%(y)s,%(z)s&name=%(particle)s&direction=%(dx)s,%(dy)s,%(dz)s&energy=%(energy)s -p %(physics)s  -o %(outfile)s -n %(nevents)s %(infile)s"
+    args = "-k kin://beam?vertex=%(x)s,%(y)s,%(z)s&name=%(particle)s&direction=%(dx)s,%(dy)s,%(dz)s&energy=%(energy)s -p %(physics)s  -o %(outfile)s -n %(nevents)s -m%(modules)s %(infile)s"
 
     def __init__(self, params):
+        params.dict().setdefault('modules','kine,hits,steps,stacks')
         super(SimRun,self).__init__("json", "root", params)
         return
 

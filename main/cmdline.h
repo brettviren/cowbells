@@ -27,7 +27,7 @@ struct Arg: public option::Arg
 
 };
 
-enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oUI, oKIN, oPHYS, oNEVENTS };
+enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oMODULES, oUI, oKIN, oPHYS, oNEVENTS };
 const option::Descriptor usage[] = 
 {
     {oUNKNOWN, 0, "", "", Arg::None, 
@@ -38,6 +38,9 @@ const option::Descriptor usage[] =
 
     {oOUTPUT, 0, "o","output", Arg::Required, 
      "  --output, -o <outputfile>\tSet output filename"},
+
+    {oMODULES, 0, "m","modules", Arg::Required, 
+     "  --modulies, -m <modules>\tSet output modules as comma separated list"},
 
     {oUI, 0, "u", "interface", Arg::Required,
      "  --interface, -u <interface>\tSet the user interface"},

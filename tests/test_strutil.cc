@@ -2,7 +2,13 @@
 
 Build like:
 
-g++ -g -o test_strutil -Wall ../cowbells/tests/test_strutil.cc -I/data3/lbne/bv/wbls/install/geant4/4.9.5.p01/include/Geant4 -I ../cowbells/inc ../cowbells/src/Cowbells/strutil.cc -L /data3/lbne/bv/wbls/install/geant4/4.9.5.p01/lib64 -lG4clhep
+g++ -g -o test_strutil -Wall ../cowbells/tests/test_strutil.cc \
+     -I $geant4_install_dir/include/Geant4 \
+     -I ../cowbells/inc \
+     ../cowbells/src/Cowbells/strutil.cc \
+     -L $geant4_install_dir/lib \
+     -L $geant4_install_dir/lib64 \
+     -lG4clhep
 
 */
 
@@ -71,6 +77,18 @@ void test_special2()
     }
 }
 
+void test_startswith()
+{
+    const char* modules = "kine,hits,steps,stacks";
+    const char* mod[] = {"kine","hit","step","stack",0};
+    for (int ind=0; mod[ind]; ++ind) {
+        string what = get_startswith(modules, ",","notfound");
+        cout << "get \"" << mod[ind] << "\" from \"" 
+             << modules << "\" returns \"" << what << "\"" << endl;
+
+    }
+}
+
 int main(int argc, char *argv[])
 {
     const char* strings[] = {
@@ -104,5 +122,6 @@ int main(int argc, char *argv[])
 
     test_special();
     test_special2();
+    test_startswith();
     return 0;
 }

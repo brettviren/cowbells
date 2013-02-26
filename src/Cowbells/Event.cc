@@ -3,6 +3,14 @@
 #include <iostream>
 using namespace std;
 
+Cowbells::Vertex::Vertex()
+    : x(0), y(0), z(0), t(0)
+{}
+
+Cowbells::Particle::Particle()
+    : vertex(0), trackid(0), pdg(0) , ekin(0), dx(0), dy(0), dz(0), proptime(0)
+{}
+
 Cowbells::Step::Step()
     :  trackid(-1)
     , parentid(-1)
@@ -31,25 +39,25 @@ Cowbells::Stack::Stack()
 }        
 
 
-Cowbells::Event::Event(Cowbells::EventKinematics* /*kin*/)
-//    : m_kine(0)
+Cowbells::Event::Event()
 {
-//    if (kin) set_kinematics(kin);
 }
 Cowbells::Event::~Event()
 {
     cerr << "Deleting Event" << endl;
-    // if (m_kine) {
-    //     delete m_kine;
-    //     m_kine = 0;
-    // }
 }
 
 void Cowbells::Event::clear()
 {
+    this->clear_kine();
     this->clear_hits();
     this->clear_steps();
     this->clear_stacks();
+}
+void Cowbells::Event::clear_kine()
+{
+    vtx.clear();
+    part.clear();
 }
 void Cowbells::Event::clear_hits()
 {
@@ -71,16 +79,4 @@ void Cowbells::Event::clear_stacks()
     //}
     stacks.clear();
 }
-
-// void Cowbells::Event::set_kinematics(Cowbells::EventKinematics* kin)
-// {
-//     if (m_kine) {
-//         delete m_kine;
-//     }
-//     m_kine = kin;
-// }
-// const Cowbells::EventKinematics* Cowbells::Event::get_kinematics() const
-// {
-//     return m_kine;
-// }
 

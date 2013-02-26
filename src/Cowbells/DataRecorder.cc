@@ -13,6 +13,7 @@ Cowbells::DataRecorder::DataRecorder()
     : m_file(0)
     , m_tree(0)
     , m_event(0)
+    , m_save_kine(false)
     , m_save_hits(false)
     , m_save_steps(false)
     , m_save_stacks(false)
@@ -22,6 +23,11 @@ Cowbells::DataRecorder::DataRecorder()
 
 void Cowbells::DataRecorder::set_module(std::string module, Json::Value cfg)
 {
+    if (module == "kine") {
+        m_save_kine = cfg.asBool();
+        cerr << "DataRecorder: Saving Kinematics" << endl;
+        return;
+    }
     if (module == "hits") {     // expect "sensitive" section of configuration
         int nsens = cfg.size();
         for (int ind=0; ind<nsens; ++ind) {
@@ -99,6 +105,37 @@ void Cowbells::DataRecorder::add_event(const G4Event* event)
 {
     //cerr << "Filling tree" << endl;
 
+    if (m_save_kine) {
+        int nprim = event->GetNumberOfPrimaryVertex();
+        //cerr << "Saving kinematics from " << nprim << " vertices" << endl;
+        for (int iprim=0; iprim<nprim; ++iprim) {
+            const G4PrimaryVertex* pv = event->GetPrimaryVertex(iprim);
+            Cowbells::Vertex cbv;
+            cbv.x = pv->GetX0();
+            cbv.y = pv->GetY0();
+            cbv.z = pv->GetZ0();
+            cbv.t = pv->GetT0();
+            int ivtx = m_event->vtx.size();
+            m_event->vtx.push_back(cbv);
+
+            int nparts = pv->GetNumberOfParticle();
+            for (int ipart=0; ipart<nparts; ++ipart) {
+                const G4PrimaryParticle* part = pv->GetPrimary(ipart);
+                Cowbells::Particle cbp;
+                cbp.vertex = ivtx;
+                cbp.trackid = part->GetTrackID();
+                cbp.pdg = part->GetPDGcode();
+                cbp.ekin = part->GetKineticEnergy();
+                G4ThreeVector dir = part->GetMomentumDirection();
+                cbp.dx = dir.x();
+                cbp.dy = dir.y();
+                cbp.dz = dir.z();
+                cbp.proptime = part->GetProperTime();
+                m_event->part.push_back(cbp);
+            }
+        }
+    }
+
     if (!m_hcnames.size() ) {
         cerr << "No hit collections requested for storage." << endl;
     }
@@ -137,7 +174,7 @@ void Cowbells::DataRecorder::add_event(const G4Event* event)
     m_event->clear();
     m_track2stack_index.clear();
 
-    if (false) {
+    if (true) {
         cerr << "Filled tree with " << nhits_total << " hits in "
              << m_hcnames.size() << " collections"
              << endl;
@@ -172,6 +209,9 @@ int get_pdgid(const G4Track* track)
 
 void Cowbells::DataRecorder::add_stack(const G4Track* track)
 {
+    if (!m_save_stacks) { 
+        return;
+    }
     int track_id = track->GetTrackID();
 
     // non-optical

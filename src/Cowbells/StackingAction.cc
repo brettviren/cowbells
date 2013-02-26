@@ -20,7 +20,7 @@ Cowbells::StackingAction::~StackingAction()
 G4ClassificationOfNewTrack
 Cowbells::StackingAction::ClassifyNewTrack(const G4Track * aTrack)
 {
-    m_dr->add_stack(aTrack);
+    if (m_dr) { m_dr->add_stack(aTrack); }
 
     // if(aTrack->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition()
     //    && aTrack->GetParentID()>0) {

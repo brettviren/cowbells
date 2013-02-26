@@ -27,6 +27,23 @@ namespace Cowbells {
     /// Initial kinematics of one event
     typedef HepMC::GenEvent EventKinematics;
 
+    class Vertex {
+    public:
+        double x,y,z,t;         // four-position
+        Vertex();
+    };
+
+    class Particle{
+    public:
+        int vertex;             // vertex number (index into vertex vector)
+        int trackid;            // G4 track ID
+        int pdg;                // PDG particle code
+        double ekin;            // kinetic energy
+        double dx,dy,dz;        // direction from momentum vector
+        double proptime;        // proper time
+        Particle();
+    };
+
     // Record some truth info about steps
     class Step {
     public:
@@ -66,24 +83,17 @@ namespace Cowbells {
 
     class Event {
     public:
-        Event(Cowbells::EventKinematics* kin = 0);
+        Event();
         ~Event();
 
         void clear();
+        void clear_kine();
         void clear_hits();
         void clear_steps();
         void clear_stacks();
 
-        // Set the event kinematics, takes ownership
-        // void set_kinematics(Cowbells::EventKinematics* kin);
-        // const Cowbells::EventKinematics* get_kinematics() const;
-
-        // Post-simulation data:
-        // void set_hits()
-        // void set_...()
-
-        
-        // EventKinematics* m_kine;
+        std::vector<Cowbells::Vertex> vtx;
+        std::vector<Cowbells::Particle> part;
 
         std::vector<Cowbells::Hit> hc;
         std::vector<Cowbells::Step> steps;

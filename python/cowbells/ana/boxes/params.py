@@ -20,7 +20,7 @@ def get(**kwds):
         particle='proton',
         box='Teflon',
 
-        layout='simple',
+        layout='single',
 
         # layout='multi',
         ndets=3,                           # number of detectors

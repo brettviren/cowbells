@@ -16,29 +16,7 @@ import ROOT
 from array import array
 from collections import namedtuple
 import peaks
-
-def branch(tree, **fields):
-    '''
-    Branch a given tree with the given fields.  The fields are keyword
-    arguments specifying (typecode, length, description) triples.
-
-    Return a namedtuple representing the fields and holding an object
-    that provides the branch memory.
-    '''
-    names = sorted(fields.keys())    
-    values = []
-    for name in names:
-        typecode, length, title = fields[name]
-
-        initval = 0 if typecode.lower() == 'i' else 0.0
-        val = array(typecode.lower(),length * [initval])
-        values.append(val)
-
-        s = "" if length == 1 else "[%d]"%length
-        desc = "%s%s/%s" % (name, s, typecode.upper())
-        branch = tree.Branch(name,val,desc)
-        branch.SetTitle(title)
-    return namedtuple(tree.GetName(), names)(*values)
+from tree import branch
 
 tq_desc = dict(
     trigt=      ('f',1,'Trigger time from run start'),

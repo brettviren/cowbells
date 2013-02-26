@@ -54,6 +54,7 @@ class Builder(base.Builder):
 
         # Color of the teflon coating (or material)
         'teflon_color' : 'white',
+        'reflectivity' : None,  # override
 
         # Provide an extra name in order to make unique if needed and
         # not otherwise achieved.
@@ -179,19 +180,19 @@ class Builder(base.Builder):
             raise ValueError, 'Unknown Teflon color: "%s"' % color
 
         data = None
-        if color == 'white':
-            data = [(250,0.90),
-                    (400,0.96),
-                    (500,0.95),
-                    (600,0.94),
-                    (800,0.87)]
-        if color == 'black':
-            data = [(250,0.02),
-                    (400,0.02),
-                    (500,0.02),
-                    (600,0.02),
-                    (800,0.02)]
+        energies =  [250,400,500,600,800]
 
+        if self.params['reflectivity']:
+            reflectivity = len(energies)*[float(self.params['reflectivity'])]
+        elif color == 'white':
+            reflectivity = [ 0.90, 0.96, 0.95, 0.94, 0.87 ]
+        elif color == 'black':
+            reflectivity = len(energies)*[0.02]
+        else:
+            err = 'Unknown lining color (%s) and no reflectivity given' % color
+            raise ValueError, err
+
+        data = zip(energies, reflectivity)
         data.reverse()
         reflectivity, transmittance, energy = list(),list(),list()
         for nm, ref in data:
@@ -228,6 +229,7 @@ class World(base.Builder):
     default_params = {
         'sample': 'Water',
         'tub': 'Teflon',
+        'reflectivity':None,
         }
 
     def make_logical_volumes(self):
@@ -243,7 +245,7 @@ class World(base.Builder):
         self.builders = [
             world.Builder( size = 1*meter),
             Builder( Bottom = p.tub, Side = p.tub, Lid = p.tub, Sample = p.sample,
-                     teflon_color = teflon_color)
+                     teflon_color = teflon_color, reflectivity = p.reflectivity)
             ]
 
         self.lvs = [b.top() for b in self.builders]
