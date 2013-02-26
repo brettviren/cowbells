@@ -3,6 +3,7 @@
 Generate geometry for a box detector.
 
 This is otheriwse like tubdet but a smaller and rectangular.
+::
 
        side
       +-----+        +Y
@@ -14,7 +15,7 @@ This is otheriwse like tubdet but a smaller and rectangular.
       +-----+        -Y
        side
 
--X <--thickness--> +X
+ -X <--thickness--> +X
                     +Z
       +-+ +-+       ^
       +++_+++       |

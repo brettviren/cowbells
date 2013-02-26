@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''
-Make some plots from the TQ tree
+Make some plots from the TQ tree.
 '''
 import ROOT
 

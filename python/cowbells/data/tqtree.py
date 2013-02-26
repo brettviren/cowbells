@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 '''
-A TQ (Time/Charge) tree from a wblsdaq tree
+A TQ (Time/Charge) tree from a wblsdaq tree.
+
+This module can also be run as:
+
+  tqtree daqfile.root tqtree.root
+
+It will also produce a JSON file containing the peaks found in each
+trigger.
 '''
 
 import os
@@ -64,6 +71,10 @@ tq_desc = dict(
 )
 
 class TreeSpinner(object):
+    '''
+    A WblsDaqTree spinner that fills the tqtree.
+    '''
+
     def __init__(self, tqtree, debug=False):
         self.tqtree = tqtree
         self.obj = branch(tqtree, **tq_desc)
@@ -182,6 +193,10 @@ def make(filename, name="tq", title=None):
     return tfile,ttree
 
 def proc(infilename, outfilename, peakfile = None):
+    '''
+    Produce a tqtree.
+    '''
+
     if not peakfile:
         peakfile = os.path.splitext(outfilename)[0] + '-peaks.json'
 
