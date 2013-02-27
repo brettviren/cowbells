@@ -5,6 +5,7 @@ Interface with WBLS DAQ ROOT trees
 
 import ROOT
 from array import array
+from collections import namedtuple
 
 def py2root_typecode(py_typecode):
     '''Translate Python array typecodes ROOT typecodes.  Not all
@@ -40,7 +41,7 @@ def branch(tree, **fields):
         py_typecode, length, title = fields[name]
         root_typecode = py2root_typecode(py_typecode)
 
-        initval = 0.0 if typecode() in ['f','d'] else 0
+        initval = 0.0 if py_typecode in ['f','d'] else 0
         val = array(py_typecode, length * [initval])
         values.append(val)
 

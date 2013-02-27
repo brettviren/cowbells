@@ -14,7 +14,6 @@ import os
 import json
 import ROOT
 from array import array
-from collections import namedtuple
 import peaks
 from tree import branch
 
@@ -47,6 +46,8 @@ tq_desc = dict(
     qpeaks3=    ('f',4,'Sum of bins in peaks above 3 signam from mean'),
     qpeaks4=    ('f',4,'Sum of bins in peaks above 4 signam from mean'),
     qpeaks5=    ('f',4,'Sum of bins in peaks above 5 signam from mean'),
+
+    qwin=       ('f',4,'Sum of bins around highest peak'),
 )
 
 class TreeSpinner(object):
@@ -123,6 +124,13 @@ class TreeSpinner(object):
         self.obj.const[chn] = const = fit.GetParameter(0)
         self.obj.mean[chn] = mean = fit.GetParameter(1)
         self.obj.sigma[chn] = sigma = fit.GetParameter(2)
+
+        # simple window around peak
+        winlow, winhigh = 10,40
+        winstart = max(0, minbin - winlow)
+        winstop = min(len(sig), minbin + winhigh)
+        winsig = sig[winstart:winstop]
+        self.obj.qwin[chn] = mean * len(winsig) - sum(winsig)
 
         #if not chn:
         #    print 'Fit:',mean, sigma, const

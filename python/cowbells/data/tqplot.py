@@ -116,16 +116,16 @@ class Plots(object):
             continue
         return
 
-    def do_fit_pe(self, chn=0, cuts="abs(tmin[%(chn)d]-1525) < 25",
-                  spe=(60,110), dpe=(115,220)):
+    def _fit_pe(self, chn=0, cuts="abs(tmin[%(chn)d]-1525) < 25",
+                  spe=(60,110), dpe=(115,220), qmeas = 'qpeak'):
         '''
         Fit single/double PE peak of qpeak.
         '''
         nbins, minq, maxq = 500, 0, 500
 
         cuts = cuts%locals()
-        what = "qpeak[%(chn)d]"%locals()
-        h = ROOT.TH1F('hqpeak', "qpeak {%s}" % (cuts,), nbins, minq, maxq)
+        what = "%(qmeas)s[%(chn)d]"%locals()
+        h = ROOT.TH1F('hqpeak', "%s {%s}" % (qmeas, cuts,), nbins, minq, maxq)
         ROOT.SetOwnership(h,0)
         self.tree.Draw('%s >> hqpeak'%what, cuts)
 
@@ -171,16 +171,25 @@ class Plots(object):
         print 'Prob 0PE: %.3f' % (math.exp(-1*mupe),)
         return
 
+    def do_pe_fits(self, chn=0):
+        for qmeas in ['qpeak','qpeaks3','qpeaks4','qpeaks5','qwin']:
+            self._fit_pe(chn=chn,qmeas=qmeas)
+            self.cprint()
+            continue
+        return
+
     def all(self, chn = 0):
         self.cprint('[')
         for what in [
             #'minmax','stats','fit','sumn',
             #'34','34_50', '34vEntry',
-            'fit_pe',
             ]:
             meth = getattr(self, 'do_%s' % what)
             meth(chn)
             self.cprint()
+
+        self.do_pe_fits(chn)
+
         self.cprint(']')
 
 if __name__ == '__main__':
