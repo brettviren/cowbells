@@ -101,7 +101,7 @@ int Cowbells::get_int(Json::Value val, int def)
     return ret;
 
 }
-std::string get_str(Json::Value val, std::string def)
+std::string Cowbells::get_str(Json::Value val, std::string def)
 {
     if (val.isNull()) { return def; }
     return val.asString();

@@ -18,8 +18,6 @@
 #include <G4UImanager.hh>
 #include <G4THitsCollection.hh>
 
-#include "HepMC/GenRanges.h"
-#include "HepMC/GenEvent.h"
 
 // export the CLHEP system of units to Python.  For some reason
 // genreflex only "sees" this header if we force it to be #include'd

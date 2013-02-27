@@ -17,15 +17,11 @@
 #define COWBELLS_EVENT_H
 
 
-#include "HepMC/GenEvent.h"
 #include "Cowbells/Hit.h"
 
 #include <vector>
 
 namespace Cowbells {
-
-    /// Initial kinematics of one event
-    typedef HepMC::GenEvent EventKinematics;
 
     class Vertex {
     public:
@@ -60,7 +56,7 @@ namespace Cowbells {
         float edep;           // total energy deposted during the step
         float enoni;          // non-ionization energy deposited
         // positions before/after the step
-        float x1,y1,z1,x2,y2,z2;
+        float x1,y1,z1,t1,x2,y2,z2,t2;
         Step();
     };
 

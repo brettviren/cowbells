@@ -25,7 +25,7 @@ void Cowbells::DataRecorder::set_module(std::string module, Json::Value cfg)
 {
     if (module == "kine") {
         m_save_kine = cfg.asBool();
-        cerr << "DataRecorder: Saving Kinematics" << endl;
+        //cerr << "DataRecorder: Saving Kinematics" << endl;
         return;
     }
     if (module == "hits") {     // expect "sensitive" section of configuration
@@ -107,7 +107,6 @@ void Cowbells::DataRecorder::add_event(const G4Event* event)
 
     if (m_save_kine) {
         int nprim = event->GetNumberOfPrimaryVertex();
-        //cerr << "Saving kinematics from " << nprim << " vertices" << endl;
         for (int iprim=0; iprim<nprim; ++iprim) {
             const G4PrimaryVertex* pv = event->GetPrimaryVertex(iprim);
             Cowbells::Vertex cbv;
@@ -174,7 +173,7 @@ void Cowbells::DataRecorder::add_event(const G4Event* event)
     m_event->clear();
     m_track2stack_index.clear();
 
-    if (true) {
+    if (false) {
         cerr << "Filled tree with " << nhits_total << " hits in "
              << m_hcnames.size() << " collections"
              << endl;
@@ -302,10 +301,11 @@ void Cowbells::DataRecorder::add_step(const G4Step* step)
     cb_step.x1 = r1.x();
     cb_step.y1 = r1.y();
     cb_step.z1 = r1.z();
+    cb_step.t1 = prepoint->GetGlobalTime();
     cb_step.x2 = r2.x();
     cb_step.y2 = r2.y();
     cb_step.z2 = r2.z();
-
+    cb_step.t2 = pstpoint->GetGlobalTime();
 
     // patch up what could not be collected at stacking time:
     if (cb_step.stepnum == 1) {

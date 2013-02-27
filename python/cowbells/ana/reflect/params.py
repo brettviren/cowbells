@@ -21,7 +21,7 @@ def get(**kwds):
         tub='Aluminum',
 
         # for 'sim' stage
-        modules = 'hits',
+        modules = 'kine,hits,steps,stacks',
         physics = "op,em",
         energy=500*MeV,  # MeV
         nevents=10,

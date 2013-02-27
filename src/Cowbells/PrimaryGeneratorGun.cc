@@ -1,4 +1,5 @@
 #include "Cowbells/PrimaryGeneratorGun.h"
+#include "Cowbells/PrimaryGeneratorUtil.h"
 
 #include "Cowbells/JsonUtil.h"
 #include "Cowbells/Json2G4.h"
@@ -11,10 +12,13 @@
 using namespace std;
 
 using Cowbells::get_int;
+using Cowbells::get_str;
+using Cowbells::get_num;
 using Cowbells::get_ThreeVector;
 
 Cowbells::PrimaryGeneratorGun::PrimaryGeneratorGun(Json::Value cfg)
     : G4VUserPrimaryGeneratorAction()
+    , m_timer(new Cowbells::Timerator)
     , m_gun(0)
 {
     this->load_gun(cfg);
@@ -49,6 +53,9 @@ void Cowbells::PrimaryGeneratorGun::load_gun(Json::Value cfg)
         cerr << cfg.toStyledString() << endl;
         assert (particle);
     }
+    m_timer->set_distribution(get_str(cfg["timedist"], "exponential"));
+    m_timer->set_period(get_num(cfg["period"], 1.0));
+    m_timer->set_starting(get_num(cfg["starting"], 0.0));
 
     cout << "Using particle: \"" << particle->GetParticleName() << "\"" << endl;
 
@@ -70,6 +77,7 @@ void Cowbells::PrimaryGeneratorGun::load_gun(Json::Value cfg)
  
 void Cowbells::PrimaryGeneratorGun::GeneratePrimaries(G4Event* gevt)
 {
+    m_gun->SetParticleTime(m_timer->gen());
     m_gun->GeneratePrimaryVertex(gevt);
 }
 

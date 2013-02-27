@@ -1,7 +1,16 @@
 #include "Cowbells/strutil.h"
 #include <cassert>
+#include <algorithm>
 
 using namespace std;
+
+std::string Cowbells::lower(const std::string str)
+{
+    std::string ret;
+    std::transform(str.begin(), str.end(), std::back_inserter(ret), ::tolower);
+    return ret;
+}
+
 
 vector<string> Cowbells::split(const string& pass, const string& delim)
 {
@@ -22,7 +31,18 @@ vector<string> Cowbells::split(const string& pass, const string& delim)
     return ret;                      
 }
 
-/// Split and return the remaining part of the element that starts with the given string
+std::string Cowbells::get_startswith_rest(const std::string& str, 
+                                          const std::string& startswith,
+                                          const std::string& delim,
+                                          const std::string& def)
+{
+    std::string ret = Cowbells::get_startswith(str,startswith,delim,def);
+    if (ret == def) {
+        return ret;
+    }
+    return ret.substr(startswith.size());
+}
+
 std::string Cowbells::get_startswith(const std::string& str, 
                                      const std::string& startswith,
                                      const std::string& delim,
@@ -30,17 +50,13 @@ std::string Cowbells::get_startswith(const std::string& str,
 {
     vector<string> parts = split(str,delim);
     for (size_t ind=0; ind<parts.size(); ++ind) {
-        //cerr << "parts[" << ind << "]=" << parts[ind] << endl;
         if (startswith.size() > parts[ind].size()) { 
-            //cerr << "bad size: " << startswith.size() << " > " << parts[ind].size() << endl;
             continue; 
         }
         if (startswith != parts[ind].substr(0,startswith.size())) { 
-            //cerr << "bad match: " << startswith << " != " 
-            //     << parts[ind].substr(0,startswith.size()) << endl;
             continue; 
         }
-        return parts[ind].substr(startswith.size());
+        return parts[ind];
     }
     return def;
 }
@@ -77,7 +93,7 @@ std::vector<std::string> Cowbells::uri_split(const std::string& uri)
 G4ThreeVector Cowbells::uri_threevector(const std::string& argstr, const std::string& name, G4ThreeVector def)
 {
     string find = name + "=";
-    string found = Cowbells::get_startswith(argstr, find, "&");
+    string found = Cowbells::get_startswith_rest(argstr, find, "&");
     if (!found.size()) return def;
     return str2threevector(found);
 }
@@ -86,7 +102,7 @@ G4ThreeVector Cowbells::uri_threevector(const std::string& argstr, const std::st
 int Cowbells::uri_integer(const std::string& argstr, const std::string& name, int def)
 {
     string find = name + "=";
-    string found = Cowbells::get_startswith(argstr, find, "&");
+    string found = Cowbells::get_startswith_rest(argstr, find, "&");
     if (!found.size()) { return def; }
     return atol(found.c_str());
 }
@@ -95,7 +111,7 @@ int Cowbells::uri_integer(const std::string& argstr, const std::string& name, in
 double Cowbells::uri_double(const std::string& argstr, const std::string& name, double def)
 {
     string find = name + "=";
-    string found = Cowbells::get_startswith(argstr, find, "&");
+    string found = Cowbells::get_startswith_rest(argstr, find, "&");
     if (!found.size()) { return def; }
     return atof(found.c_str());
 }

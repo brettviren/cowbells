@@ -36,7 +36,7 @@ void try_arg(const string& uri, const string& argname)
     if (spq.size() != 3) { return; }
 
     string find = argname+"=";
-    string arg = get_startswith(spq[2],find,"&");
+    string arg = get_startswith_rest(spq[2],find,"&");
     cout << "Arg in URI " << uri << " argname " << argname << " found: \"" << arg << "\"" << endl;
 }
 
@@ -56,6 +56,11 @@ void try_int(const string& uri, const string& argname)
 void test_special()
 {
     string argstr = "energy=3e-6&pdgcode=2212&pol=0,0,1&vertex=0,0,0&momentum=0,0,3e-6&count=100";
+    cerr << "energy:" << fabs(3e-6-uri_double(argstr,"energy")) << endl;
+    assert(fabs(3e-6-uri_double(argstr,"energy")) < 1e-8);
+    assert(2212 == uri_integer(argstr,"pdgcode"));
+    assert(100 == uri_integer(argstr,"count"));
+
     cout 
         << "energy=" << uri_double(argstr,"energy") << ", "
         << "pdgcode=" << uri_integer(argstr,"pdgcode") << ", "
@@ -74,18 +79,39 @@ void test_special2()
         string what = get_startswith(physics,phy[ind],",","notfound");
         cout << "get \"" << phy[ind] << "\" from \"" 
              << physics << "\" returns \"" << what << "\"" << endl;
+        assert (phy[ind] == what);
     }
 }
 
 void test_startswith()
 {
     const char* modules = "kine,hits,steps,stacks";
-    const char* mod[] = {"kine","hit","step","stack",0};
+    const char* mod[] = {"kine","hits","steps","stacks",0};
     for (int ind=0; mod[ind]; ++ind) {
-        string what = get_startswith(modules, ",","notfound");
+        string what = get_startswith(modules, mod[ind]);
         cout << "get \"" << mod[ind] << "\" from \"" 
              << modules << "\" returns \"" << what << "\"" << endl;
+        assert (mod[ind] == what);
+    }
+}
+void test_startswith2()
+{
+    const char* modules = "exponential,fixed";
+    const char* mod[] = {"exponential","fixed",0};
+    for (int ind=0; mod[ind]; ++ind) {
+        string what = get_startswith(modules, mod[ind]);
+        cout << "get \"" << mod[ind] << "\" from \"" 
+             << modules << "\" returns \"" << what << "\"" << endl;
+        assert (mod[ind] == what);
+    }
+}
 
+void test_lower()
+{
+    const char* words[] = {"lower","UPPER","StudlyCaps","inTHEmiddle",0};
+    for (int ind=0; words[ind]; ++ind) {
+        string l = lower(words[ind]);
+        cout << ind << ": " << words[ind] << " --> " << l << endl;
     }
 }
 
@@ -123,5 +149,7 @@ int main(int argc, char *argv[])
     test_special();
     test_special2();
     test_startswith();
+    test_startswith2();
+    test_lower();
     return 0;
 }

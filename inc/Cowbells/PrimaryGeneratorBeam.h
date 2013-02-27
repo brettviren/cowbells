@@ -23,6 +23,8 @@
 
 namespace Cowbells {
 
+class Timerator;
+
 class PrimaryGeneratorBeam  : public G4VUserPrimaryGeneratorAction
 {
 public:
@@ -50,6 +52,7 @@ public:
 
 private:
 
+    Cowbells::Timerator* m_timer;
     G4ParticleGun* m_gun;
     int m_count;
 

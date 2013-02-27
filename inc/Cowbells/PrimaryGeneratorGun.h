@@ -8,6 +8,9 @@
 #include <json/json.h>
 
 namespace Cowbells {
+
+    class Timerator;
+
     class PrimaryGeneratorGun : public G4VUserPrimaryGeneratorAction {
     public:
         PrimaryGeneratorGun(Json::Value cfg);
@@ -20,6 +23,7 @@ namespace Cowbells {
 
     private:
 
+        Cowbells::Timerator* m_timer;
         G4ParticleGun* m_gun;
     };
 }

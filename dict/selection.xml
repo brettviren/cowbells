@@ -22,7 +22,5 @@
     <class name="std::vector<Cowbells::Step>"/>
     <class name="std::vector<Cowbells::Stack>"/>
 
-    <class pattern="HepMC::Gen*"/>
-<!--    <class name="std::deque<HepMC::GenEvent*>"/> -->
   </selection>
 </lcgdict>

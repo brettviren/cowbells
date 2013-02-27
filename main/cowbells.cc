@@ -147,19 +147,19 @@ int main(int argc, char *argv[])
             modules = opt(oMODULES);
         }
         cout << "Output modules: " << modules << endl;
-        if (get_startswith(modules,"kine",",","NOTFOUND") != "NOTFOUND") {
+        if (get_startswith(modules,"kine") == "kine") {
             cout << "Using output module for kinematics" << endl;
             dr->set_module("kine", Json::Value(true));
         }
-        if (get_startswith(modules,"hit",",","NOTFOUND") != "NOTFOUND") {
+        if (get_startswith(modules,"hits") == "hits") {
             cout << "Using output module for hits" << endl;
             dr->set_module("hits", j2g4.get("sensitive"));
         }
-        if (get_startswith(modules,"step",",","NOTFOUND") != "NOTFOUND") {
+        if (get_startswith(modules,"steps") == "steps") {
             cout << "Using output module for steps" << endl;
             dr->set_module("steps", Json::Value(true));
         }
-        if (get_startswith(modules,"stack",",","NOTFOUND") != "NOTFOUND") {
+        if (get_startswith(modules,"stacks") == "stacks") {
             cout << "Using output module for stacks" << endl;
             dr->set_module("stacks", Json::Value(true));
         }

@@ -34,6 +34,10 @@ daq_FADCData = dict(
     Channel3=           ('H',2560,'FADC Channel 3'),
 )
 
+
+
+
+
 class DaqTreeMaker(object):
     def __init__(self, cb_tree, digitizer):
         '''
@@ -57,7 +61,7 @@ class DaqTreeMaker(object):
 
         for entry in self.cb_tree:
             hc = entry.event.hc
-            channel, signal = self.digitizer(hc)
-            # ....... fixme: what about absolute time?
+            vtx = entry.event.vtx
+            channel, signal = self.digitizer(vtx[0].t, hc)
             continue
         

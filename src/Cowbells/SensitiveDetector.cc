@@ -160,7 +160,9 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
              << " trackid: " << track->GetTrackID()
              << " from: " << track->GetParentID()
              << " energy: " << track->GetTotalEnergy()
-             << " t=" << psp->GetGlobalTime()
+             << " gt=" << track->GetGlobalTime()
+             << " lt=" << track->GetLocalTime()
+             << " pt=" << track->GetProperTime()
              << " v=[" << pos.x() << "," << pos.y() << "," << pos.z() << "]"
              << endl;
     }
@@ -180,7 +182,8 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     }
 
     hit->setEnergy(track->GetTotalEnergy());
-    hit->setTime(psp->GetGlobalTime());
+    hit->setTime(track->GetGlobalTime());
+    cerr << "Hit time: " << hit->time() << endl;
     hit->setPos(pos.x(),pos.y(),pos.z());
     hit->setVolId(id);
     const G4ParticleDefinition* pd = track->GetParticleDefinition();

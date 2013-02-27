@@ -8,14 +8,27 @@
 #include <vector>
 
 namespace Cowbells {
+    /// Return a lower cased version of str.
+    std::string lower(const std::string str);
+
     /// Split str into substrings based delimiter.
     std::vector<std::string> split(const std::string& str, const std::string& delim);
 
-    /// Split and return the remaining part of the element that starts with the given string
+    /// The string str is split by the delimeter delim and each part
+    /// is check that is starts with startswith.  If a match is found
+    /// the part is returned.  If no match is found the default string
+    /// def is returned.
     std::string get_startswith(const std::string& str, 
                                const std::string& startswith,
                                const std::string& delim = ",",
                                const std::string& def = "");
+
+    /// Like get_startswith but only the *remainder* of the matched
+    /// part is returned.
+    std::string get_startswith_rest(const std::string& str, 
+                                    const std::string& startswith,
+                                    const std::string& delim = ",",
+                                    const std::string& def = "");
 
     /// Return true if thing is in given str.
     bool in(const std::string& str, const std::string& thing);

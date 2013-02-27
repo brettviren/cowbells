@@ -4,7 +4,7 @@
 using namespace std;
 
 Cowbells::Vertex::Vertex()
-    : x(0), y(0), z(0), t(0)
+    : x(0.0), y(0.0), z(0.0), t(0.0)
 {}
 
 Cowbells::Particle::Particle()
@@ -22,8 +22,8 @@ Cowbells::Step::Step()
     , energy1(0.0)
     , energy2(0.0)
     , dist(0.0)
-    , x1(0), y1(0), z1(0)
-    , x2(0), y2(0), z2(0)
+    , x1(0), y1(0), z1(0), t1(0)
+    , x2(0), y2(0), z2(0), t2(0)
 {
 }        
 
