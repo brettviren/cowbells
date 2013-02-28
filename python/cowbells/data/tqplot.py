@@ -181,8 +181,8 @@ class Plots(object):
     def all(self, chn = 0):
         self.cprint('[')
         for what in [
-            #'minmax','stats','fit','sumn',
-            #'34','34_50', '34vEntry',
+            'minmax','stats','fit','sumn',
+            '34','34_50', '34vEntry',
             ]:
             meth = getattr(self, 'do_%s' % what)
             meth(chn)

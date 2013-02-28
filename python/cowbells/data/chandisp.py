@@ -153,8 +153,13 @@ class ChanDisp(object):
         pwr = self.hist_pwr_nopeak(chn, low, high)
 
         fit = pwr.GetFunction("gaus")
-        mean = fit.GetParameter(1)
-        sigma = fit.GetParameter(2)
+        if fit:
+            mean = fit.GetParameter(1)
+            sigma = fit.GetParameter(2)
+        else:
+            print 'Failed to fit'
+            mean = 2**13
+            sigma = 0
         qbl = self.hist_baseline_subtracted(qvt, mean)
         zoom = self.hist_peak_zoom(qbl, low, high)
 
@@ -223,6 +228,6 @@ if __name__ == '__main__':
         pdf = None
     cd = ChanDisp(sys.argv[1], pdffile=pdf)
 
-    for ent in range(100):
-        cd.q(ent+50)
+    for ent in [2,4,9]:
+        cd.q(ent)
     cd.close()
