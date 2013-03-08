@@ -87,13 +87,27 @@ class WblsDaqTree(object):
     def __getattr__(self,name):
         return self.get(name)
 
+    def __len__(self):
+        return self._fadc_tree.GetEntries()
+
     def get_entry(self, number):
         return self._fadc_tree.GetEntry(number)
 
-    def spin(self, spinner):
-        for entry in range(self._fadc_tree.GetEntries()):
+    def spin(self, spinner, maxentries = None):
+        nentries = len(self)
+        if maxentries:
+            nentries = min(nentries,maxentries)
+        for entry in range(nentries):
             self.get_entry(entry)
-            spinner(self)
+            try:
+                spinners = iter(spinner)
+            except TypeError:
+                spinners = [spinner]
+
+            for s in spinners:
+                if s(self):
+                    break
+
             continue
         return
 

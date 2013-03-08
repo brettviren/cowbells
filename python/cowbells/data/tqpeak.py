@@ -26,7 +26,7 @@ class Plots(object):
 
         max_q = 50.0
         nplots = 10
-        for size in range(nplots):
+        for size in range(nplots+1):
             h = ROOT.TH2F('peaktmpl%02d'%size,'Peak template (%d from %d/%d)' % (size, max_q, nplots),
                           20,-10,10, 100,0,100)
             ROOT.SetOwnership(h,0)

@@ -68,7 +68,7 @@ class SamplingDigitizer:
     def tns_to_fadc_bin(self, tns):
         return int(tns+0.5)
 
-    def apply(self, t, sig):
+    def apply_peak(self, t, sig):
         'Select a peak and apply it to signal at time t.'
         peak = random.choice(self.peaks)
         ibin = self.tns_to_fadc_bin(t) # bin for time t
@@ -78,19 +78,34 @@ class SamplingDigitizer:
             ind = start+count
             sig[start+count] -= int(q+0.5)
             continue
+    def apply_ped(self, sig, allbins = False):
+        '''
+        Apply pedestal.  If allbins is True add pedestal values to all
+        bins, otherwise only add them to bins not yet filled.
+        '''
         for ind in range(2560):
-            sig[ind] += int(0.5+random.gauss(*self.ped))
+            was = sig[ind]
+            if was is None or allbins:
+                ped = int(0.5+random.gauss(*self.ped))
+            else:
+                ped = self.ped[0]
+
+            if was is None:
+                sig[ind] = 0            
+            sig[ind] += ped
         return
 
     def __call__(self, global_time, hits):
         'Return a dictionary of signals indexed by (volid,hcid)'
         
-        signals = defaultdict(lambda: array('i',[0]*2560))
+        signals = defaultdict(lambda: array('i',[None]*2560))
 
         for hit in hits:
             sig = signals[(hit.volId(),hit.hcId())]
-            self.apply(hit.time(), sig)
+            self.apply_peak(hit.time(), sig)
             continue
+        for sig in signals.values():
+            self.apply_ped(sig)
         return signals
 
     pass

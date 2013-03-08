@@ -2,6 +2,28 @@
 '''
 Find peaks in FADC signals.
 '''
+from collections import namedtuple
+import histutil
+
+PeakedPulse = namedtuple('PeakedPulse', 'start loc base height sum const mean sigma')
+
+def characterize(signal, start, stop):
+    '''
+    Characterize the peak in the signal bracketed by [start,stop).
+    Return characterization as a PeakedPulse.
+    '''
+    base = stop-start
+    peak = signal[start:stop]
+    sumq = sum(peak)
+    height = max(peak)
+    loc = peak.index(height)
+
+    h = histutil.sig2hist(peak)
+    fit = histutil.fit_gaus(h)
+    del(h)
+
+    return PeakedPulse(start, loc, base, height, sumq, *fit)
+
 
 def downhill(signal, zero):
     '''

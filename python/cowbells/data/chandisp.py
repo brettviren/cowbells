@@ -3,8 +3,15 @@
 import os
 import ROOT
 import tree
+from array import array
+
+import signal
+reload(signal)                  # support reloading of this module
 
 class ChanDisp(object):
+
+    pedrange = None
+
     def __init__(self, filename, canvas = None, pdffile = "chandisp.pdf"):
         basename = os.path.splitext(filename)[0]
         if canvas is None:
@@ -45,7 +52,7 @@ class ChanDisp(object):
                              chn = chn)
         qvt.SetXTitle('FADC time bin')
         qvt.SetYTitle('FADC charge per time bin')
-        signal = self.wbls.get('Channel%d'%chn)
+        signal = self.get_signal(chn)
         print 'Signal length %d, max=%d, min=%d' %\
             (len(signal),max(signal),min(signal))
         for t,q in enumerate(signal):
@@ -60,7 +67,7 @@ class ChanDisp(object):
 
         qvt = self.hist_qvt(chn)
         start, stop = self.get_nopeak_window(chn, low, high)
-        signal = self.wbls.get('Channel%d'%chn)
+        signal = self.get_signal(chn)
         windowed = signal[:start] + signal[stop:]
         qvt.SetMinimum(min(windowed))
         return qvt
@@ -70,7 +77,7 @@ class ChanDisp(object):
         Power spectrum across FADC indices for current entry and given
         channel number.
         '''
-        signal = self.wbls.get('Channel%d'%chn)
+        signal = self.get_signal(chn)
         minq,maxq = min(signal),max(signal)
         padding = 30            # cosmetic, room for stats box
         pwr = ROOT.TH1F("power%d"%chn, 
@@ -85,26 +92,41 @@ class ChanDisp(object):
     def get_nopeak_window(self, chn, low, high):
         '''Return window around peak as (start,stop) tuple'''
 
-        signal = self.wbls.get('Channel%d'%chn)
+        signal = self.get_signal(chn)
         minq = min(signal)
         minbin = signal.index(minq)
         start = max(0, minbin - low)
         stop = min(len(signal), minbin + high)
         return (start, stop)
 
+
+    def get_signal(self, chn):
+        chname = 'Channel%d' % chn
+        unsigned_signal = self.wbls.get(chname) # array('H')
+        signal = array('i',unsigned_signal)
+        
+        if isinstance(self.pedrange, tuple):
+            peds = signal[self.pedrange[0]:self.pedrange[1]]
+            nped = len(peds)
+            norm = sum(peds) / nped
+            #print nped, norm, peds
+            for ind, sig in enumerate(signal):
+                signal[ind] = sig - (peds[ind%nped] - norm)
+
+        return signal
+
     def hist_pwr_nopeak(self, chn, low, high):
         '''
-        Like hist_pwr but to not include signal -low/+high around the
+        Like hist_pwr but do not include signal -low/+high around the
         FADC time bin holding min ADC.
         '''
         start, stop = self.get_nopeak_window(chn, low, high)
-        signal = self.wbls.get('Channel%d'%chn)
+        signal = self.get_signal(chn)
         windowed = signal[:start] + signal[stop:]
         minq,maxq = min(windowed),max(windowed)
-
         pwr = ROOT.TH1F("power_nopeak%d"%chn, 
                         "FADC bin power outside [%d,%d] window in channel %d entry %d"%\
-                            (low, high, chn, self._entnum),
+                            (start, stop, chn, self._entnum),
                         maxq-minq+2, minq-1, maxq)
 
         map(pwr.Fill, windowed)
@@ -140,6 +162,46 @@ class ChanDisp(object):
         x = h.GetXaxis()
         x.SetRangeUser(max(0,mb-low), min(h.GetNbinsX(), mb+high))
         return h
+
+    def raw(self, number=None):
+        '''
+        Plot raw waveform of all channels.
+        '''
+        self.entry(number)
+        self.canvas.Clear()
+        self.canvas.Divide(2,2)
+        hists = []
+        for chn in range(4):
+            pad = self.canvas.cd(chn+1)
+            qvt = self.hist_qvt(chn)
+            qvt.Draw()
+            hists.append(qvt)
+            continue
+        return hists
+
+    def q128(self, number=None, chn = 0):
+        self.entry(number)
+
+        raw = self.hist_qvt(chn)
+        reorder = ROOT.TH1F("reorder","reorder",2560,0,2560)
+        avg128 = ROOT.TH1F("avg128","avg125",128,0,128)
+
+        for cell,q in enumerate(self.get_signal(chn)):
+            block = cell/20     # [0,127]
+            remain = cell%20    # [0,19]
+            
+            reorder.Fill(remain*128 + block, q)
+            avg128.Fill(block, q)
+        avg128.Scale(1.0/20)
+        hists = [raw, reorder, avg128]
+
+        self.canvas.Clear()
+        self.canvas.Divide(2,2)
+        for count, h in enumerate(hists):
+            pad = self.canvas.cd(count+1)
+            h.Draw()
+        return hists
+        
 
     def q(self, number = None, chn = 0):
         low, high = 50,150
@@ -191,6 +253,11 @@ class ChanDisp(object):
         self.canvas.Modified()
         self.canvas.Update()
         self.cprint()
+
+        ss = self.get_signal(chn)
+        chi2 = signal.chi2(ss)
+        print 'Chi2 of signal w.r.t. its mean: %d (%.3f)' % (chi2, float(chi2)/len(ss))
+
         return hists
 
     def qvt(self, number = None):
