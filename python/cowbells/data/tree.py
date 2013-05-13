@@ -74,6 +74,12 @@ class WblsDaqTree(object):
             continue
         return
 
+    def header(self, name):
+        self._head_tree.GetEntry(0)
+        l = self._head_tree.GetLeaf(name)
+        if not l: return None
+        return l.GetValue()
+
     def get(self, name):
         try:
             datum = self.__dict__['_'+name]
