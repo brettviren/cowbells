@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 '''
 Describe shapes.
+
+These generally mimic the calling patterns of the G4 "solid"
+equivalents.  For example, as documented here:
+
+http://geant4.web.cern.ch/geant4/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/Detector/geomSolids.html
+
+Everything supported here needs a chunk in make_solid() in Json2G4.cc
+
 '''
 import math
 import rotpos
@@ -41,6 +49,14 @@ class Box(Shape):
 class Tubs(Shape):
     def __init__(self, name, rmax, dz, rmin=0.0, sphi=0.0, dphi=math.pi*2*units.radian):
         super(Tubs, self).__init__(name, rmax=rmax, dz=dz, rmin=rmin, sphi=sphi, dphi=dphi)
+
+class Sphere(Shape):
+    def __init__(self, name, rmax, rmin=0.0, 
+                 sphi=0.0, dphi=math.pi*2.0*units.radian, 
+                 stheta=0.0, dtheta=math.pi*units.radian):
+        super(Sphere, self).__init__(name, rmax=rmax, rmin=rmin, 
+                                     sphi=sphi, dphi=dphi,stheta=stheta,dtheta=dtheta)
+        
 
 class Polycone(Shape):
     def __init__(self, name, zplane, rinner, router, sphi=0.0, dphi=math.pi*2*units.radian):

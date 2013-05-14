@@ -175,6 +175,8 @@ configuration file.
 
  - =materials= :: list of aggregations of elements or other materials
 
+ - =shapes= :: list of shapes used for creating volumes
+
  - =volumes= :: list of logical volumes each bringing together a shape and a material
 
  - =placements= :: list of physical volumes each bringing together
@@ -189,10 +191,6 @@ configuration file.
                   (Geant4 sensitive detector) class with a logical
                   volume and a set of touchables.
 
-In addition there are several =cowbells.geom.volumes.Shape= classes
-that assist in defining a logical volume instance.  However, these
-have no explicit section and instead are subsumed into an element of
-the =volumes= list.
 
 *** Sensitive detectors
 

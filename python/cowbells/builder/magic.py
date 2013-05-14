@@ -34,14 +34,14 @@ Y-Z plane: sides run top-to-bottom inside face walls
 X-Y plane: faces fully span 
 
 '''
-import cowbells
+
 import base
-from cowbells.geom import materials, surfaces, sensitive
-from cowbells.geom.shapes import Boolean, Box, Tubs, Polycone
+from cowbells.geom import surfaces, sensitive
+from cowbells.geom.shapes import Boolean, Box, Tubs, Sphere
 from cowbells.geom.volumes import LogicalVolume
 from cowbells.geom.placements import PhysicalVolume
 
-from cowbells.units import inch, meter, mm, hbarc, degree
+from cowbells.units import inch, mm, hbarc, degree
 
 class Builder(base.Builder):
     default_params = {
@@ -58,7 +58,7 @@ class Builder(base.Builder):
 
         # The test tube.  Offset is how much it protrudes beyond the
         # plane of the lid.  >0 is downward.
-        'bulb_radius':  0.25*inch,
+        'bulb_radius':  5.0*mm,
         'bulb_offset': 1.0*mm,
 
         'window_diameter' : 57.15*mm,
@@ -82,6 +82,7 @@ class Builder(base.Builder):
         'Side': 'ABS',
         'Base': 'ABS',
         'Window' : 'Acrylic',
+        'Bulb': 'Air',
         'PhotoCathode': 'Bialkali',
         'Sample': 'Water',
         }
@@ -123,13 +124,31 @@ class Builder(base.Builder):
                       matname = parts.PhotoCathode, shape = shape)
 
         
-        # Base (top/bottom)
-        shape = Box(self.shapename('Base'), 
+        # Base (bottom)
+        base_shape = Box(self.shapename('Base'), 
                     x=parms.inner_dx/2.0, 
                     y=parms.base_thickness/2.0,
                     z=parms.inner_dz/2.0)
         LogicalVolume(self.lvname('Base'), 
+                      matname = parts.Box, shape = base_shape)
+
+        # Top 
+        hole_shape = Tubs(self.shapename('BulbHole'),
+                              rmax = parms.bulb_radius,
+                              dz = parms.base_thickness)
+        shape = Boolean(self.shapename('LidWithHole'), 'subtraction', 
+                        base_shape, hole_shape, 
+                        pos = [0.0, 0.0, 0.0],
+                        rot = {'rotatex':90*degree})
+        LogicalVolume(self.lvname('Lid'),
                       matname = parts.Box, shape = shape)
+
+        # test tube
+        shape = Sphere(self.shapename('Bulb'),
+                       rmax = parms.bulb_radius)
+        LogicalVolume(self.lvname('Bulb'),
+                      matname = parts.Bulb, shape = shape)
+
 
         # Sides
         shape = Box(self.shapename('Side'),
@@ -178,13 +197,18 @@ class Builder(base.Builder):
                        pos = [0.0, self.win_offset, -0.5*(p.inner_dz + p.face_thickness)],
                        rot = {'rotatex':180*degree})
 
-        # Place base (top/bottom)
+        # Place bulb
+        PhysicalVolume(self.pvname('Bulb'),
+                       self.lvname('Bulb'), self.lvname('Sample'),
+                       pos = [0.0, 0.5*p.inner_dy + p.bulb_radius - p.bulb_offset, 0.0])
+
+        # Place lid/base
+        PhysicalVolume(self.pvname('Lid'),
+                       self.lvname('Lid'), self.lvname('Sample'),
+                       pos = [0.0, 0.5*(p.inner_dy + p.base_thickness), 0.0])
         PhysicalVolume(self.pvname('Bottom'),
                        self.lvname('Base'), self.lvname('Sample'),
                        pos = [0.0, -0.5*(p.inner_dy + p.base_thickness), 0.0])
-        PhysicalVolume(self.pvname('Top'),
-                       self.lvname('Base'), self.lvname('Sample'),
-                       pos = [0.0, 0.5*(p.inner_dy + p.base_thickness), 0.0])
         
         # Place sides
         PhysicalVolume(self.pvname('SideP'),
@@ -197,10 +221,10 @@ class Builder(base.Builder):
         # Place faces
         PhysicalVolume(self.pvname('FaceP'),
                        self.lvname('Face'), self.lvname('Sample'),
-                       pos = [0, 0, 0.5*(p.inner_dy + p.face_thickness)])
+                       pos = [0, 0, 0.5*(p.inner_dz + p.face_thickness)])
         PhysicalVolume(self.pvname('FaceM'),
                        self.lvname('Face'), self.lvname('Sample'),
-                       pos = [0, 0, -0.5*(p.inner_dy + p.face_thickness)])
+                       pos = [0, 0, -0.5*(p.inner_dz + p.face_thickness)])
 
         self._surface()
 

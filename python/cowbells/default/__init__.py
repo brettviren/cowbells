@@ -69,7 +69,7 @@ def optical():
     '''
     # geom.optical.MaterialProperty('Air', 'RINDEX', x=[1.329,1.425], y=[1.0,1.0])
 
-    for matname in ['water','wbls','acrylic','bialkali','scintillator']:
+    for matname in ['water','wbls','acrylic','bialkali','scintillator','air']:
         exec ('import %s' % matname)
         mod = eval (matname)
         mod.optical()

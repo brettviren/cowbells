@@ -8,6 +8,7 @@
 #include <G4Tubs.hh>
 #include <G4Polycone.hh>
 #include <G4Box.hh>
+#include <G4Sphere.hh>
 #include <G4PVPlacement.hh>
 #include <G4RotationMatrix.hh>
 #include <G4OpticalSurface.hh>
@@ -288,6 +289,11 @@ G4VSolid* make_solid(Json::Value v)
     if (type == "tubs") {
         return new G4Tubs(name, get_num(v["rmin"]), get_num(v["rmax"]),
                           get_num(v["dz"]),get_num(v["sphi"]), get_num(v["dphi"], 2*M_PI*radian));
+    }
+    if (type == "sphere") {
+	return new G4Sphere(name, get_num(v["rmin"]), get_num(v["rmax"]), 
+			    get_num(v["sphi"]), get_num(v["dphi"]),
+			    get_num(v["stheta"]), get_num(v["dtheta"]));
     }
     if (type == "polycone") {
         if (!v["zplane"].isNull()) {
