@@ -94,7 +94,7 @@ Cowbells::DataRecorder* Cowbells::DataRecorder::Get()
 void Cowbells::DataRecorder::close()
 {
     if (!m_file) return;
-    cerr << "Closing \"" << m_file->GetName() << endl;
+    cerr << "Closing \"" << m_file->GetName() << "\"" << endl;
     m_file->cd();
     m_tree->Write();            // redundant?
     //m_file->Close();

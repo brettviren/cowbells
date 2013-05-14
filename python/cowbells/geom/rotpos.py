@@ -9,7 +9,7 @@ def pod(rot, pos):
     ret = {}
     if rot:            # dictionary
         newrot = {}
-        for k,v in self.rot.items():
+        for k,v in rot.items():
             newrot[k] = '%f *radian' % (v/units.radian)
         ret['rot'] = newrot
     if pos:

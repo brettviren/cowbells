@@ -659,7 +659,7 @@ int Cowbells::Json2G4::sensitive(Json::Value sens)
         cout << "Registered SD \"" << csd->GetName() 
              << "\" with logical volume \"" << lvname << "\" and touchables:" << endl;
         for (int itouch=0; itouch<ntouchables; ++itouch) {
-            cerr << "\t#" << ind << ": " << touchables[itouch].asString();
+            cerr << "\t#" << ind << ": " << touchables[itouch].asString() << endl;
         }
         cerr << endl;
         

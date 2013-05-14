@@ -26,7 +26,8 @@ Cowbells::SensitiveDetector::SensitiveDetector(const std::string& name,
     , fHC(0)
 {
     collectionName.insert(hitsname); // stupid interface....
-    //cout << "SensitiveDetector(" <<name<< "," << hitsname << ")" << endl;
+    cout << "SensitiveDetector(" <<name<< "," << hitsname
+	 << ", " << touchables.size() << ")" << endl;
 
     for (size_t ind=0; ind<touchables.size(); ++ind) {
         string tname = touchables[ind];
@@ -99,7 +100,7 @@ bool pass_qe(G4Track* track)
 
     G4MaterialPropertiesTable* mattab = mat->GetMaterialPropertiesTable();
     if (!mattab) {
-        cerr << "Fail QE due to not material property in " << mat->GetName() << endl;
+        cerr << "Fail QE due to no material property table for " << mat->GetName() << endl;
         assert(mattab);
         return false;
     }
@@ -183,7 +184,8 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
 
     hit->setEnergy(track->GetTotalEnergy());
     hit->setTime(track->GetGlobalTime());
-    cerr << "Hit time: " << hit->time() << endl;
+    cerr << "Hit on: [" << hcid << ":" << id << "] at " 
+	 << setiosflags(ios::fixed) << setprecision(2) << hit->time() << " ns (" << tname << ")" <<  endl;
     hit->setPos(pos.x(),pos.y(),pos.z());
     hit->setVolId(id);
     const G4ParticleDefinition* pd = track->GetParticleDefinition();

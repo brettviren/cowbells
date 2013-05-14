@@ -28,7 +28,7 @@ class Builder(base.Builder):
     # map part to material
     default_parts = {
         'Scintillator': 'Scintillator',
-        'PhotoCathode': 'Glass',
+        'PhotoCathode': 'Bialkali',
         }
 
     def basename(self):

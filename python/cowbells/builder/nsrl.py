@@ -19,12 +19,13 @@ between the tub centers.
 
 '''
 
-import base, world, tubdet, triggercounter, beamwindow
+from collections import namedtuple
+import base, world, tubdet, magic, triggercounter, beamwindow
 from cowbells.geom.placements import PhysicalVolume
 
-from cowbells.units import meter, cm, degree
+from cowbells.units import meter, cm, degree, mm
 
-class Builder(base.Builder):
+class Builder_12c(base.Builder):
     default_params = {
         'sample1': 'Water',
         'sample2': 'Water',
@@ -87,3 +88,75 @@ class Builder(base.Builder):
         for b in self.builders:
             b.sensitive()
 
+class Builder_13a(base.Builder):
+
+    default_params = {
+        'sample': 'Water',
+
+        # as read off Assembly1-2.idw using inner_z as scale
+        'trigger_counter_downstream_offset': 523*mm,
+        'trigger_counter_upstream_offset': 504*mm,
+
+        # Position of magic box detector center w.r.t. nominal beam
+        'magic_beam_offset': -28.89*mm,
+
+        # Position of beam window w.r.t. the magic box center
+        'beamwindow_offset': -5*meter,
+
+        }
+
+    def make_logical_volumes(self):
+        'Create the builders and their top logical volumes'
+
+        Quad = namedtuple('Quad','world beamwindow triggercounter magic')
+        self. builders = Quad(world.Builder(),
+                              beamwindow.Builder(),
+                              triggercounter.Builder(),
+                              magic.Builder())
+        self.lvs = Quad(*[b.top() for b in self.builders])
+        return self.lvs[0]
+
+    def place(self):
+        'Place top logical volumes'
+        p = self.pp()[0]
+
+        
+        self.lvs.world
+
+        # Beam window
+        PhysicalVolume(self.lvs.beamwindow.name.replace('lv','pv',1),
+                       self.lvs.beamwindow, self.lvs.world,
+                       pos = [0.0, 0.0, p.beamwindow_offset])
+
+        # downstream trigger counter
+        PhysicalVolume(self.lvs.triggercounter.name.replace('lv','pv',1),
+                       self.lvs.triggercounter, self.lvs.world,
+                       pos = [0.0, 0.0, p.trigger_counter_downstream_offset],
+                       copy = 1)
+
+        # upstream trigger counter
+        PhysicalVolume(self.lvs.triggercounter.name.replace('lv','pv',1),
+                       self.lvs.triggercounter, self.lvs.world,
+                       pos = [0.0, 0.0, -p.trigger_counter_upstream_offset],
+                       copy = 2)
+                       
+        # magic box detector
+        PhysicalVolume(self.lvs.magic.name.replace('lv','pv',1),
+                       self.lvs.magic, self.lvs.world,
+                       pos = [0.0, p.magic_beam_offset, 0.0])
+
+        for b in self.builders:
+            b.place()
+
+        return
+
+    def sensitive(self):
+        for b in self.builders:
+            b.sensitive()
+    pass
+
+
+def Builder(experiment):
+    if experiment.lower() in ["12c"]:
+        return Builder_12c()
+    return Builder_13a()

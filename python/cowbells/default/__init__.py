@@ -43,6 +43,7 @@ def materials():
     m('Scintillator', 1.032*gpercm3, elelist=[('C',9), ('H',10)])
     m('Bialkali', 0.1*gpercm3, elelist=[('Na',0.375), ('K',0.1875), ('Cs',0.1875), ('Sb',0.25)])
     m('TCBialkali', 0.1*gpercm3, elelist=[('Na',0.375), ('K',0.1875), ('Cs',0.1875), ('Sb',0.25)])
+    m('ABS', 1.04*gpercm3, elelist=[('C',15), ('H',17), ('N',1)])
 
     # 1% Water-based Liquid Scintillator
     m('WBLS01', 0.9945*gpercm3, elelist = [('H', 0.1097),

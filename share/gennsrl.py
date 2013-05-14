@@ -2,8 +2,6 @@
 '''
 Main program for generating the NSRL setup
 '''
-import argparse
-
 from cowbells import geom, default
 
 default.all()
@@ -11,8 +9,8 @@ from cowbells.builder import nsrl
 
 
 
-def gen():
-    b = nsrl.Builder()
+def gen(experiment):
+    b = nsrl.Builder(experiment)
     worldlv = b.top()
     #print 'Placing world volume: %s' % worldlv.name
     geom.placements.PhysicalVolume('pvWorld',worldlv)    
@@ -25,9 +23,13 @@ def write(outfile):
     fp.close()
 
 def main(args):
-    gen()
-    write(args[0])
+    gen(args[0])
+    write(args[1])
 
 if '__main__' == __name__:
     import sys
+    if len(sys.argv[1:]) != 2:
+        print 'gennsrl.py <run name> <outputfile.json>'
+        sys.exit(1)
+
     main(sys.argv[1:])
