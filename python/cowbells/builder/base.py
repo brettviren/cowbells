@@ -3,6 +3,7 @@
 Base for a generator and  builder of geometry
 '''
 from cowbells.geom import materials
+from cowbells.utils import divine_cast
 
 class Struct:
     def __init__(self, **entries): 
@@ -27,18 +28,25 @@ class Builder(object):
         used = set()
         for k,v in params.items():
             if k in self.params.keys():
+                v = divine_cast(v)
                 self.params[k] = v
+                print 'Adding param %s = %s (%s)' % (k,v,type(v))
                 used.add(k)
             
         self.parts = dict(self.default_parts)
         for k,v in params.items():
             if k in self.parts.keys():
+                v = divine_cast(v)
                 self.parts[k] = v
+                print 'Adding part %s = %s (%s)' % (k,v,type(v))
                 used.add(k)
 
         unused = set(params.keys()).difference(used)
         if unused:
-            print 'Warning: unknown builder arguments in Builder "%s": %s' % (self.basename(), unused)
+            err = 'unknown builder arguments in Builder "%s": %s' % \
+                (self.basename(), ', '.join(unused))
+            raise ValueError, err
+
 
         # check all needed materials are defined
         for part,mat in self.parts.items():

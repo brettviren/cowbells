@@ -37,10 +37,13 @@ class Builder_12c(base.Builder):
         'bw_offset': -5*meter,
         'td_offset': 0*meter,
         'td_separation': 40*cm,
+
         }
 
     # no explicit parts
 
+    def basename(self):
+        return 'nsrl12c'
 
     def make_logical_volumes(self):
         p = self.pp()[0]
@@ -103,16 +106,23 @@ class Builder_13a(base.Builder):
         # Position of beam window w.r.t. the magic box center
         'beamwindow_offset': -5*meter,
 
+        # Reflectivity of the sample/box wall surface
+        'reflectivity': 0.02,
         }
+
+    def basename(self):
+        return 'nsrl13a'
 
     def make_logical_volumes(self):
         'Create the builders and their top logical volumes'
+
+        p = self.pp()[0]
 
         Quad = namedtuple('Quad','world beamwindow triggercounter magic')
         self. builders = Quad(world.Builder(),
                               beamwindow.Builder(),
                               triggercounter.Builder(),
-                              magic.Builder())
+                              magic.Builder(reflectivity=p.reflectivity))
         self.lvs = Quad(*[b.top() for b in self.builders])
         return self.lvs[0]
 
@@ -156,7 +166,7 @@ class Builder_13a(base.Builder):
     pass
 
 
-def Builder(experiment):
+def Builder(experiment, **kwds):
     if experiment.lower() in ["12c"]:
-        return Builder_12c()
-    return Builder_13a()
+        return Builder_12c(**kwds)
+    return Builder_13a(**kwds)

@@ -184,8 +184,8 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
 
     hit->setEnergy(track->GetTotalEnergy());
     hit->setTime(track->GetGlobalTime());
-    cerr << "Hit on: [" << hcid << ":" << id << "] at " 
-	 << setiosflags(ios::fixed) << setprecision(2) << hit->time() << " ns (" << tname << ")" <<  endl;
+//    cerr << "Hit on: [" << hcid << ":" << id << "] at " 
+//	 << setiosflags(ios::fixed) << setprecision(2) << hit->time() << " ns (" << tname << ")" <<  endl;
     hit->setPos(pos.x(),pos.y(),pos.z());
     hit->setVolId(id);
     const G4ParticleDefinition* pd = track->GetParticleDefinition();

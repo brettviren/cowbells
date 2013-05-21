@@ -9,8 +9,8 @@ from cowbells.builder import nsrl
 
 
 
-def gen(experiment):
-    b = nsrl.Builder(experiment)
+def gen(experiment, **kwds):
+    b = nsrl.Builder(experiment, **kwds)
     worldlv = b.top()
     #print 'Placing world volume: %s' % worldlv.name
     geom.placements.PhysicalVolume('pvWorld',worldlv)    
@@ -22,14 +22,33 @@ def write(outfile):
     fp.write(geom.dumps_json())
     fp.close()
 
-def main(args):
-    gen(args[0])
-    write(args[1])
+def main(runname, outfile, **kwds):
+    gen(runname,**kwds)
+    write(outfile)
+
+def argv2kwds(*args):
+    kwds = dict()
+    for arg in args:
+        try:
+            k,v = arg.split('=')
+        except ValueError:
+            print 'Not in key=val form: "%s"' % arg
+            raise
+        kwds[k] = v
+
+    return kwds
 
 if '__main__' == __name__:
     import sys
-    if len(sys.argv[1:]) != 2:
-        print 'gennsrl.py <run name> <outputfile.json>'
-        sys.exit(1)
 
-    main(sys.argv[1:])
+    try:
+        runname = sys.argv[1]
+        outfile = sys.argv[2]
+        kwdargs = sys.argv[3:]
+    except IndexError:
+        print 'Failed to parse arguments'
+        print 'gennsrl.py <run name> <outputfile.json> [key=val ...]'
+        raise
+
+    kwds = argv2kwds(*kwdargs)
+    main(runname, outfile, **kwds)
