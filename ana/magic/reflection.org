@@ -1,0 +1,115 @@
+
+Look at reflection in the magic box
+
+* What
+
+This collects some studies on reflection in the "magic box" detector.  The code used here is in [[./reflection.py]] and leverages the =cowbells.ana.magic= module.
+
+Use this later:
+
+#+name: fig_wrap
+#+BEGIN_SRC python :var data="" :var width="\\textwidth" :results output
+  print data.format(width=width)
+#+END_SRC
+
+
+* Magic box with 2GeV protons and water, look at reflections :wbls:magicbox:reflection:
+
+Simulation output generated with: [[file:~/work/wbls/refactor/cowbells/share/gen-nsrl-reflections.sh::pushd%20$base][gen-nsrl-reflections.sh]]
+
+1000 events at varying  reflection coefficients for water-ABS surface.
+
+** Number of hits in upstream and downstream PMTs
+
+
+|------+--------+--------|
+| ref% |   u.s. |    d.s |
+|------+--------+--------|
+|    0 |      7 |  33672 |
+|    2 |    135 |  34774 |
+|    5 |    444 |  36347 |
+|   10 |    312 |  38340 |
+|   25 |   2585 |  45275 |
+|   50 |  14062 |  57257 |
+|  100 | 125145 | 116606 |
+|------+--------+--------|
+
+** Hits per event
+
+#+NAME: hits-plots
+#+BEGIN_SRC python :exports none
+  import reflections
+  return reflections.plot_hits()
+#+END_SRC
+
+#+NAME: hits-latex
+#+BEGIN_SRC python :wrap LATEX :var plots=hits-plots :exports results
+  import reflections
+  return reflections.spit_org_figures(plots, 'latex')
+#+END_SRC
+
+#+RESULTS: hits-latex
+#+BEGIN_LATEX
+\includegraphics[width=0.8\textwidth]{./images/reflection-hits-000.pdf}
+Nhits per event with reflection at 0%
+\includegraphics[width=0.8\textwidth]{./images/reflection-hits-100.pdf}
+Nhits per event with reflection at 100%
+#+END_LATEX
+
+#+NAME: hits-org
+#+BEGIN_SRC python :wrap DRAWER :var plots=hits-plots :results raw verbatim :exports none
+  import reflections
+  return reflections.spit_org_figures(plots, 'org')
+#+END_SRC
+
+#+RESULTS: hits-org
+#+BEGIN_DRAWER
+[[./images/reflection-hits-000.svg]]
+Nhits per event with reflection at 0%
+
+[[./images/reflection-hits-100.svg]]
+Nhits per event with reflection at 100%
+#+END_DRAWER
+
+** Timing structure.
+
+Look at timing structure as we vary strength of reflection.
+
+
+#+NAME: timing-plots
+#+BEGIN_SRC python :exports none
+  import reflections
+  return reflections.plot_timing()
+#+END_SRC
+
+#+NAME: timing-latex
+#+BEGIN_SRC python :wrap LATEX :var plots=timing-plots :exports results
+  import reflections
+  return reflections.spit_org_figures(plots, 'latex')
+#+END_SRC
+
+#+RESULTS: timing-latex
+#+BEGIN_LATEX
+\includegraphics[width=0.8\textwidth]{./images/reflection-timing-000.pdf}
+\begin{center}Reflection = 0%\end{center}
+\includegraphics[width=0.8\textwidth]{./images/reflection-timing-100.pdf}
+\begin{center}Reflection = 100%\end{center}
+#+END_LATEX
+
+
+
+#+NAME: timing-org
+#+BEGIN_SRC python :wrap DRAWER :var plots=timing-plots :results raw verbatim :exports none
+  import reflections
+  return reflections.spit_org_figures(plots, 'org')
+#+END_SRC
+
+#+RESULTS: timing-org
+#+BEGIN_DRAWER
+[[./images/reflection-timing-000.svg]]
+Reflection = 0%
+
+[[./images/reflection-timing-100.svg]]
+Reflection = 100%
+#+END_DRAWER
+
