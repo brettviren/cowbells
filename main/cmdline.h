@@ -27,7 +27,7 @@ struct Arg: public option::Arg
 
 };
 
-enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oMODULES, oUI, oKIN, oPHYS, oNEVENTS };
+enum optionIndex { oUNKNOWN, oHELP, oOUTPUT, oMODULES, oUI, oKIN, oPHYS, oNEVENTS, oSEED };
 const option::Descriptor usage[] = 
 {
     {oUNKNOWN, 0, "", "", Arg::None, 
@@ -53,6 +53,9 @@ const option::Descriptor usage[] =
 
     {oNEVENTS, 0, "n", "nevents", Arg::Required,
      "  --nevents, -n <#events>\tSet the number of events to generate"},
+
+    {oSEED, 0, "s", "seed", Arg::Required,
+     "  --seed, -s <seed>\tSeed the random number generator"},
 
     {0,0,0,0,0,0}
 };

@@ -1,0 +1,25 @@
+Look at a high statistics sample.
+
+* What
+
+Generate multi-10k of events using [[file:~/work/wbls/refactor/cowbells/share/gen-nsrl-histat.sh][gen-nsrl-histat.sh]] with 2%
+sample/ABS reflection.  Try to reproduce the high charge features that
+Chao observes in the data.
+
+See also [[./reflection.org]].
+
+* Downstream vs Upstream
+
+#+BEGIN_SRC python :exports code :results none
+  import histat
+  histat.generate_plots()  
+#+END_SRC
+
+#+BEGIN_LATEX
+\includegraphics[width=0.8\textwidth]{./images/histat-dsvus.pdf}
+#+END_LATEX
+
+#+BEGIN_DRAWER
+[[./images/histat-dsvus.svg]]
+#+END_DRAWER
+

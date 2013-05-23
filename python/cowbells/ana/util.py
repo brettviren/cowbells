@@ -2,9 +2,36 @@
 '''
 Some general utility code
 '''
+from glob import glob
+import ROOT
+def move_stats(h, x=0, y=0):
+    '''
+    Move stats box of histogram "h" by relative x/y amount.  Histogram
+    must already be Draw()n.
+    '''
+    h.Draw()                    # need to do this to make the initial stats box
+    ROOT.gPad.Update()
+    s = h.GetListOfFunctions().FindObject("stats").Clone('%s_stats'%h.GetName())
+    s.SetX1NDC(s.GetX1NDC() + x)
+    s.SetY1NDC(s.GetY1NDC() + y)
+    s.SetX2NDC(s.GetX2NDC() + x)
+    s.SetY2NDC(s.GetY2NDC() + y)
+    ROOT.gPad.Modified()
+    return s
 
+def make_file_tree(filename, treename = 'cowbells'):
+    'Return (file, tree) tuple'
+    tfile = ROOT.TFile.Open(filename)
+    tree = tfile.Get(treename)
+    return tfile, tree
 
-
+def make_file_chain(fileglob, treename = 'cowbells'):
+    'Return TChain made up of named tree from all files matching fileglob'
+    tree = ROOT.TChain(treename)
+    for filename in glob(fileglob):
+        tree.AddFile(filename)
+    return tree
+    
 class StringParams(object):
     '''
     A bag of string parameters.  When a paramter is retrieved from the

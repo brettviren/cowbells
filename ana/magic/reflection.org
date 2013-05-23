@@ -3,24 +3,15 @@ Look at reflection in the magic box
 
 * What
 
-This collects some studies on reflection in the "magic box" detector.  The code used here is in [[./reflection.py]] and leverages the =cowbells.ana.magic= module.
+This collects some simulation studies on reflection in the "magic box" detector.  
 
-Use this later:
+The plots here are generated with [[./reflections.py]], sub modules of the
+=cowbells.ana= Python module and using the trees produced by
+=cowbells.exe= via the [[file:~/work/wbls/refactor/cowbells/share/gen-nsrl-reflections.sh::pushd%20$base][gen-nsrl-reflections.sh]] script.
 
-#+name: fig_wrap
-#+BEGIN_SRC python :var data="" :var width="\\textwidth" :results output
-  print data.format(width=width)
-#+END_SRC
+Each file has 1000 events at varying  reflection coefficients for water-ABS surface.
 
-
-* Magic box with 2GeV protons and water, look at reflections :wbls:magicbox:reflection:
-
-Simulation output generated with: [[file:~/work/wbls/refactor/cowbells/share/gen-nsrl-reflections.sh::pushd%20$base][gen-nsrl-reflections.sh]]
-
-1000 events at varying  reflection coefficients for water-ABS surface.
-
-** Number of hits in upstream and downstream PMTs
-
+Total number of hits in 1000 events in upstream (u.s.) and downstream (d.s.) PMTs
 
 |------+--------+--------|
 | ref% |   u.s. |    d.s |
@@ -34,82 +25,65 @@ Simulation output generated with: [[file:~/work/wbls/refactor/cowbells/share/gen
 |  100 | 125145 | 116606 |
 |------+--------+--------|
 
-** Hits per event
 
-#+NAME: hits-plots
-#+BEGIN_SRC python :exports none
+* Hits per event
+
+Hits per event histograms are generated from the output trees with:
+
+#+BEGIN_SRC python :exports code :results none
   import reflections
-  return reflections.plot_hits()
+  reflections.generate_plots()  
 #+END_SRC
 
-#+NAME: hits-latex
-#+BEGIN_SRC python :wrap LATEX :var plots=hits-plots :exports results
+#+BEGIN_SRC python :wrap LATEX :exports results 
   import reflections
-  return reflections.spit_org_figures(plots, 'latex')
+  return reflections.format_latex()
 #+END_SRC
 
-#+RESULTS: hits-latex
+#+RESULTS:
 #+BEGIN_LATEX
-\includegraphics[width=0.8\textwidth]{./images/reflection-hits-000.pdf}
-Nhits per event with reflection at 0%
-\includegraphics[width=0.8\textwidth]{./images/reflection-hits-100.pdf}
-Nhits per event with reflection at 100%
+\includegraphics[width=0.49\textwidth]{./images/reflections-0_00-dsandus.pdf}%
+\includegraphics[width=0.49\textwidth]{./images/reflections-0_00-dsvus.pdf}%
+
+\includegraphics[width=0.49\textwidth]{./images/reflections-0_02-dsandus.pdf}%
+\includegraphics[width=0.49\textwidth]{./images/reflections-0_02-dsvus.pdf}%
+
+\includegraphics[width=0.49\textwidth]{./images/reflections-0_05-dsandus.pdf}%
+\includegraphics[width=0.49\textwidth]{./images/reflections-0_05-dsvus.pdf}%
+
+\includegraphics[width=0.49\textwidth]{./images/reflections-0_10-dsandus.pdf}%
+\includegraphics[width=0.49\textwidth]{./images/reflections-0_10-dsvus.pdf}%
+
+\includegraphics[width=0.49\textwidth]{./images/reflections-0_25-dsandus.pdf}%
+\includegraphics[width=0.49\textwidth]{./images/reflections-0_25-dsvus.pdf}%
+
+\includegraphics[width=0.49\textwidth]{./images/reflections-0_50-dsandus.pdf}%
+\includegraphics[width=0.49\textwidth]{./images/reflections-0_50-dsvus.pdf}%
+
+\includegraphics[width=0.49\textwidth]{./images/reflections-1_00-dsandus.pdf}%
+\includegraphics[width=0.49\textwidth]{./images/reflections-1_00-dsvus.pdf}%
 #+END_LATEX
 
-#+NAME: hits-org
-#+BEGIN_SRC python :wrap DRAWER :var plots=hits-plots :results raw verbatim :exports none
+#+BEGIN_SRC python :wrap DRAWER :exports none :results raw verbatim
   import reflections
-  return reflections.spit_org_figures(plots, 'org')
+  return reflections.format_org('dsandus')
 #+END_SRC
 
-#+RESULTS: hits-org
+#+RESULTS:
 #+BEGIN_DRAWER
-[[./images/reflection-hits-000.svg]]
-Nhits per event with reflection at 0%
-
-[[./images/reflection-hits-100.svg]]
-Nhits per event with reflection at 100%
-#+END_DRAWER
-
-** Timing structure.
-
-Look at timing structure as we vary strength of reflection.
-
-
-#+NAME: timing-plots
-#+BEGIN_SRC python :exports none
-  import reflections
-  return reflections.plot_timing()
-#+END_SRC
-
-#+NAME: timing-latex
-#+BEGIN_SRC python :wrap LATEX :var plots=timing-plots :exports results
-  import reflections
-  return reflections.spit_org_figures(plots, 'latex')
-#+END_SRC
-
-#+RESULTS: timing-latex
-#+BEGIN_LATEX
-\includegraphics[width=0.8\textwidth]{./images/reflection-timing-000.pdf}
-\begin{center}Reflection = 0%\end{center}
-\includegraphics[width=0.8\textwidth]{./images/reflection-timing-100.pdf}
-\begin{center}Reflection = 100%\end{center}
-#+END_LATEX
-
-
-
-#+NAME: timing-org
-#+BEGIN_SRC python :wrap DRAWER :var plots=timing-plots :results raw verbatim :exports none
-  import reflections
-  return reflections.spit_org_figures(plots, 'org')
-#+END_SRC
-
-#+RESULTS: timing-org
-#+BEGIN_DRAWER
-[[./images/reflection-timing-000.svg]]
-Reflection = 0%
-
-[[./images/reflection-timing-100.svg]]
-Reflection = 100%
+[[./images/reflections-0_00-dsandus.svg]]
+[[./images/reflections-0_02-dsandus.svg]]
+[[./images/reflections-0_05-dsandus.svg]]
+[[./images/reflections-0_10-dsandus.svg]]
+[[./images/reflections-0_25-dsandus.svg]]
+[[./images/reflections-0_50-dsandus.svg]]
+[[./images/reflections-1_00-dsandus.svg]]
+[[./images/reflections-0_00-dsvus.svg]]
+[[./images/reflections-0_02-dsvus.svg]]
+[[./images/reflections-0_05-dsvus.svg]]
+[[./images/reflections-0_10-dsvus.svg]]
+[[./images/reflections-0_25-dsvus.svg]]
+[[./images/reflections-0_50-dsvus.svg]]
+[[./images/reflections-1_00-dsvus.svg]]
 #+END_DRAWER
 

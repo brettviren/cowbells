@@ -4,24 +4,14 @@ Make some plots.
 
 This is meant to be used from an org file
 '''
+
+FAIL: these plots are bogus
+
 import cowbells
+from cowbells.ana.util import move_stats
+
 ROOT = cowbells.ROOT
 
-def move_stats(h, x=0, y=0):
-    '''
-    Move stats box of histogram "h" by relative x/y amount.  Histogram
-    must already be Draw()n.
-    '''
-    h.Draw()                    # need to do this to make the initial stats box
-    ROOT.gPad.Update()
-    s = h.GetListOfFunctions().FindObject("stats").Clone('%s_stats'%h.GetName())
-    s.SetX1NDC(s.GetX1NDC() + x)
-    s.SetY1NDC(s.GetY1NDC() + y)
-    s.SetX2NDC(s.GetX2NDC() + x)
-    s.SetY2NDC(s.GetY2NDC() + y)
-    ROOT.gPad.Modified()
-    return s
-    
 def plot_hits(tree, canvas, outbase):
     '''
     Plot number of hits per event in each PMT
@@ -107,7 +97,32 @@ def plot_timing(tree, canvas, outbase):
     return None
 
 
-def make_file_tree(filename, treename = 'cowbells'):
-    tfile = ROOT.TFile.Open(filename)
-    tree = tfile.Get(treename)
-    return tfile, tree
+def plot_dsus(tree, canvas, outbase):
+    'Plot downstream vs upstream'
+    canvas.SetLogx(False)
+    canvas.SetLogy(False)
+    canvas.SetLogz(False)
+
+    dsus = ROOT.TH2D("dsus","Nhits Downstream vs Upstream",
+                     100, 0, 100, 100, 0, 100)
+
+    #event = ROOT.Cowbells.Event()
+    #tree.SetBranchAddress('event', event)
+
+    for t in tree:
+        nds = nus = 0
+        for hit in t.event.hc:
+            if hit.hcId() != 1:
+                continue
+            if hit.volId()==0:                
+                nds += 1
+            if hit.volId()==1:
+                nus += 1
+        dsus.Fill(nus,nds,1.0)
+
+    dsus.Draw("colz")
+    
+    for ext in ['svg','png','pdf']:
+        canvas.Print('%s.%s' % (outbase, ext))
+    return dsus
+

@@ -12,6 +12,7 @@
 #include "Cowbells/SteppingAction.h"
 #include "Cowbells/strutil.h"
 
+#include "Randomize.hh"
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
 
@@ -127,6 +128,13 @@ int main(int argc, char *argv[])
         j2g4.add_file(fname);
     }
     j2g4.read();
+
+    G4long seed = 0xDEADBEAF;
+    if (opt(oSEED)) {
+        seed = atol(opt(oSEED));
+    }
+    cout << "Seeding the random number generator with " << seed << endl;
+    G4Random::setTheSeed(seed);	// access via G4 CPP macro
 
     G4RunManager rm;
     
