@@ -122,7 +122,8 @@ class Builder_13a(base.Builder):
         self. builders = Quad(world.Builder(),
                               beamwindow.Builder(),
                               triggercounter.Builder(),
-                              magic.Builder(reflectivity=p.reflectivity))
+                              magic.Builder(reflectivity=p.reflectivity,
+                                            Sample=p.sample))
         self.lvs = Quad(*[b.top() for b in self.builders])
         return self.lvs[0]
 

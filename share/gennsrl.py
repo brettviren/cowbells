@@ -34,6 +34,7 @@ def argv2kwds(*args):
         except ValueError:
             print 'Not in key=val form: "%s"' % arg
             raise
+        print 'Passing %s=%s' % (k,v)
         kwds[k] = v
 
     return kwds
