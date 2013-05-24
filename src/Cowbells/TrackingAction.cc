@@ -3,6 +3,8 @@
 
 #include "G4Track.hh"
 #include "G4VProcess.hh"
+#include "G4TrackingManager.hh"
+
 
 #include <iostream>		// debugging
 
@@ -36,10 +38,10 @@ void Cowbells::TrackingAction::PostUserTrackingAction(const G4Track* track)
 	procname = proc->GetProcessName();
     }
 
-    std::cout << "PUTA: " << ptid << ", " << ppdg << ", " 
-	      << ptype << ", " << psubtype << " "
-	      << procname
-	      << std::endl;
+    // std::cout << "PUTA: " << ptid << ", " << ppdg << ", " 
+    // 	      << ptype << ", " << psubtype << " "
+    // 	      << procname
+    // 	      << std::endl;
     info->set(ptid, ppdg, ptype, psubtype);
 
     // http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch06s03.html
@@ -51,5 +53,19 @@ void Cowbells::TrackingAction::PostUserTrackingAction(const G4Track* track)
     // translation: we have permission to do the following
     G4Track* modifiable = const_cast<G4Track*>(track);
     modifiable->SetUserInformation(info);
+
+    // pass on down to daughters
+    G4TrackVector* daughters = fpTrackingManager->GimmeSecondaries();
+    if (!daughters) {
+	return;
+    }
+
+    size_t ndaughters = daughters->size();
+    for (size_t ind=0; ind<ndaughters; ++ind) {
+	Cowbells::TrackInformation* di = new Cowbells::TrackInformation(info);
+	(*daughters)[ind]->SetUserInformation(di);
+    }
+
+
 }
 

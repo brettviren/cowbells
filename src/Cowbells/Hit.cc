@@ -6,7 +6,7 @@ using namespace std;
 Cowbells::Hit::Hit()
     : t(0), x(0), y(0), z(0), e(0)
     , volid(0), hcid(0)
-    , pdg(0), pcode(0)
+    , pdg(0), ptype(0), psubtype(0)
 
 {
 }
@@ -77,12 +77,20 @@ void Cowbells::Hit::setEnergy(double _e)
 {
     e = _e;
 }
-int Cowbells::Hit::pCode()
-{
-    return pcode;
-}
 
-void Cowbells::Hit::setpCode(int code)
+int Cowbells::Hit::pType()
 {
-    pcode = code;
+    return ptype;
+}
+void Cowbells::Hit::setpType(int t)
+{
+    ptype = t;
+}
+int Cowbells::Hit::pSubType()
+{
+    return psubtype;
+}
+void Cowbells::Hit::setpSubType(int t)
+{
+    psubtype = t;
 }

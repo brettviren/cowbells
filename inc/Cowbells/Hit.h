@@ -19,14 +19,6 @@
 #include <vector>
 
 namespace Cowbells {
-
-    enum ProductionCode {
-	unknown = 0,
-	ceren,			// Cherenkov
-	scint,			// Scintillation (directly from edep)
-	reem,			// Light absorption/re-emission
-    };
-
     class Hit {
     public:
         Hit();
@@ -55,14 +47,25 @@ namespace Cowbells {
         double energy();
         void setEnergy(double e);
 
-	// ProductionCode saying how the photon was produced
-	int pCode();
-	void setpCode(int code);
+	// Production type, subtype.  Some possibilities:
+	// 2, 21 Cerenkov
+	// 2, 22 Scintillation
+	// 3, 34 OpWLS
+	// 2, 12 phot
+	// 2, 13 compt
+	// 2, 2 eIoni
+	// 2, 2 hIoni
+	// 2, 3 eBrem
+	int pType();
+	void setpType(int t);
+
+	int pSubType();
+	void setpSubType(int st);
 
     private:
         double t, x, y, z, e;	// time, global position and energy
         int volid, hcid;	// Volume and hit collection IDs
-	int pdg, pcode;	   // Parent PDG ID and production mechanism code
+	int pdg, ptype, psubtype; // Parent PDG ID and production mechanism type/subtype
     };
 
     class GHit : public G4VHit 

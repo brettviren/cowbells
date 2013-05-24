@@ -1,5 +1,6 @@
 
 #include "Cowbells/SensitiveDetector.h"
+#include "Cowbells/TrackInformation.h"
 
 #include <G4Step.hh>
 #include <G4SDManager.hh>
@@ -193,9 +194,18 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
 //	 << setiosflags(ios::fixed) << setprecision(2) << hit->time() << " ns (" << tname << ")" <<  endl;
     hit->setPos(pos.x(),pos.y(),pos.z());
     hit->setVolId(id);
-    const G4ParticleDefinition* pd = track->GetParticleDefinition();
-    hit->setPdgId(pd->GetPDGEncoding());
     hit->setHcId(hcid);
+
+    Cowbells::TrackInformation* info 
+	= dynamic_cast<Cowbells::TrackInformation*>(track->GetUserInformation());
+    if (info) {
+	hit->setPdgId(info->parent_pdg());
+	hit->setpType(info->process_type());
+	hit->setpSubType(info->process_subtype());
+    }
+    else {
+	cerr << "No user info for track " << track->GetTrackID() << endl;
+    }
 
     // cerr << "Hit: in "
     //      << " LV:" << lv->GetName() << " "
