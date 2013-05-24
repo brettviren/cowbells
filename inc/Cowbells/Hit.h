@@ -20,6 +20,13 @@
 
 namespace Cowbells {
 
+    enum ProductionCode {
+	unknown = 0,
+	ceren,			// Cherenkov
+	scint,			// Scintillation (directly from edep)
+	reem,			// Light absorption/re-emission
+    };
+
     class Hit {
     public:
         Hit();
@@ -40,7 +47,7 @@ namespace Cowbells {
         int hcId();
         void setHcId(int id);
 
-       // PDG particle id
+       // PDG particle id of the parent that produced the optical photon
         int pdgId();
         void setPdgId(int pid);
 
@@ -48,9 +55,14 @@ namespace Cowbells {
         double energy();
         void setEnergy(double e);
 
+	// ProductionCode saying how the photon was produced
+	int pCode();
+	void setpCode(int code);
+
     private:
-        double t, x, y, z, e;
-        int volid, pdg, hcid;
+        double t, x, y, z, e;	// time, global position and energy
+        int volid, hcid;	// Volume and hit collection IDs
+	int pdg, pcode;	   // Parent PDG ID and production mechanism code
     };
 
     class GHit : public G4VHit 

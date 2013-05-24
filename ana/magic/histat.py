@@ -1,18 +1,51 @@
 #!/usr/bin/env python
 
+from glob import glob
 import cowbells
+from util import OrgCanvasPrinter
 ROOT = cowbells.ROOT
-from cowbells.ana.util import make_file_chain, move_stats
 canvas = ROOT.TCanvas()
 
 data_dir = "/home/bviren/work/wbls/refactor/run/gen-nsrl-histat"
-input_glob = data_dir+'/13a-water-ref0.02-seq*.root'
+input_glob_pat = data_dir+'/13a-{sample}-ref0.02-energy{energy}-seq*.root'
+
+
+printer = OrgCanvasPrinter(canvas, './images/histat')
+
+
+def make_chain(sample, energy, limit = None):
+    '''
+    Make a tree chain from all files matching sample and energy.
+    
+    If limit given, limit to using the first <limit> files.
+    '''
+    pat = input_glob_pat.format(**locals())
+    tree = ROOT.TChain('cowbells')
+    files = sorted(glob(pat))
+    if limit:
+        files = files[:int(limit)]
+    print 'Chaining %d files matching %s' % (len(files), pat)
+    for fname in files:
+        tree.AddFile(fname)
+    return tree
+
 
 def generate_plots():
-    tree = make_file_chain(input_glob)
+    printed = []
+    printer.canvas.SetLogy(False)
+    for sample in ['Water','WBLS01']:
+        for energy in [475, 2000]:
+            tree = make_tree(sample, energy)
+            h = make_hits_per_event(tree)
+            h.Draw("colz")
+            printed += printer(h,'%s-%dMeV' % (sample, energy))
+            continue
+        continue
+    return printed
 
-    h_dsus = ROOT.TH2D("dsus","Nhits/Event Downstream vs Upstream",
-                       100,0,200, 100, 0, 200)
+def make_hits_per_event(tree):
+    hist = ROOT.TH2D("dsus","Nhits/Event Downstream vs Upstream",
+                     100,0,200, 100, 0, 200)
     for t in tree:
         nds = nus = 0
         for hit in t.event.hc:
@@ -23,14 +56,6 @@ def generate_plots():
             if hit.volId()==1:
                 nus += 1
             continue
-        h_dsus.Fill(nds,nus)
+        hist.Fill(nds,nus)
         continue
-    canvas.SetLogy(False)
-    h_dsus.Draw("colz")
-    printed = []
-    for ext in ['pdf','png','svg']:
-        outname = './images/histat-dsvus.' + ext
-        canvas.Print(outname, ext)
-        printed.append(outname)
-    return printed
-    
+    return hist

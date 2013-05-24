@@ -14,39 +14,9 @@ ROOT = cowbells.ROOT
 from cowbells.ana.util import make_file_tree, move_stats
 canvas = ROOT.TCanvas()
 
-class OrgCanvasPrinter(object):
-    def __init__(self, outbase='', exts = None):
-        '''
-        A canvas printer making file suitable for use by org-mode.
-
-        <outbase> should be a file path prefix which includes a label
-        indicating the general type of plots it will print (minus any
-        <variant>).
-        '''
-        self.canvas = canvas
-        self.outbase = outbase
-        self.exts = exts
-        if not self.exts: 
-            self.exts = ['png', 'svg', 'pdf']
-
-    def __call__(self, variant):
-        printed = []
-        for ext in self.exts:
-            name = self.outname(variant, ext)
-            self.canvas.Print(name,ext)
-            printed.append(name)
-        return printed
-
-    def outname(self, variant, ext = None):
-        name = self.outbase +'-'+ variant
-        if ext: name = name +'.'+ ext
-        return name
-
-    def set_outbase(self, refstr):
-        self.outbase = './images/reflections-%s' % refstr.replace('.','_')
-        return self.outbase
-
-printer = OrgCanvasPrinter()
+from util import OrgCanvasPrinter
+prefix_base = './images/reflections'
+printer = OrgCanvasPrinter(canvas, prefix_base)
 
 def generate_plots():
     printed = []
@@ -54,7 +24,7 @@ def generate_plots():
     for refstr, percent in zip(ref_strings, ref_percent):
         rootfile = ref_tree_pat % refstr
         file, tree = make_file_tree (rootfile)
-        printer.set_outbase(refstr)
+        printer.set_prefix(prefix_base + '13a-water-ref'+refstr)
         label = '%d percent' % percent
         printed += plot_hits_per_event(tree, label, printer)
         continue
@@ -168,18 +138,6 @@ def hist_hits_per_event(tree, label = '', bindesc=(100,0,200)):
         h_us.Fill(nus)
         continue
     return (h_ds, h_us, h_dsus)
-
-class CanvasPrinter(object):
-    '''
-    Canvas printer protocol requirements:
-
-     - callable taking a <variant> string returning a list of any files produced
-
-     - provides a .canvas data member holding the active TCanvas
-    
-    '''
-    def __call__(self, variant):
-        return None
 
 def plot_hits_per_event(tree, label, printer):
     '''

@@ -7,6 +7,7 @@
 #include "Cowbells/DetectorConstruction.h"
 #include "Cowbells/DataRecorder.h"
 #include "Cowbells/RunAction.h"
+#include "Cowbells/TrackingAction.h"
 #include "Cowbells/EventAction.h"
 #include "Cowbells/StackingAction.h"
 #include "Cowbells/SteppingAction.h"
@@ -183,6 +184,9 @@ int main(int argc, char *argv[])
     Cowbells::EventAction* ea = new Cowbells::EventAction();
     if (dr) { ea->set_recorder(dr); }
     rm.SetUserAction(ea);
+
+    Cowbells::TrackingAction* ta = new Cowbells::TrackingAction();
+    rm.SetUserAction(ta);
 
     Cowbells::StackingAction* sta = new Cowbells::StackingAction();
     if (dr) { sta->set_recorder(dr); }

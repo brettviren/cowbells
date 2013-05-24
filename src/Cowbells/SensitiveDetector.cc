@@ -5,6 +5,7 @@
 #include <G4SDManager.hh>
 #include <Randomize.hh>
 #include <G4Material.hh>
+#include <G4OpticalPhoton.hh>
 
 #include <cassert>
 #include <iostream>
@@ -132,12 +133,16 @@ bool pass_qe(G4Track* track)
 
 G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory* /*nada*/)
 {
-    // fixme: don't accept all particles, return false for the losers
+    G4Track* track = aStep->GetTrack();
 
+    // Reject all non-opticalphotons
+    if (track->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()) {
+	return true;
+    }
+    
     G4StepPoint* psp = aStep->GetPreStepPoint();
     CLHEP::Hep3Vector pos = psp->GetPosition();
     G4TouchableHandle touch = psp->GetTouchableHandle();
-    G4Track* track = aStep->GetTrack();
 
     if (!pass_qe(track)) { return true; }
 
