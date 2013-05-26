@@ -20,10 +20,10 @@ void Cowbells::TrackInformation::set(int parent_tid, int parent_pdg,
 
 Cowbells::TrackInformation::TrackInformation(const Cowbells::TrackInformation* other)
 {
-    set(other->parent_tid(),
-	other->parent_pdg(),
-	other->process_type(),
-	other->process_subtype());
+    set_parent_tid(other->parent_tid());
+    set_parent_pdg(other->parent_pdg());
+    set_process_type(other->process_type());
+    set_process_subtype(other->process_subtype());
 }
 
 Cowbells::TrackInformation::~TrackInformation()

@@ -22,14 +22,17 @@ namespace Cowbells {
 	int process_type() const { return processType; }
 	int process_subtype() const { return processSubType; }
 
+	void set_parent_tid(int tid) { parentTrackID = tid; }
+	void set_parent_pdg(int pdg) { parentPDGID = pdg; }
+	void set_process_type(int t) { processType = t; }
+	void set_process_subtype(int st) { processSubType = st; }
+
 	inline void *operator new(size_t);
 	inline void operator delete(void *info);
 
 	int operator ==(const Cowbells::TrackInformation& right) const {
 	    return (this==&right);
 	}
-
-
     };
 
     extern G4Allocator<Cowbells::TrackInformation> gsTrackInformationAllocator;

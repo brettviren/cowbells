@@ -33,9 +33,9 @@ do_seq () {
 }
 
 # Case matters on the sample material name
-do_seq 0.02 Water 475 {01..99} &
-do_seq 0.02 WBLS01 475 {01..99} &
-do_seq 0.02 Water 2000 {01..99} &
-do_seq 0.02 WBLS01 2000 {01..99} &
+# do_seq 0.02 Water 475 {01..99} &
+# do_seq 0.02 WBLS01 475 {01..99} &
+# do_seq 0.02 Water 2000 {01..99} &
+# do_seq 0.02 WBLS01 2000 {01..99} &
 
-
+do_seq 0.02 WBLS01 475 {01..01} &

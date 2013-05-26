@@ -48,14 +48,15 @@ namespace Cowbells {
         void setEnergy(double e);
 
 	// Production type, subtype.  Some possibilities:
-	// 2, 21 Cerenkov
-	// 2, 22 Scintillation
-	// 3, 34 OpWLS
-	// 2, 12 phot
-	// 2, 13 compt
 	// 2, 2 eIoni
 	// 2, 2 hIoni
 	// 2, 3 eBrem
+	// 2, 12 phot
+	// 2, 13 compt
+	// 2, 21 Cerenkov
+	// 2, 22 Scintillation
+	// 3, 34 OpWLS
+	// 4, 111 hadElastic
 	int pType();
 	void setpType(int t);
 
