@@ -1,0 +1,59 @@
+Look at step-level info
+
+* 2GeV protons in water
+
+#+BEGIN_SRC python :exports both :wrap LATEX
+filename = "/home/bviren/work/wbls/refactor/run/nsrl-13a-reflections/nsrl-13a-2gev-protons-water-10percent.hits-steps.root"
+import steps 
+tree = steps.make_tree(filename)
+files = steps.plot_xray(tree, [1,2,3, None], "images/steps/xray-water")
+return steps.format_list_latex(files)
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_LATEX
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-1.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-2.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-3.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-all.png}
+#+END_LATEX
+
+
+#+BEGIN_SRC python :exports both :wrap LATEX
+filename = "/home/bviren/work/wbls/refactor/run/nsrl-13a-wbls/nsrl-13a-2gev-protons-wbls01.hits-steps.root"
+import steps , util
+tree = steps.make_tree(filename)
+files =  steps.plot_xray(tree, [1,2,3, None], "images/steps/xray-wbls01")
+return util.format_list_latex(files)
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_LATEX
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-wbls01-1.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-wbls01-2.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-wbls01-3.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-wbls01-all.png}
+#+END_LATEX
+

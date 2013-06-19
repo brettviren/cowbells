@@ -221,6 +221,7 @@ static G4Material* get_mat(const G4MaterialTable& mattab, std::string matname)
     return 0;
 }
 
+
 int Cowbells::Json2G4::optical(Json::Value props)
 {
     const G4MaterialTable& mattab = *G4Material::GetMaterialTable();
@@ -248,6 +249,14 @@ int Cowbells::Json2G4::optical(Json::Value props)
             mpt->AddConstProperty(propname.c_str(), propval);
             cout << "Set " << matname << "/" << propname
                  << "[" << npoints << "] = " << propval << endl;
+
+	    //cerr << "Checking Birks for \"" << matname << "\"" << endl;
+	    if (propname == "BIRKS_CONSTANT") {
+		mat->GetIonisation()->SetBirksConstant(propval);
+		cerr << "Special setting of Birks constant on \"" << matname 
+		     << "\" ionization process to " << propval << endl;
+	    }
+
             continue;
         }
 

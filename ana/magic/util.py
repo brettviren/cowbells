@@ -53,3 +53,59 @@ class OrgCanvasPrinter(object):
         if ext: name = name +'.'+ ext
         return name
 
+def format_dict(dat, formatter = str.format, **kwds):
+    '''
+    Format all string values of the dict <dat> using its own values
+    but overridden by any <kwds> and with the given string
+    <formatter>.  Any <kwds> are applied but not copied into the
+    output.  Non-string values are passed through untouched.
+    '''
+
+    kwds = dict(kwds)
+    unformatted = dict(dat)
+    formatted = dict()
+
+    while unformatted:
+        changed = False
+        for k,v in unformatted.items():
+            if isinstance(v, basestring):
+                try:
+                    new_v = formatter(v, **kwds)
+                except KeyError:
+                    continue        # maybe next time
+            changed = True
+            formatted[k] = new_v
+            kwds[k] = new_v
+            unformatted.pop(k)
+            continue
+        if not changed:
+            break
+        continue
+    if unformatted:
+        formatted.update(unformatted)
+    return formatted
+
+
+class ParamPrinter(object):
+    def __init__(self, canvas, exts = ('png','svg','pdf'), **kwds):
+        self.canvas = canvas
+        self.exts = exts
+        self.vars = kwds
+        return
+        
+    def outname(self, **kwds):
+        flat = format_dict(self.vars, **kwds)
+        return flat['print_name']
+
+    def __call__(self, **kwds):
+        out = self.outname('print_name', **kwds)
+        for ext in self.exts:
+            self.canvas.Print(out + '.' + ext,ext)
+        return out
+            
+def format_list_latex(files):
+    lines = []
+    for file in files:
+        lines.append('\\pagebreak\n')
+        lines.append('\\includegraphics[width=\\textwidth]{%s}\n'%file)
+    return '\n'.join(lines)
