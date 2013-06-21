@@ -108,4 +108,5 @@ def format_list_latex(files):
     for file in files:
         lines.append('\\pagebreak\n')
         lines.append('\\includegraphics[width=\\textwidth]{%s}\n'%file)
-    return '\n'.join(lines)
+    parts = '\n'.join(lines)
+    return parts + '\n\\pagebreak\n'

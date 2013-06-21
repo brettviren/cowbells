@@ -1,0 +1,124 @@
+\documentclass[xcolor=dvipsnames]{beamer}
+
+\input{beamer-preamble}
+
+\begin{document}
+
+
+\title{Simulated 2 GeV Protons in Water and WBLS01 in ``magic box'' detector}
+\author{Brett Viren}
+\date{\today}
+\frame{\titlepage}
+
+\section{Generation}
+\label{sec:gen}
+
+\begin{frame}[fragile]
+  \frametitle{Running the Simulation}
+  Generate the configuration
+{\footnotesize
+\begin{verbatim}
+gennsrl.py 13a-water 13a-water.json sample=Water
+gennsrl.py 13a-wbls01 13a-wbls01.json sample=WBLS01
+\end{verbatim}
+}
+
+  Run G4
+
+{\tiny
+\begin{verbatim}
+cowbells.exe -m hits,steps -n 1000 -p em,op \
+  -k 'kin://beam?vertex=0,0,-5100&name=proton&direction=0,0,1&energy=2000' \
+  -o nsrl-13a-2gev-protons-water.hits-steps.1k.root 13a-water.json 
+cowbells.exe -m hits,steps -n 10 -p em,op \
+  -k 'kin://beam?vertex=0,0,-5100&name=proton&direction=0,0,1&energy=2000' \
+  -o nsrl-13a-2gev-protons-wbls01.hits-steps.1k.root 13a-wbls01.json
+\end{verbatim}
+}
+
+ Results:
+{\footnotesize
+\begin{verbatim}
+$ ls -sh
+645M nsrl-13a-2gev-protons-water.hits-steps.1k.root
+891M nsrl-13a-2gev-protons-wbls01.hits-steps.1k.root
+\end{verbatim}
+}
+\end{frame}
+
+\section{Event Displays}
+
+\begin{frame}[fragile]
+  \frametitle{Event displays}
+  \begin{itemize}
+  \item   All steps in water from one or many events:
+  \item Layout is like:
+  \end{itemize}
+
+  \begin{center}
+  \begin{tabular}[h]{|c|c|}
+    \hline
+    Z vs X & \\
+    \hline
+    Z vs Y & X vs Y \\
+    \hline
+  \end{tabular}
+  \end{center}
+  \begin{itemize}
+  \item First in water, then in WBLS
+  \end{itemize}
+
+\end{frame}
+
+\frame{\includegraphics[width=\textwidth]{images/steps/xray-water-0.png}}
+\frame{\includegraphics[width=\textwidth]{images/steps/xray-water-1.png}}
+\frame{\includegraphics[width=\textwidth]{images/steps/xray-water-2.png}}
+\frame{\includegraphics[width=\textwidth]{images/steps/xray-water-3.png}}
+\frame{\includegraphics[width=\textwidth]{images/steps/xray-water-4.png}}
+\frame{\includegraphics[width=\textwidth]{images/steps/xray-water-many.png}}
+
+\frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-0.png}}
+\frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-1.png}}
+\frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-2.png}}
+\frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-3.png}}
+\frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-4.png}}
+\frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-many.png}}
+
+\section{Hits per Energy Lost}
+
+\begin{frame}
+  \frametitle{PE/MeV in Water and WBLS01}
+  \includegraphics[width=\textwidth]{images/steps/water-wbls01-hits-per-mev.pdf}
+\end{frame}
+
+
+\section{Timing and Charge by Process Type}
+
+\frame{\includegraphics[width=\textwidth]{images/hits/water_timing_pmt0.pdf}}
+\frame{\includegraphics[width=\textwidth]{images/hits/water_timing_pmt1.pdf}}
+\frame{\includegraphics[width=\textwidth]{images/hits/wbls01_timing_pmt0.pdf}}
+\frame{\includegraphics[width=\textwidth]{images/hits/wbls01_timing_pmt1.pdf}}
+
+\frame{\includegraphics[width=\textwidth]{images/hits/water_charge_pmt0.pdf}}
+\frame{\includegraphics[width=\textwidth]{images/hits/water_charge_pmt1.pdf}}
+\frame{\includegraphics[width=\textwidth]{images/hits/wbls01_charge_pmt0.pdf}}
+\frame{\includegraphics[width=\textwidth]{images/hits/wbls01_charge_pmt1.pdf}}
+
+
+\section{Plotting code examples}
+
+\begin{frame}[fragile]
+  \frametitle{Making plots}
+  Event displays
+  \begin{lstlisting}[lang=python]
+import steps
+steps.xrayplot('water')
+  \end{lstlisting}
+  \begin{lstlisting}
+import steps
+steps.dedxplot('water')
+steps.dedxplot('wbls01')
+  \end{lstlisting}
+\end{frame}
+
+\end{document}
