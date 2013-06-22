@@ -1,0 +1,139 @@
+* Generation
+
+How to generate the simulation files
+
+
+** Output directory
+
+#+BEGIN_EXAMPLE
+cd /home/bviren/work/wbls/refactor/run/nsrl-13a-wbls
+#+END_EXAMPLE
+
+** Generating water
+
+ * Water is material #1.
+
+#+BEGIN_EXAMPLE
+gennsrl.py 13a-water 13a-water.json sample=Water
+cowbells.exe -m hits,steps -n 1000 -p em,op \
+  -k 'kin://beam?vertex=0,0,-5100&name=proton&direction=0,0,1&energy=2000' \
+  -o nsrl-13a-2gev-protons-water.hits-steps.1k.root 13a-water.json 
+#+END_EXAMPLE
+
+** Generating WBLS01
+
+ * WBLS01 is material #9
+ * Same sample as in Chao's copy of WCSim
+
+#+BEGIN_EXAMPLE
+gennsrl.py 13a-wbls 13a-wbls.json sample=WBLS01
+cowbells.exe -m hits,steps -n 10 -p em,op \
+  -k 'kin://beam?vertex=0,0,-5100&name=proton&direction=0,0,1&energy=2000' \
+  -o nsrl-13a-2gev-protons-wbls01.hits-steps.1k.root 13a-wbls.json
+#+END_EXAMPLE
+
+
+* Event displays
+
+** Water
+
+#+BEGIN_SRC python :exports both :wrap LATEX
+import steps, util
+files = steps.xrayplot('water')
+return util.format_list_latex(files)
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_LATEX
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-0.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-1.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-2.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-3.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-4.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-many.png}
+
+\pagebreak
+#+END_LATEX
+
+** WBLS01
+
+#+BEGIN_SRC python :exports both :wrap LATEX
+import steps, util
+files = steps.xrayplot('water')
+return util.format_list_latex(files)
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_LATEX
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-0.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-1.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-2.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-3.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-4.png}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/xray-water-many.png}
+
+\pagebreak
+#+END_LATEX
+
+
+* Hits per energy lost
+
+Using the "steps" output module to count up the energy loss by the primary proton as it steps through the water.  Show hits per energy loss.
+
+
+#+BEGIN_SRC python :exports both :wrap LATEX
+  import steps, util
+  f1 = steps.dedxplot('water')
+  f2 = steps.dedxplot('wbls01')
+  return util.format_list_latex([f1,f2])
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_LATEX
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/water-hits-per-mev.pdf}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/steps/wbls01-hits-per-mev.pdf}
+
+\pagebreak
+#+END_LATEX
+
+
+

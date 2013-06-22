@@ -1,0 +1,51 @@
+#+LaTeX_HEADER:\usepackage[margin=0.5in]{geometry}
+
+
+* Look at some hit info 
+
+FIXME: This reuses the files from [[./steps.org]] even though no steps are used.  If higher stats are needed they more events can be generated with 1/100 the file size.
+
+Samples of water and WBLS01 and the PMTs downstream (PMT0) and upstream (PMT1) are checked.
+
+** Timing
+
+#+BEGIN_SRC python :wrap LATEX :exports both
+  import hits, util
+  files = hits.make_timing_plots()
+  return util.format_list_latex(files)
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_LATEX
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/hits/timing_water_pmt0.pdf}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/hits/timing_water_pmt1.pdf}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/hits/timing_wbls01_pmt0.pdf}
+
+\pagebreak
+
+\includegraphics[width=\textwidth]{images/hits/timing_wbls01_pmt1.pdf}
+
+\pagebreak
+#+END_LATEX
+
+
+** Charge
+
+#+BEGIN_SRC python :wrap LATEX :exports both
+  import hits, util
+  files = hits.make_pe_plots()
+  return util.format_list_latex(files)
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_LATEX
+#+END_LATEX
+
