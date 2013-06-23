@@ -20,6 +20,8 @@
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 
+#include "G4ProcessTable.hh"
+
 #include "Cintex/Cintex.h"
 
 
@@ -201,6 +203,27 @@ int main(int argc, char *argv[])
     rm.Initialize();
     
     cout << *G4Material::GetMaterialTable() << endl;
+
+    { // dump processes
+	cout << "Processes:" << endl;
+	typedef std::pair<int,int> PTPST;
+	typedef std::map<PTPST, std::string> PROCMAP;
+	PROCMAP procmap;
+
+	G4ProcessTable* proc_table = G4ProcessTable::GetProcessTable();
+	G4ProcessVector* pv = proc_table->FindProcesses();
+	for (int ind=0; ind < pv->size(); ++ind) {
+	    G4VProcess* proc = (*pv)[ind];
+	    PTPST ptpst(proc->GetProcessType(), proc->GetProcessSubType());
+	    procmap[ptpst] = proc->GetProcessName();
+	}
+	
+	PROCMAP::iterator it, done = procmap.end();
+	for (it = procmap.begin(); it != done; ++it) {
+	    cout << "\t" << it->second << " " << it->first.first << " " << it->first.second << endl;
+	}
+	cout << endl;
+    }
 
     G4VisExecutive *vm = new G4VisExecutive("all");
     vm->Initialize();

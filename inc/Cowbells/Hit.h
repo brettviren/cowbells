@@ -47,6 +47,7 @@ namespace Cowbells {
         double energy();
         void setEnergy(double e);
 
+	// https://geant4.cern.ch/collaboration/working_groups/electromagnetic/index.shtml
 	// Production type, subtype.  Some possibilities:
 	// 2, 2 eIoni
 	// 2, 2 hIoni
