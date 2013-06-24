@@ -38,10 +38,32 @@ class PerChannel(DictMixin):
                         if not k.startswith('_') and not isinstance(v,type(lambda x:x))}
         self._params.update(kwds)
 
+    def format(self, string, **kwds):
+        d = dict(self._params)
+        d.update(kwds)
+        return string.format(**d)
+
     def __getitem__(self, name):
+        if not name.startswith(self.format('{sample}_')):
+            print self.format('PerChannel sample mismatch: {wantname} not related to {sample}', wantname=name)
+            raise KeyError, name
         if not self._hists:
             self.fill()
         return self._hists[name]
+
+    def configitems(self):
+        params = dict(self._params)
+        for quant in self._params['quants']:
+            params['quant'] = quant
+            for process in self._params['procs']:
+                params['process'] = process
+                for hcid, hcid_name in zip(self._params['hcids'],self._params['hcid_names']):
+                    params['hcid'] = hcid
+                    params['hcid_name'] = hcid_name
+                    for volid in self._params['volids']:
+                        params['volid'] = volid
+                        yield params
+        return
 
     def keys(self):
         if not self._hists:
@@ -66,10 +88,10 @@ class PerChannel(DictMixin):
         
 
     def get_hist(self, **kwds):
-        name = self.name_pat.format(**kwds)
+        name = self._params['name_pat'].format(**kwds)
         hist = self._hists.get(name)
         if hist: return hist
-        hist = ROOT.TH1F(name, self.title_pat.format(**kwds), *self.desc(**kwds))
+        hist = ROOT.TH1F(name, self._params['title_pat'].format(**kwds), *self.desc(**kwds))
         hist.SetXTitle(self.xtitle(**kwds))
         self._hists[name] = hist
         return hist
@@ -86,7 +108,7 @@ class PerChannel(DictMixin):
             for hit in entry.event.hc:
                 hcid, volid = hit.hcId(), hit.volId()
                 process = self.get_process(hit)
-                d = dict(self._params, hcid=hcid, hcid_name=self.hcid_names[hcid],
+                d = dict(self._params, hcid=hcid, hcid_name=self._params['hcid_names'][hcid],
                          volid=volid,process=process)
                 t_hist = self.get_hist(quant='timing', **d)
                 t_hist.Fill(hit.time())
@@ -95,7 +117,7 @@ class PerChannel(DictMixin):
                 continue
             for qhist, q in charges.items():
                 qhist.Fill(q)
-                
+
 
 def print_file(rootfile, printfile, sample='water'):
     import os

@@ -2,7 +2,7 @@
 
 import ROOT
 from UserDict import DictMixin
-from . collections import ChainedDict
+from bv.collections import ChainedDict
 
 class Reader(DictMixin):
     def __init__(self, tdir):
@@ -16,7 +16,8 @@ class Reader(DictMixin):
             pass
         obj = self._tdir.Get(name)
         if not obj:
-            raise KeyError, name
+            raise KeyError, 'No key "%s" found in %s' % (name, self._tdir.GetName())
+        print 'Reader: pull "%s" from %s' % (name, self._tdir.GetName())
         self._data[name] = obj
         return obj
 

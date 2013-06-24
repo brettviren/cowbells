@@ -10,13 +10,20 @@
 \date{\today}
 \frame{\titlepage}
 
+\begin{frame}
+  \frametitle{Contents}
+  \tableofcontents
+\end{frame}
+
 \section{Generation}
 \label{sec:gen}
 
 \begin{frame}[fragile]
   \frametitle{Running the Simulation}
+
   Generate the configuration
-{\footnotesize
+
+{\tiny
 \begin{verbatim}
 gennsrl.py 13a-water 13a-water.json sample=Water
 gennsrl.py 13a-wbls01 13a-wbls01.json sample=WBLS01
@@ -37,21 +44,33 @@ cowbells.exe -m hits,steps -n 10 -p em,op \
 }
 
  Results:
-{\footnotesize
+{\tiny
 \begin{verbatim}
 $ ls -sh
 645M nsrl-13a-2gev-protons-water.hits-steps.1k.root
 891M nsrl-13a-2gev-protons-wbls01.hits-steps.1k.root
 \end{verbatim}
 }
+
+Plots (code in \texttt{cowbells/ana/magic}):
+  \begin{lstlisting}[lang=python]
+import steps
+steps.xrayplot('water') # event display
+steps.dedxplot('water') # per setp
+import magic
+magic.plots()           # per process
+  \end{lstlisting}
+
 \end{frame}
 
-\section{Event Displays}
+
+\section{Some Event Displays}
 
 \begin{frame}[fragile]
   \frametitle{Event displays}
   \begin{itemize}
-  \item   All steps in water from one or many events:
+  \item First point of all steps in Water and WBLS from single or
+    composite of multiple events:
   \item Layout is like:
   \end{itemize}
 
@@ -64,9 +83,6 @@ $ ls -sh
     \hline
   \end{tabular}
   \end{center}
-  \begin{itemize}
-  \item First in water, then in WBLS
-  \end{itemize}
 
 \end{frame}
 
@@ -88,37 +104,90 @@ $ ls -sh
 
 \begin{frame}
   \frametitle{PE/MeV in Water and WBLS01}
-  \includegraphics[width=\textwidth]{images/steps/water-wbls01-hits-per-mev.pdf}
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{images/steps/water-wbls01-hits-per-mev.pdf}    
+  \end{center}
 \end{frame}
 
 
 \section{Timing and Charge by Process Type}
 
-\frame{\includegraphics[width=\textwidth]{images/hits/water_timing_pmt0.pdf}}
-\frame{\includegraphics[width=\textwidth]{images/hits/water_timing_pmt1.pdf}}
-\frame{\includegraphics[width=\textwidth]{images/hits/wbls01_timing_pmt0.pdf}}
-\frame{\includegraphics[width=\textwidth]{images/hits/wbls01_timing_pmt1.pdf}}
+\begin{frame}
+  \frametitle{Explanation of plots}
+  Organized by 
+  \begin{description}
+  \item[Sample] \textbf{Water} vs. \textbf{WBLS01}, 2 GeV protons
+  \item[Process] the physics process creating the particle that made
+    the photon that made the hit.  Eg:
+    \begin{description}
+    \item[Cherenkov] a Cherenkov photon produced a different photon that hit the PMT
+    \item[hioni] the hitting photon produced during hadron ionization (eg, primary proton)
+    \item[primary] made up process for ``non process'' having to do with light directly made by the primary proton
+    \end{description}
+  \item[Channel] \textbf{PMT0} is downstream (facing beam), \textbf{PMT1} is upstream
+  \item[Quantity] \textbf{timing} is every PMT hit time in all events in the category, \textbf{charge} is the total PE per event in the category.
+  \end{description}
+\end{frame}
 
-\frame{\includegraphics[width=\textwidth]{images/hits/water_charge_pmt0.pdf}}
-\frame{\includegraphics[width=\textwidth]{images/hits/water_charge_pmt1.pdf}}
-\frame{\includegraphics[width=\textwidth]{images/hits/wbls01_charge_pmt0.pdf}}
-\frame{\includegraphics[width=\textwidth]{images/hits/wbls01_charge_pmt1.pdf}}
 
 
-\section{Plotting code examples}
+\subsection{Timing}
 
 \begin{frame}[fragile]
-  \frametitle{Making plots}
-  Event displays
-  \begin{lstlisting}[lang=python]
-import steps
-steps.xrayplot('water')
-  \end{lstlisting}
-  \begin{lstlisting}
-import steps
-steps.dedxplot('water')
-steps.dedxplot('wbls01')
-  \end{lstlisting}
+  \frametitle{Timing:  ``primary'' and ``hioni''(Water)}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/water_timing_primary_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_timing_primary_pmt1.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/water_timing_hioni_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_timing_hioni_pmt1.pdf}%
 \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Timing: ``primary'' and ``hioni'' (WBLS01)}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_timing_primary_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_timing_primary_pmt1.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_timing_hioni_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_timing_hioni_pmt1.pdf}%
+\end{frame}
+
+
+\subsection{Charge}
+
+\begin{frame}[fragile]
+  \frametitle{Charge: ``primary'' and ``hioni'' (Water)}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/water_charge_primary_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_charge_primary_pmt1.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/water_charge_hioni_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_charge_hioni_pmt1.pdf}%
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Charge: ``primary'' and ``hioni'' (WBLS01)}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_charge_primary_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_charge_primary_pmt1.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_charge_hioni_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_charge_hioni_pmt1.pdf}%
+\end{frame}
+
+\subsection {Whither Cherenkov}
+
+\begin{frame}[fragile]
+  \frametitle{Photons from Cherenkov Photons (but not \v{C}-photons themselves}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_timing_cerenkov_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_charge_cerenkov_pmt0.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_timing_cerenkov_pmt1.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_charge_cerenkov_pmt1.pdf}%
+
+\end{frame}
+
 
 \end{document}

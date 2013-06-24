@@ -35,7 +35,7 @@ class ChainedDict(DictMixin):
         for source in self._source:
             value = source.get(name)
             if value: return value
-        raise KeyError, name
+        raise KeyError, 'No key "%s" in %d sources' % (name, len(self._source))
 
     def __setitem__(self, name, value):
         for sink in self._sink:
