@@ -15,7 +15,8 @@
   \tableofcontents
 \end{frame}
 
-\section{Generation}
+
+\section{Running the Simulation}
 \label{sec:gen}
 
 \begin{frame}[fragile]
@@ -63,6 +64,62 @@ magic.plots()           # per process
 
 \end{frame}
 
+
+\section{Reflectivity}
+
+\begin{frame}
+  \frametitle{Reflectivity in magic box}
+
+  Mean number of hits in up and downstream PMTs for 2GeV protons
+  through water measured with 1000 protons.
+
+\begin{center}
+\begin{tabular}{rrrr}
+\hline
+refl\% & upstream & downstream & u/d (\%)\\
+\hline
+2 & 0.186 & 34.8 & 0.53\\
+5 & 0.454 & 36.3 & 1.25\\
+10 & 0.312 & 38.3 & 0.81\\
+25 & 2.64 & 45.3 & 5.83\\
+50 & 14.1 & 57.3 & 24.61\\
+100 & 143 & 129 & 110.85\\
+\hline
+\end{tabular}
+\end{center}
+
+Rerun with 10k events for 0, 2, 5 and 10\%
+
+\begin{center}
+\begin{tabular}{rrrrrr}
+\hline
+refl\% & upstream & downstream & u/d  (\%) & u/d unc (\%) & \# up\\
+\hline
+0 & 2143 & 337947 & 0.63 & 0.014 & 280\\
+2 & 1263 & 346834 & 0.36 & 0.010 & 464\\
+5 & 1770 & 358916 & 0.49 & 0.012 & 949\\
+10 & 4023 & 383227 & 1.05 & 0.017 & 2590\\
+\hline
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{5\% reflectivity}
+\includegraphics[width=0.49\textwidth]{images/refl/13a-water-ref0_05-us.pdf}
+\includegraphics[width=0.49\textwidth]{images/refl/13a-water-ref0_05-ds.pdf}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{50\% reflectivity}
+\includegraphics[width=0.49\textwidth]{images/refl/13a-water-ref0_50-us.pdf}
+\includegraphics[width=0.49\textwidth]{images/refl/13a-water-ref0_50-ds.pdf}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{100\% reflectivity}
+\includegraphics[width=0.49\textwidth]{images/refl/13a-water-ref1_00-us.pdf}
+\includegraphics[width=0.49\textwidth]{images/refl/13a-water-ref1_00-ds.pdf}
+\end{frame}
 
 \section{Some Event Displays}
 
@@ -179,15 +236,27 @@ magic.plots()           # per process
 \subsection {Whither Cherenkov}
 
 \begin{frame}[fragile]
-  \frametitle{Photons from Cherenkov Photons (but not \v{C}-photons themselves}
+  \frametitle{Photons from Cherenkov Photons}
+  (but not hits from \v{C}-photons themselves)
 
-\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_timing_cerenkov_pmt0.pdf}%
-\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_charge_cerenkov_pmt0.pdf}%
+\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_timing_cerenkov_pmt0.pdf}%
+\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_charge_cerenkov_pmt0.pdf}%
 
-\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_timing_cerenkov_pmt1.pdf}%
-\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_charge_cerenkov_pmt1.pdf}%
+\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_timing_cerenkov_pmt1.pdf}%
+\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_charge_cerenkov_pmt1.pdf}%
 
 \end{frame}
 
+
+\section{To do}
+
+\begin{frame}
+  \frametitle{To Do List}
+  \begin{itemize}
+  \item Add cosmic-$\mu$ spectrum as kinematics to cowbells
+  \item Try to reproduce the Tubs' data for cosmics/protons
+  \item ...
+  \end{itemize}
+\end{frame}
 
 \end{document}

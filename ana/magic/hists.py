@@ -22,14 +22,15 @@ process_names = sorted(process_idname.values())
 class PerChannel(DictMixin):
 
     # eg: timing_scintillation_1_0
-    name_pat = '{sample}_{quant}_{process}_{hcid_name}{volid}'
-    title_pat = '{quant} for {process} channel {hcid_name}{volid} in {sample}'
+    name_pat = '{sample}_{energy}_{quant}_{process}_{hcid_name}{volid}'
+    title_pat = '{quant} for process {process}, channel {hcid_name}{volid}, in {sample}, Eproton={energy}'
     quants = ['timing', 'charge']
     procs = process_names
     hcids = range(2)
     hcid_names = ['trigger','pmt']
     volids = range(2)
-    sample = 'unspecified'
+    sample = 'unknown_sample'
+    energy = 'unknown_energy'
 
     def __init__(self, cowbells_tree, **kwds):
         self._tree = cowbells_tree
@@ -44,8 +45,9 @@ class PerChannel(DictMixin):
         return string.format(**d)
 
     def __getitem__(self, name):
-        if not name.startswith(self.format('{sample}_')):
-            print self.format('PerChannel sample mismatch: {wantname} not related to {sample}', wantname=name)
+        if not name.startswith(self.format('{sample}_{energy}_')):
+            msg = 'PerChannel mismatch: {wantname} not related to {sample}_{energy}'
+            print self.format(msg, wantname=name)
             raise KeyError, name
         if not self._hists:
             self.fill()
@@ -119,7 +121,7 @@ class PerChannel(DictMixin):
                 qhist.Fill(q)
 
 
-def print_file(rootfile, printfile, sample='water'):
+def print_file(rootfile, printfile, sample='water', energy='2gev'):
     import os
     ext = os.path.splitext(printfile)[1][1:]
 
@@ -127,7 +129,7 @@ def print_file(rootfile, printfile, sample='water'):
 
     tfile = ROOT.TFile.Open(rootfile)
     ttree = tfile.Get('cowbells')
-    pc = PerChannel(ttree, sample=sample)
+    pc = PerChannel(ttree, sample=sample, energy=energy)
     canvas = ROOT.TCanvas()
     canvas.Print(printfile + '[', ext)
     for name, hist in sorted(pc.items()):
@@ -140,5 +142,5 @@ def print_file(rootfile, printfile, sample='water'):
 
 if '__main__' == __name__:
     import sys
-    sample, rootfile, printfile = sys.argv[1:]
-    print_file(rootfile, printfile, sample)
+    sample, energy, rootfile, printfile = sys.argv[1:]
+    print_file(rootfile, printfile, sample, energy)

@@ -4,6 +4,27 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile ~/.gitignore_global
 
+# some latex'y or generated doc things
+*.pdf
+*.aux
+*.out
+*.fdb_latexmk
+*.html
+*.toc
+*.vrb
+*.snm
+*.nav
+
+_cut.py
+
+# Some stuff from exporting org-mode files
+README.tex
+refl.tex
+reflection.tex
+steps.tex
+magic.tex
+
+
 # Compiled source #
 ###################
 *.o
