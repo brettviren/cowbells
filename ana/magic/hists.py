@@ -83,6 +83,7 @@ class BaseHistogramSource(DictMixin, DefaultParams):
     energy = 'unknown_energy'
 
     logy = True
+    drawopt = ""
 
     # set if the pad should be put in to log(y) mode
 
@@ -153,12 +154,13 @@ class PerChannel(BaseHistogramSource):
     volids = range(2)
 
     logy = True
+    drawopt = ""
 
     def __getitem__(self, name):
         if not name.startswith(self.format('{sample}_{energy}_')):
             msg = 'PerChannel mismatch: {wantname} not related to {sample}_{energy}'
             msg = self.format(msg, wantname=name)
-            print msg
+            #print msg
             raise KeyError, msg
         if not self._hists:
             self.fill()
@@ -186,7 +188,7 @@ class PerChannel(BaseHistogramSource):
         if quant == 'timing':
             return (200,0,100)
         if quant == 'charge':
-            return (200,0,100)
+            return (100,0,100)
         return None
 
     def xtitle(self, **kwds):
@@ -244,6 +246,7 @@ class DeDxPlots(BaseHistogramSource):
     volids = range(2)
 
     logy = True
+    drawopt = ""
 
     def __getitem__(self, name):
         prefix = self.format('{sample}_{energy}_dedx_')
@@ -282,7 +285,7 @@ class DeDxPlots(BaseHistogramSource):
         for hcid,hcid_name in zip(self.val('hcids'), self.val('hcid_names')):
             for volid in self.val('volids'):
                 quant = '%s%d' % (hcid_name, volid)
-                h = self.make_hist(quant, (100,0,1))
+                h = self.make_hist(quant, (200,0,2))
                 self.h_chan[(hcid,volid)] = h
 
     def fill(self):
@@ -324,14 +327,16 @@ class StepDisplay(BaseHistogramSource):
 
     name_pat = '{sample}_{energy}_stepdisp_{process}_event{evtdesc}_{view}'
     title_pat = '{view} steps for process {process}, in {sample}, Eproton={energy}, event: {evtdesc}'
+
     logy = False
+    drawopt = "COLZ"
         
     def __getitem__(self, name):
         want = self.format('{sample}_{energy}_stepdisp_')
         if not name.startswith(want):
             msg = 'StepDisplay mismatch: {wantname} not starting with {want}'
             msg = self.format(msg, wantname=name, want=want)
-            print msg
+            #print msg
             raise KeyError, msg
         h = self._hists.get(name)
         if h: return h
@@ -347,7 +352,7 @@ class StepDisplay(BaseHistogramSource):
         "process" and "view" can be accepted so these keys are only
         "suggestions".
         '''
-        for evtdesc in ['0','1-10','100-50']:
+        for evtdesc in ['0','1-10','0-1000']:
             for process in  ['all']:
                 for view in ['zx','zy','xy']:
                     name = self.get_name(evtdesc=evtdesc, process=process, view=view)

@@ -33,11 +33,6 @@ def quiet_print(filename, ext=''):
     canvas.Print(filename, ext)
     ROOT.gErrorIgnoreLevel = old
 
-def maybe_print(filename, ext=''):
-    if os.path.exists(filename):
-        print 'Not reprinting %s' % filename
-    quiet_print(filename, ext)
-
 
 class Plots(DefaultParams):
     
@@ -52,6 +47,8 @@ class Plots(DefaultParams):
     opt = 'update'
     out_dir = 'magic_plots'
     out_root = 'magic_plots.root'
+    read_cache = True
+    print_overwrite = False
 
     hist_sources = [StepDisplay, PerChannel, DeDxPlots]
 
@@ -64,14 +61,17 @@ class Plots(DefaultParams):
             raise ValueError, msg
 
         self.logy = True
+        self.drawopt = ""
+
         sources = []
         self.hist_source_objects = defaultdict(list)
 
         # Check the root file first for histograms from prior runs
         self.hist_file = ROOT.TFile.Open(self.val('out_root'), self.val('opt'))
         assert self.hist_file, self.format('Unable to open {out_root} with option "{opt}"')
-        hr = Reader(self.hist_file)
-        sources.append(hr)
+        if self.val('read_cache'):
+            hr = Reader(self.hist_file)
+            sources.append(hr)
 
         for energy in self.val('energies'):
             params = dict(energy=energy)
@@ -110,7 +110,7 @@ class Plots(DefaultParams):
             tt.DrawText(-1.0,.00,str(msg))
         else:
             canvas.SetLogy(self.logy)
-            h.Draw()
+            h.Draw(self.drawopt)
         return
 
     def plots(self):
@@ -122,6 +122,8 @@ class Plots(DefaultParams):
                 return
             for src in sources:
                 self.logy = src.val('logy')
+                self.drawopt = src.val('drawopt')
+
                 for name in src.keys():
                     for pm in print_mgrs:
                         pm(name)
@@ -130,12 +132,14 @@ class Plots(DefaultParams):
 
         out_dir = self.val('out_dir')
         for ext in ['pdf','png']:
-            pm = PrintManager(drawer=self.drawer, printer=maybe_print, 
-                              filenamer = SingleShot(out_dir,ext))
+            pm = PrintManager(drawer=self.drawer, printer=quiet_print, 
+                              filenamer = SingleShot(out_dir,ext),
+                              overwrite = self.val('print_overwrite'))
             print_mgrs.append(pm)
 
         with MultiPrinter(filename=out_dir+'.pdf', printer = quiet_print) as printer:
-            mp = PrintManager(drawer=self.drawer, printer = printer, filenamer = shunt)
+            mp = PrintManager(drawer=self.drawer, printer = printer, filenamer = shunt,
+                              overwrite = self.val('print_overwrite'))
             print_mgrs.append(mp)
 
             for hs_name, hs_objects in self.hist_source_objects.items():

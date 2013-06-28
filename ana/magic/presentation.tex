@@ -5,7 +5,7 @@
 \begin{document}
 
 
-\title{Simulated 2 GeV Protons in Water and WBLS01 in ``magic box'' detector}
+\title{Simulated 475 MeV and 2 GeV Protons in Water and WBLS01 in ``magic box'' detector}
 \author{Brett Viren}
 \date{\today}
 \frame{\titlepage}
@@ -53,16 +53,21 @@ $ ls -sh
 \end{verbatim}
 }
 
-Plots (code in \texttt{cowbells/ana/magic}):
+Plots (run in \texttt{cowbells/ana/magic}):
+{\tiny
   \begin{lstlisting}[lang=python]
-import steps
-steps.xrayplot('water') # event display
-steps.dedxplot('water') # per setp
 import magic
-magic.plots()           # per process
-  \end{lstlisting}
+p = magic.Plots(\
+  sampes=..., energies=...,  # exp setup
+  hist_sources=...,          # limit plot types
+  read_cache=...,            # use prior cached hists
+  print_overwrite=...)       # skip if alread printed
 
+p.plots()
+  \end{lstlisting}
+}
 \end{frame}
+
 
 
 \section{Reflectivity}
@@ -143,27 +148,108 @@ refl\% & upstream & downstream & u/d  (\%) & u/d unc (\%) & \# up\\
 
 \end{frame}
 
-\frame{\includegraphics[width=\textwidth]{images/steps/xray-water-0.png}}
-\frame{\includegraphics[width=\textwidth]{images/steps/xray-water-1.png}}
-\frame{\includegraphics[width=\textwidth]{images/steps/xray-water-2.png}}
-\frame{\includegraphics[width=\textwidth]{images/steps/xray-water-3.png}}
-\frame{\includegraphics[width=\textwidth]{images/steps/xray-water-4.png}}
-\frame{\includegraphics[width=\textwidth]{images/steps/xray-water-many.png}}
+% \frame{\includegraphics[width=\textwidth]{images/steps/xray-water-0.png}}
+% \frame{\includegraphics[width=\textwidth]{images/steps/xray-water-1.png}}
+% \frame{\includegraphics[width=\textwidth]{images/steps/xray-water-2.png}}
+% \frame{\includegraphics[width=\textwidth]{images/steps/xray-water-3.png}}
+% \frame{\includegraphics[width=\textwidth]{images/steps/xray-water-4.png}}
+% \frame{\includegraphics[width=\textwidth]{images/steps/xray-water-many.png}}
 
-\frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-0.png}}
-\frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-1.png}}
-\frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-2.png}}
-\frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-3.png}}
-\frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-4.png}}
-\frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-many.png}}
+% \frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-0.png}}
+% \frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-1.png}}
+% \frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-2.png}}
+% \frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-3.png}}
+% \frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-4.png}}
+% \frame{\includegraphics[width=\textwidth]{images/steps/xray-wbls01-many.png}}
 
-\section{Hits per Energy Lost}
+\begin{frame}[fragile]
+  \frametitle{2 GeV protons in Water}
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_2gev_stepdisp_all_event0_xy.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_2gev_stepdisp_all_event0_zx.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_2gev_stepdisp_all_event0_zy.pdf}%
 
-\begin{frame}
-  \frametitle{PE/MeV in Water and WBLS01}
-  \begin{center}
-    \includegraphics[width=0.95\textwidth]{images/steps/water-wbls01-hits-per-mev.pdf}    
-  \end{center}
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_2gev_stepdisp_all_event1-10_xy.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_2gev_stepdisp_all_event1-10_zx.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_2gev_stepdisp_all_event1-10_zy.pdf}%
+
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_2gev_stepdisp_all_event0-1000_xy.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_2gev_stepdisp_all_event0-1000_zx.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_2gev_stepdisp_all_event0-1000_zy.pdf}%
+\end{frame}
+\begin{frame}[fragile]
+  \frametitle{475 MeV protons in Water}
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_475mev_stepdisp_all_event0_xy.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_475mev_stepdisp_all_event0_zx.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_475mev_stepdisp_all_event0_zy.pdf}%
+
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_475mev_stepdisp_all_event1-10_xy.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_475mev_stepdisp_all_event1-10_zx.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_475mev_stepdisp_all_event1-10_zy.pdf}%
+
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_475mev_stepdisp_all_event0-1000_xy.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_475mev_stepdisp_all_event0-1000_zx.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/water_475mev_stepdisp_all_event0-1000_zy.pdf}%
+\end{frame}
+\begin{frame}[fragile]
+  \frametitle{2 GeV protons in WBLS01}
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_2gev_stepdisp_all_event0_xy.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_2gev_stepdisp_all_event0_zx.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_2gev_stepdisp_all_event0_zy.pdf}%
+
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_2gev_stepdisp_all_event1-10_xy.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_2gev_stepdisp_all_event1-10_zx.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_2gev_stepdisp_all_event1-10_zy.pdf}%
+
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_2gev_stepdisp_all_event0-1000_xy.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_2gev_stepdisp_all_event0-1000_zx.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_2gev_stepdisp_all_event0-1000_zy.pdf}%
+\end{frame}
+\begin{frame}[fragile]
+  \frametitle{475 MeV protons in WBLS01}
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_475mev_stepdisp_all_event0_xy.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_475mev_stepdisp_all_event0_zx.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_475mev_stepdisp_all_event0_zy.pdf}%
+
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_475mev_stepdisp_all_event1-10_xy.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_475mev_stepdisp_all_event1-10_zx.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_475mev_stepdisp_all_event1-10_zy.pdf}%
+
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_475mev_stepdisp_all_event0-1000_xy.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_475mev_stepdisp_all_event0-1000_zx.pdf}%
+  \includegraphics[width=0.32\textwidth]{magic_plots/wbls01_475mev_stepdisp_all_event0-1000_zy.pdf}%
+\end{frame}
+
+\section {dE/dX}
+
+\begin{frame}[fragile]
+  \frametitle{dE/dX 475 MeV and 2 GeV protons in Water and WBLS01}
+
+  \includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_dedx_total.pdf}%
+  \includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_dedx_total.pdf}
+
+  \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_dedx_total.pdf}%
+  \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_dedx_total.pdf}
+\end{frame}
+
+\section{PE/MeV Lost}
+
+\begin{frame}[fragile]
+  \frametitle{PE/MeV, 475 MeV Protons, down/up Water/WBLS01}
+  \includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_dedx_pmt0.pdf}%
+  \includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_dedx_pmt1.pdf}
+
+  \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_dedx_pmt0.pdf}%
+  \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_dedx_pmt1.pdf}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{PE/MeV, 2 GeV Protons, down/up, Water/WBLS01}
+  \includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_dedx_pmt0.pdf}%
+  \includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_dedx_pmt1.pdf}
+
+  \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_dedx_pmt0.pdf}%
+  \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_dedx_pmt1.pdf}
 \end{frame}
 
 
@@ -191,59 +277,108 @@ refl\% & upstream & downstream & u/d  (\%) & u/d unc (\%) & \# up\\
 \subsection{Timing}
 
 \begin{frame}[fragile]
-  \frametitle{Timing:  ``primary'' and ``hioni''(Water)}
+  \frametitle{475 MeV timing:  ``primary'' and ``hioni''(Water)}
 
-\includegraphics[width=0.45\textwidth]{magic_plots/water_timing_primary_pmt0.pdf}%
-\includegraphics[width=0.45\textwidth]{magic_plots/water_timing_primary_pmt1.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_timing_primary_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_timing_primary_pmt1.pdf}%
 
-\includegraphics[width=0.45\textwidth]{magic_plots/water_timing_hioni_pmt0.pdf}%
-\includegraphics[width=0.45\textwidth]{magic_plots/water_timing_hioni_pmt1.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_timing_hioni_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_timing_hioni_pmt1.pdf}%
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Timing: ``primary'' and ``hioni'' (WBLS01)}
+  \frametitle{2 GeV timing:  ``primary'' and ``hioni''(Water)}
 
-\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_timing_primary_pmt0.pdf}%
-\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_timing_primary_pmt1.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_timing_primary_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_timing_primary_pmt1.pdf}%
 
-\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_timing_hioni_pmt0.pdf}%
-\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_timing_hioni_pmt1.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_timing_hioni_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_timing_hioni_pmt1.pdf}%
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{475 MeV timing: ``primary'' and ``hioni'' (WBLS01)}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_timing_primary_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_timing_primary_pmt1.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_timing_hioni_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_timing_hioni_pmt1.pdf}%
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{2 GeV timing: ``primary'' and ``hioni'' (WBLS01)}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_timing_primary_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_timing_primary_pmt1.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_timing_hioni_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_timing_hioni_pmt1.pdf}%
 \end{frame}
 
 
 \subsection{Charge}
 
 \begin{frame}[fragile]
-  \frametitle{Charge: ``primary'' and ``hioni'' (Water)}
+  \frametitle{475 MeV: charge: ``primary'' and ``hioni'' (Water)}
 
-\includegraphics[width=0.45\textwidth]{magic_plots/water_charge_primary_pmt0.pdf}%
-\includegraphics[width=0.45\textwidth]{magic_plots/water_charge_primary_pmt1.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_charge_primary_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_charge_primary_pmt1.pdf}%
 
-\includegraphics[width=0.45\textwidth]{magic_plots/water_charge_hioni_pmt0.pdf}%
-\includegraphics[width=0.45\textwidth]{magic_plots/water_charge_hioni_pmt1.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_charge_hioni_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_charge_hioni_pmt1.pdf}%
+\end{frame}
+\begin{frame}[fragile]
+  \frametitle{2 Gev: charge: ``primary'' and ``hioni'' (Water)}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_charge_primary_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_charge_primary_pmt1.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_charge_hioni_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_charge_hioni_pmt1.pdf}%
 \end{frame}
 
+
 \begin{frame}[fragile]
-  \frametitle{Charge: ``primary'' and ``hioni'' (WBLS01)}
+  \frametitle{475 MeV: charge: ``primary'' and ``hioni'' (WBLS01)}
 
-\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_charge_primary_pmt0.pdf}%
-\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_charge_primary_pmt1.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_charge_primary_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_charge_primary_pmt1.pdf}%
 
-\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_charge_hioni_pmt0.pdf}%
-\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_charge_hioni_pmt1.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_charge_hioni_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_charge_hioni_pmt1.pdf}%
+\end{frame}
+\begin{frame}[fragile]
+  \frametitle{2 GeV: charge: ``primary'' and ``hioni'' (WBLS01)}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_charge_primary_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_charge_primary_pmt1.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_charge_hioni_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_charge_hioni_pmt1.pdf}%
 \end{frame}
 
 \subsection {Whither Cherenkov}
 
 \begin{frame}[fragile]
-  \frametitle{Photons from Cherenkov Photons}
-  (but not hits from \v{C}-photons themselves)
+  \frametitle{475 MeV: timing and charge for Cherenkov process}
 
-\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_timing_cerenkov_pmt0.pdf}%
-\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_charge_cerenkov_pmt0.pdf}%
+\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_475mev_timing_cerenkov_pmt0.pdf}%
+\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_475mev_charge_cerenkov_pmt0.pdf}%
 
-\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_timing_cerenkov_pmt1.pdf}%
-\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_charge_cerenkov_pmt1.pdf}%
+\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_475mev_timing_cerenkov_pmt1.pdf}%
+\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_475mev_charge_cerenkov_pmt1.pdf}%
+
+\end{frame}
+\begin{frame}[fragile]
+  \frametitle{2 GeV: timing and charge for Cherenkov process}
+
+\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_2gev_timing_cerenkov_pmt0.pdf}%
+\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_2gev_charge_cerenkov_pmt0.pdf}%
+
+\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_2gev_timing_cerenkov_pmt1.pdf}%
+\includegraphics[width=0.42\textwidth]{magic_plots/wbls01_2gev_charge_cerenkov_pmt1.pdf}%
 
 \end{frame}
 

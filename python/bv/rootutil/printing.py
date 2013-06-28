@@ -33,6 +33,7 @@ class PrintManager(object):
             return filename
         filename = self._filenamer(name, **self._params)
         if os.path.exists(filename) and not self._overwrite:
+            print 'File exists and overwrite protection enabled, not reprinting: %s' % filename
             return filename
         self._drawer(name, **self._params)
         self._printer(filename)
