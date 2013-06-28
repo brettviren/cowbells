@@ -5,10 +5,11 @@ import os
 import cowbells 
 ROOT = cowbells.ROOT
 
-from hists import PerChannel
+from hists import DefaultParams, PerChannel, StepDisplay, DeDxPlots
 from bv.rootutil.histo import Writer, Reader
 from bv.rootutil.printing import MultiPrinter, PrintManager
 from bv.collections import ChainedDict
+from collections import defaultdict
 
 canvas = ROOT.TCanvas()
 
@@ -25,79 +26,125 @@ class SingleShot(object):
             os.makedirs(self.outdir)
         return os.path.join(self.outdir, name + '.' + self.ext)
 
+def quiet_print(filename, ext=''):
+    ext = ext or os.path.splitext(filename)[1][1:]
+    old = ROOT.gErrorIgnoreLevel
+    ROOT.gErrorIgnoreLevel = 1999
+    canvas.Print(filename, ext)
+    ROOT.gErrorIgnoreLevel = old
 
-def_dir = "/home/bviren/work/wbls/refactor/run/nsrl-13a-wbls"
-#def_pat = def_dir + "/nsrl-13a-2gev-protons-{sample}.hits-steps.1k.root"
-def_pat = def_dir + "/nsrl-13a-{energy}-protons-{sample}.hits.steps.had.1k.root"
-def plots(tree_file_pattern = def_pat, out_file = 'magic.root', opt = 'update', 
-          samples = None, energies = None):
-
-    samples = samples or ['water','wbls01']
-    energies = energies or ['475mev',  '2gev']
-
-    sources = []
-
-    # Check the root file first for histograms from prior runs
-    hist_file = ROOT.TFile.Open(out_file, opt)
-    hr = Reader(hist_file)
-    sources.append(hr)
-
-    # Fall back to generating the histograms from the tree
-    pcs = []
-    for energy in energies:
-        params = dict(energy=energy)
-        for sample in samples:
-            params['sample'] = sample
-            rootfile = tree_file_pattern.format(**params)
-            infile = ROOT.TFile.Open(rootfile)
-            ttree = infile.Get('cowbells')
-            pc = PerChannel(ttree, **params)
-            pcs.append(pc)
-            sources.append(pc)
-        
-    # Write any histograms that may be produced.
-    sinks = []
-    hw = Writer(hist_file)
-    sinks.append(hw)
-
-    # Put it all together
-    hists = ChainedDict(source=sources, sink=sinks)
+def maybe_print(filename, ext=''):
+    if os.path.exists(filename):
+        print 'Not reprinting %s' % filename
+    quiet_print(filename, ext)
 
 
-    # This draws the named histogram into the canvas
-    def drawer(name, **kwds):
+class Plots(DefaultParams):
+    
+    # fixme: extract the object_defaults()/val() pattern used here and
+    # in the histogram sources into a mixin
+
+
+    data_dir = "/home/bviren/work/wbls/refactor/run/nsrl-13a-wbls"
+    tree_file_pattern = data_dir + "/nsrl-13a-{energy}-protons-{sample}.hits.steps.had.1k.root"
+    samples = ['water','wbls01']
+    energies = ['475mev',  '2gev']
+    opt = 'update'
+    out_dir = 'magic_plots'
+    out_root = 'magic_plots.root'
+
+    hist_sources = [StepDisplay, PerChannel, DeDxPlots]
+
+    def __init__(self, **kwds):
+        self.initialize_params(**kwds)
+
+        hist_sources = self.val('hist_sources')
+        if not hist_sources: 
+            msg = 'Given no histogram sources!  Why do you bother creating me?'
+            raise ValueError, msg
+
+        self.logy = True
+        sources = []
+        self.hist_source_objects = defaultdict(list)
+
+        # Check the root file first for histograms from prior runs
+        self.hist_file = ROOT.TFile.Open(self.val('out_root'), self.val('opt'))
+        assert self.hist_file, self.format('Unable to open {out_root} with option "{opt}"')
+        hr = Reader(self.hist_file)
+        sources.append(hr)
+
+        for energy in self.val('energies'):
+            params = dict(energy=energy)
+            for sample in self.val('samples'):
+                params['sample'] = sample
+                rootfile = self.val('tree_file_pattern').format(**params)
+                infile = ROOT.TFile.Open(rootfile)
+                if not infile:
+                    raise ValueError, 'No such file: %s' % rootfile
+                ttree = infile.Get('cowbells')
+
+                for HistSource in hist_sources:
+                    hs_obj = HistSource(ttree, **params)
+                    self.hist_source_objects[HistSource.__name__].append(hs_obj)
+                    sources.append(hs_obj)
+
+        # Write any histograms that may be produced.
+        sinks = []
+        hw = Writer(self.hist_file)
+        sinks.append(hw)
+
+        # Put it all together
+        self.hists = ChainedDict(source=sources, sink=sinks)
+        return
+
+
+    def drawer(self, name, **kwds):
+        'draws the named histogram into the canvas'
         canvas.Clear()
         try:
-            h = hists[name]
+            h = self.hists[name]
         except KeyError, msg:
-            print msg
             canvas.SetLogy(False)
             canvas.Range(-1,-1,1,1)
             tt = ROOT.TText()
             tt.DrawText(-1.0,.00,str(msg))
         else:
-            canvas.SetLogy()
+            canvas.SetLogy(self.logy)
             h.Draw()
+        return
 
-    # Make a single file, multi page PDF and a directory of single file pdfs and pngs
-    out_dir = 'magic_plots'
-    printers = [
-        PrintManager(drawer=drawer, printer=canvas.Print, filenamer = SingleShot(out_dir,ext))
-        for ext in ['pdf','png']]
-    with MultiPrinter(filename=out_dir+'.pdf', printer = canvas.Print) as printer:
-        mp = PrintManager(drawer=drawer, printer = printer, filenamer = shunt)
-        printers.append(mp)
-        for pc in pcs:
-            for params in pc.configitems():
-                name = pc.name_pat.format(**params)
-                print 'Printing histogram "%s"' % name
-                for printer in printers:
-                    printer(name)
+    def plots(self):
 
-    # Catch any new histograms that were added
-    # fixme: do this with a context manager?
-    hist_file.Write()
+        print_mgrs = []         # filled below
+        
+        def print_sources(sources):
+            if not sources: 
+                return
+            for src in sources:
+                self.logy = src.val('logy')
+                for name in src.keys():
+                    for pm in print_mgrs:
+                        pm(name)
+            return
 
 
+        out_dir = self.val('out_dir')
+        for ext in ['pdf','png']:
+            pm = PrintManager(drawer=self.drawer, printer=maybe_print, 
+                              filenamer = SingleShot(out_dir,ext))
+            print_mgrs.append(pm)
 
-    
+        with MultiPrinter(filename=out_dir+'.pdf', printer = quiet_print) as printer:
+            mp = PrintManager(drawer=self.drawer, printer = printer, filenamer = shunt)
+            print_mgrs.append(mp)
+
+            for hs_name, hs_objects in self.hist_source_objects.items():
+                print_sources(hs_objects)
+
+        # Catch any new histograms that were added
+        # fixme: do this with a context manager?
+        self.hist_file.Write()
+
+
+
+

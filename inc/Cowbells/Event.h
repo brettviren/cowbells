@@ -45,7 +45,8 @@ namespace Cowbells {
     public:
         int trackid;          // g4 track id number
         int parentid;         // track ID number of parent;
-        int proctype;         // // g4 process type
+        int proctype;         // // g4 process type that produced the particle taking the step
+        int procsubtype;      // // g4 process sub type
         int pdgid;            // pdg particle id
         int mat1, mat2;       // material index before/after the step
         int stepnum;          // step number in track

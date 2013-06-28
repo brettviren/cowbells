@@ -120,7 +120,8 @@ bool pass_qe(G4Track* track)
 
     // extreme debugging
     if (false) {
-        cerr << "energy=" << energy << ", qe=" << qe << ", rand=" << live_or_die;
+        cerr << "energy=" << energy << ", qe=" << qe << ", rand=" << live_or_die
+	     << " in " << mat->GetName();
         if (live_or_die < qe) {
             cerr << " LIVE!" << endl;
         }
@@ -145,11 +146,29 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     CLHEP::Hep3Vector pos = psp->GetPosition();
     G4TouchableHandle touch = psp->GetTouchableHandle();
 
-    if (!pass_qe(track)) { return true; }
-
     int depth = touch->GetHistoryDepth();
     G4VPhysicalVolume* pv = touch->GetVolume();
     G4LogicalVolume* lv = pv->GetLogicalVolume();
+
+    if (false) {
+        cerr << " PV:" << pv->GetName() 
+	     << " LV:" << lv->GetName()
+             << " trackid: " << track->GetTrackID()
+             << " from: " << track->GetParentID()
+             << " energy: " << track->GetTotalEnergy()
+	     << " hdepth: " << depth
+	     << " deltaT: " << aStep->GetDeltaTime()
+	     << " first?: " << aStep->IsFirstStepInVolume()
+	     << " last?: " << aStep->IsLastStepInVolume()
+	     << " stepL: " << aStep->GetStepLength()
+             << " gt=" << track->GetGlobalTime()
+             << " lt=" << track->GetLocalTime()
+             << " pt=" << track->GetProperTime()
+             << " v=[" << pos.x() << "," << pos.y() << "," << pos.z() << "]"
+             << endl;
+    }
+    if (!pass_qe(track)) { return true; }
+
 
     if (!fHC) {
         cerr  << "No hit collection for PV: " << pv->GetName() << endl;
@@ -190,8 +209,8 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
 
     hit->setEnergy(track->GetTotalEnergy());
     hit->setTime(track->GetGlobalTime());
-//    cerr << "Hit on: [" << hcid << ":" << id << "] at " 
-//	 << setiosflags(ios::fixed) << setprecision(2) << hit->time() << " ns (" << tname << ")" <<  endl;
+    //cerr << "Hit on: [" << hcid << ":" << id << "] at " 
+    //     << setiosflags(ios::fixed) << setprecision(2) << hit->time() << " ns (" << tname << ")" <<  endl;
     hit->setPos(pos.x(),pos.y(),pos.z());
     hit->setVolId(id);
     hit->setHcId(hcid);
@@ -204,6 +223,9 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
 	hit->setpSubType(info->process_subtype());
     }
     else {
+	hit->setPdgId(-1);
+	hit->setpType(-1);
+	hit->setpSubType(-1);
 	cerr << "No user info for track " << track->GetTrackID() << endl;
     }
 

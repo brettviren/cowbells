@@ -41,6 +41,7 @@ class Writer(DictMixin):
         return self._data[name]
 
     def __setitem__(self, name, value):
+        print 'Writer: "%s" --> %s' % (name, self._tdir.GetName())
         if self._lazy:
             value.SetDirectory(self._tdir)
         else:

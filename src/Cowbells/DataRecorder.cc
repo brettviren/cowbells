@@ -281,6 +281,7 @@ void Cowbells::DataRecorder::add_step(const G4Step* step)
     const G4VProcess* proc = track->GetCreatorProcess();
     if (proc) {
         cb_step.proctype = proc->GetProcessType();
+        cb_step.procsubtype = proc->GetProcessSubType();
     }
 
     cb_step.stepnum = track->GetCurrentStepNumber();
@@ -313,8 +314,8 @@ void Cowbells::DataRecorder::add_step(const G4Step* step)
 
             TrackStackMap_t::iterator it = m_track2stack_index.find(cb_step.trackid);
             if (it == m_track2stack_index.end()) {
-                cerr << "Stepping track #"<< cb_step.trackid
-                     << " before it's been stacked?" << endl;
+                //cerr << "Stepping track #"<< cb_step.trackid
+                //     << " before it's been stacked?" << endl;
             }
             else {
                 Cowbells::Stack& cb_stack = m_event->stacks[it->second];

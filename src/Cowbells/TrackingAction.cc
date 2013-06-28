@@ -38,6 +38,12 @@ void Cowbells::TrackingAction::PostUserTrackingAction(const G4Track* track)
 
     if (false) {
 	std::cout << "PUTA: " 
+		  << "tid=" << track->GetTrackID() << ", "
+		  << "pdg=" << track->GetDefinition()->GetPDGEncoding() << ":"
+		  << track->GetDefinition()->GetParticleName() << "("
+		  << track->GetDefinition()->GetParticleType() << ","
+		  << track->GetDefinition()->GetParticleSubType() << "), "
+		  << "energy=" << track->GetKineticEnergy() << ", "
 		  << "ptid=" << info->parent_tid() << ", " 
 		  << "ppdg=" << info->parent_pdg() << ", " 
 		  << "ptype=" << info->process_type() << ", "
@@ -66,10 +72,9 @@ void Cowbells::TrackingAction::PostUserTrackingAction(const G4Track* track)
     for (size_t ind=0; ind<ndaughters; ++ind) {
 	Cowbells::TrackInformation* di = new Cowbells::TrackInformation(info);
 	di->set_parent_pdg(track->GetDefinition()->GetPDGEncoding());
+	di->set_parent_tid(track->GetTrackID());
 	(*daughters)[ind]->SetUserInformation(di);
-	track->GetDefinition()->GetPDGEncoding(); 
     }
-
 
 }
 
