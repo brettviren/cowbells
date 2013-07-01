@@ -222,13 +222,31 @@ refl\% & upstream & downstream & u/d  (\%) & u/d unc (\%) & \# up\\
 \section {dE/dX}
 
 \begin{frame}[fragile]
-  \frametitle{dE/dX 475 MeV and 2 GeV protons in Water and WBLS01}
+  \frametitle{dE(MeV) 475 MeV / 2 GeV protons in Water/WBLS01}
 
-  \includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_dedx_total.pdf}%
-  \includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_dedx_total.pdf}
+  \includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_dedx_totalde.pdf}%
+  \includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_dedx_totalde.pdf}
 
-  \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_dedx_total.pdf}%
-  \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_dedx_total.pdf}
+  \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_dedx_totalde.pdf}%
+  \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_dedx_totalde.pdf}
+\end{frame}
+\begin{frame}[fragile]
+  \frametitle{dX(cm) 475 MeV / 2 GeV protons in Water/WBLS01}
+
+  \includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_dedx_totaldx.pdf}%
+  \includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_dedx_totaldx.pdf}
+
+  \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_dedx_totaldx.pdf}%
+  \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_dedx_totaldx.pdf}
+\end{frame}
+\begin{frame}[fragile]
+  \frametitle{dE/dX 475 MeV / 2 GeV protons in Water/WBLS01}
+
+  \includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_dedx_totaldedx.pdf}%
+  \includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_dedx_totaldedx.pdf}
+
+  \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_dedx_totaldedx.pdf}%
+  \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_dedx_totaldedx.pdf}
 \end{frame}
 
 \section{PE/MeV Lost}
@@ -277,6 +295,27 @@ refl\% & upstream & downstream & u/d  (\%) & u/d unc (\%) & \# up\\
 \subsection{Timing}
 
 \begin{frame}[fragile]
+  \frametitle{475 MeV / 2 GeV, timing: (Water)}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_timing_all_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_timing_all_pmt1.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_timing_all_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_timing_all_pmt1.pdf}%
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{475 MeV / 2 GeV, timing: (WBLS01)}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_timing_all_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_timing_all_pmt1.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_timing_all_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_timing_all_pmt1.pdf}%
+\end{frame}
+
+
+\begin{frame}[fragile]
   \frametitle{475 MeV timing:  ``primary'' and ``hioni''(Water)}
 
 \includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_timing_primary_pmt0.pdf}%
@@ -287,17 +326,6 @@ refl\% & upstream & downstream & u/d  (\%) & u/d unc (\%) & \# up\\
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{2 GeV timing:  ``primary'' and ``hioni''(Water)}
-
-\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_timing_primary_pmt0.pdf}%
-\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_timing_primary_pmt1.pdf}%
-
-\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_timing_hioni_pmt0.pdf}%
-\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_timing_hioni_pmt1.pdf}%
-\end{frame}
-
-
-\begin{frame}[fragile]
   \frametitle{475 MeV timing: ``primary'' and ``hioni'' (WBLS01)}
 
 \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_timing_primary_pmt0.pdf}%
@@ -305,6 +333,17 @@ refl\% & upstream & downstream & u/d  (\%) & u/d unc (\%) & \# up\\
 
 \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_timing_hioni_pmt0.pdf}%
 \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_timing_hioni_pmt1.pdf}%
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{2 GeV timing:  ``primary'' and ``hioni''(Water)}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_timing_primary_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_timing_primary_pmt1.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_timing_hioni_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_timing_hioni_pmt1.pdf}%
 \end{frame}
 
 \begin{frame}[fragile]
@@ -321,6 +360,26 @@ refl\% & upstream & downstream & u/d  (\%) & u/d unc (\%) & \# up\\
 \subsection{Charge}
 
 \begin{frame}[fragile]
+  \frametitle{475 MeV / 2 GeV, charge: (Water)}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_charge_all_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_charge_all_pmt1.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_charge_all_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_charge_all_pmt1.pdf}%
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{475 MeV / 2 GeV, charge: (WBLS01)}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_charge_all_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_charge_all_pmt1.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_charge_all_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/wbls01_2gev_charge_all_pmt1.pdf}%
+\end{frame}
+
+\begin{frame}[fragile]
   \frametitle{475 MeV: charge: ``primary'' and ``hioni'' (Water)}
 
 \includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_charge_primary_pmt0.pdf}%
@@ -329,16 +388,6 @@ refl\% & upstream & downstream & u/d  (\%) & u/d unc (\%) & \# up\\
 \includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_charge_hioni_pmt0.pdf}%
 \includegraphics[width=0.45\textwidth]{magic_plots/water_475mev_charge_hioni_pmt1.pdf}%
 \end{frame}
-\begin{frame}[fragile]
-  \frametitle{2 Gev: charge: ``primary'' and ``hioni'' (Water)}
-
-\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_charge_primary_pmt0.pdf}%
-\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_charge_primary_pmt1.pdf}%
-
-\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_charge_hioni_pmt0.pdf}%
-\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_charge_hioni_pmt1.pdf}%
-\end{frame}
-
 
 \begin{frame}[fragile]
   \frametitle{475 MeV: charge: ``primary'' and ``hioni'' (WBLS01)}
@@ -348,6 +397,16 @@ refl\% & upstream & downstream & u/d  (\%) & u/d unc (\%) & \# up\\
 
 \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_charge_hioni_pmt0.pdf}%
 \includegraphics[width=0.45\textwidth]{magic_plots/wbls01_475mev_charge_hioni_pmt1.pdf}%
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{2 Gev: charge: ``primary'' and ``hioni'' (Water)}
+
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_charge_primary_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_charge_primary_pmt1.pdf}%
+
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_charge_hioni_pmt0.pdf}%
+\includegraphics[width=0.45\textwidth]{magic_plots/water_2gev_charge_hioni_pmt1.pdf}%
 \end{frame}
 \begin{frame}[fragile]
   \frametitle{2 GeV: charge: ``primary'' and ``hioni'' (WBLS01)}
@@ -362,7 +421,28 @@ refl\% & upstream & downstream & u/d  (\%) & u/d unc (\%) & \# up\\
 \subsection {Whither Cherenkov}
 
 \begin{frame}[fragile]
-  \frametitle{475 MeV: timing and charge for Cherenkov process}
+  \frametitle{475 MeV: timing/charge, Cherenkov Parent (Water)}
+
+\includegraphics[width=0.42\textwidth]{magic_plots/water_475mev_timing_cerenkov_pmt0.pdf}%
+\includegraphics[width=0.42\textwidth]{magic_plots/water_475mev_charge_cerenkov_pmt0.pdf}%
+
+\includegraphics[width=0.42\textwidth]{magic_plots/water_475mev_timing_cerenkov_pmt1.pdf}%
+\includegraphics[width=0.42\textwidth]{magic_plots/water_475mev_charge_cerenkov_pmt1.pdf}%
+
+\end{frame}
+\begin{frame}[fragile]
+  \frametitle{2 GeV: timing/charge, Cherenkov Parent (Water)}
+
+\includegraphics[width=0.42\textwidth]{magic_plots/water_2gev_timing_cerenkov_pmt0.pdf}%
+\includegraphics[width=0.42\textwidth]{magic_plots/water_2gev_charge_cerenkov_pmt0.pdf}%
+
+\includegraphics[width=0.42\textwidth]{magic_plots/water_2gev_timing_cerenkov_pmt1.pdf}%
+\includegraphics[width=0.42\textwidth]{magic_plots/water_2gev_charge_cerenkov_pmt1.pdf}%
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{475 MeV: timing/charge, Cherenkov Parent (WBLS01)}
 
 \includegraphics[width=0.42\textwidth]{magic_plots/wbls01_475mev_timing_cerenkov_pmt0.pdf}%
 \includegraphics[width=0.42\textwidth]{magic_plots/wbls01_475mev_charge_cerenkov_pmt0.pdf}%
@@ -372,7 +452,7 @@ refl\% & upstream & downstream & u/d  (\%) & u/d unc (\%) & \# up\\
 
 \end{frame}
 \begin{frame}[fragile]
-  \frametitle{2 GeV: timing and charge for Cherenkov process}
+  \frametitle{2 GeV: timing/charge, Cherenkov Parent (WBLS01)}
 
 \includegraphics[width=0.42\textwidth]{magic_plots/wbls01_2gev_timing_cerenkov_pmt0.pdf}%
 \includegraphics[width=0.42\textwidth]{magic_plots/wbls01_2gev_charge_cerenkov_pmt0.pdf}%

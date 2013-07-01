@@ -8,6 +8,7 @@ from UserDict import DictMixin
 from collections import defaultdict
 
 process_idname = {
+    (): 'all',
     ( 0, 0): 'primary',
     ( 2, 2): 'eioni',
     ( 2, 2): 'hioni',
@@ -227,6 +228,12 @@ class PerChannel(BaseHistogramSource):
                 t_hist.Fill(hit.time())
                 q_hist = self.get_hist(quant='charge', **d)
                 charges[q_hist] += 1
+
+                d['process'] = 'all'
+                t_hist = self.get_hist(quant='timing', **d)
+                t_hist.Fill(hit.time())
+                q_hist = self.get_hist(quant='charge', **d)
+                charges[q_hist] += 1
                 continue
             for qhist, q in charges.items():
                 qhist.Fill(q)
@@ -239,7 +246,9 @@ class DeDxPlots(BaseHistogramSource):
 
     name_pat = '{sample}_{energy}_dedx_{quant}'
     title_pat = 'PE/MeV energy loss in {quant} for {energy} protons in {sample}'
-    tot_title_pat = 'Total dE/dX (MeV/cm) for {energy} protons in {sample}'
+    totdedx_title_pat = 'Total dE/dX (MeV/cm) for {energy} protons in {sample}'
+    totde_title_pat = 'Total dE (MeV) for {energy} protons in {sample}'
+    totdx_title_pat = 'Total dX (cm) for {energy} protons in {sample}'
     
     hcids = range(2)
     hcid_names = ['trigger','pmt']
@@ -265,7 +274,7 @@ class DeDxPlots(BaseHistogramSource):
                 yield '%s%d' % (hcid_name, volid)
 
     def keys(self):
-        ret = [self.get_name(quant='total')]
+        ret = [self.get_name(quant=q) for q in ['totaldedx','totalde','totaldx']]
         for quant in self.channels():
             ret.append(self.get_name(quant=quant))
         return ret
@@ -279,8 +288,12 @@ class DeDxPlots(BaseHistogramSource):
         return h
 
     def book(self):
-        self.h_tot = self.make_hist('total', (1000, 0, 10), 
-                                    title = self.format(self.tot_title_pat))
+        self.h_totdedx = self.make_hist('totaldedx', (1000, 0, 10), 
+                                        title = self.format(self.totdedx_title_pat))
+        self.h_totde = self.make_hist('totalde', (1000, 0, 100), 
+                                        title = self.format(self.totde_title_pat))
+        self.h_totdx = self.make_hist('totaldx', (1000, 0, 20), 
+                                        title = self.format(self.totdx_title_pat))
         self.h_chan = {}
         for hcid,hcid_name in zip(self.val('hcids'), self.val('hcid_names')):
             for volid in self.val('volids'):
@@ -292,14 +305,17 @@ class DeDxPlots(BaseHistogramSource):
         for entry in self._tree:
             pathlen, eloss, enoni = \
                 dedx_in_material(entry.event.steps, self.get_material_number())
-            if pathlen == 0:
-                continue
 
             eloss_mev = eloss/units.MeV
             pathlen_cm = pathlen/units.cm
 
+            self.h_totde.Fill(eloss_mev)
+            self.h_totdx.Fill(pathlen_cm)
+
+            if pathlen == 0:
+                continue
             dedx = eloss_mev / pathlen_cm
-            self.h_tot.Fill(dedx)
+            self.h_totdedx.Fill(dedx)
 
             if eloss == 0.0:
                 continue
