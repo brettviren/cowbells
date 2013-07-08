@@ -1,6 +1,7 @@
 #include "Cowbells/PrimaryGeneratorBeam.h"
 #include "Cowbells/PrimaryGeneratorUtil.h"
 #include "Cowbells/strutil.h"
+
 #include <G4ParticleDefinition.hh>
 #include <G4ParticleTable.hh>
 
@@ -15,6 +16,7 @@ Cowbells::PrimaryGeneratorBeam::PrimaryGeneratorBeam(const char* kindesc)
 {
     if (kindesc) this->SetKinDesc(kindesc);
 }
+
 
 Cowbells::PrimaryGeneratorBeam::~PrimaryGeneratorBeam()
 {
@@ -33,21 +35,22 @@ Cowbells::PrimaryGeneratorBeam::~PrimaryGeneratorBeam()
  * timedist STRING - set timerator (default exponential)
  * period FLOAT - set time period in seconds (default 1 second)
  * starting TIME - set starting time in seconds (default 0 seconds)
+ * spread FLOAT - and angular spread in the beam
  */
-void Cowbells::PrimaryGeneratorBeam::SetKinDesc(const char* kindesc)
+void Cowbells::PrimaryGeneratorBeam::ApplyKinDesc()
 {
-    cout << "Setting kinematics to: \"" << kindesc << "\"" << endl;
+    cout << "Setting kinematics to: \"" << m_kindesc << "\"" << endl;
 
     const string delim = "&";
     string name = "";
 
     G4ParticleDefinition* particle = 0;
 
-    name = get_startswith_rest(kindesc,"name=",delim);
+    name = get_startswith_rest(m_kindesc,"name=",delim);
     if (name != "") {
         particle = G4ParticleTable::GetParticleTable()->FindParticle(name.c_str());
     }
-    name = get_startswith_rest(kindesc,"pdgcode=",delim);
+    name = get_startswith_rest(m_kindesc,"pdgcode=",delim);
     if (name != "") {
         int pdgcode = atol(name.c_str());
         particle = G4ParticleTable::GetParticleTable()->FindParticle(pdgcode);
@@ -60,14 +63,15 @@ void Cowbells::PrimaryGeneratorBeam::SetKinDesc(const char* kindesc)
         cout << "Using particle: \"" << particle->GetParticleName() << "\"" << endl;
     }
         
-    int count = uri_integer(kindesc, "count", 1);
+    int count = uri_integer(m_kindesc, "count", 1);
 
-    G4ThreeVector vertex = uri_threevector(kindesc,"vertex");
-    G4ThreeVector direction = uri_threevector(kindesc,"direction", G4ThreeVector(0,0,1));
-    G4ThreeVector pol = uri_threevector(kindesc,"pol");
-    double energy = uri_double(kindesc,"energy");
+    G4ThreeVector vertex = uri_threevector(m_kindesc,"vertex");
+    G4ThreeVector direction = uri_direction(m_kindesc);
 
-    m_timer->set_uri(kindesc);
+    G4ThreeVector pol = uri_threevector(m_kindesc,"pol");
+    double energy = uri_double(m_kindesc,"energy");
+
+    m_timer->set_uri(m_kindesc);
 
     if (m_gun) delete m_gun;
     m_gun = new G4ParticleGun(count);
@@ -83,6 +87,7 @@ void Cowbells::PrimaryGeneratorBeam::SetKinDesc(const char* kindesc)
 
 void Cowbells::PrimaryGeneratorBeam::GeneratePrimaries(G4Event* gevt)
 {
+    this->ApplyKinDesc();
     m_gun->SetParticleTime(m_timer->gen());
     m_gun->GeneratePrimaryVertex(gevt);
 }

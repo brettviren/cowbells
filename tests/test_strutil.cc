@@ -115,6 +115,24 @@ void test_lower()
     }
 }
 
+void test_direction()
+{
+    const char* url[] = {
+	"kin://beam?vertex=0,0,1&name=opticalphoton&direction=0,0,1&energy=0.000003&pol=0,1,0&spread=1.571&count=100",
+	"kin://beam?vertex=0,0,1&name=opticalphoton&direction=0,0,1&energy=0.000003&pol=0,1,0&spread=1&count=100",
+	"kin://beam?vertex=0,0,1&name=opticalphoton&direction=0,0,1&energy=0.000003&pol=0,1,0&spread=0.001&count=100",
+	0
+    };
+    for (int idir = 0; url[idir]; ++idir) {
+	cout << "Directions from " << idir << ": " << url[idir] << endl;
+	for (int ind=0; ind < 10; ++ind) {
+	    G4ThreeVector dir = uri_direction(url[idir]);
+	    cout << "\t" << ind << ": " << dir << endl;
+	}
+    }
+}
+
+
 int main(int argc, char *argv[])
 {
     const char* strings[] = {
@@ -151,5 +169,6 @@ int main(int argc, char *argv[])
     test_startswith();
     test_startswith2();
     test_lower();
+    test_direction();
     return 0;
 }

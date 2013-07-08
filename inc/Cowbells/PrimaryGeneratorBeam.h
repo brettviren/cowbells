@@ -38,23 +38,29 @@ public:
      *
      * pdgcode INT - set the particle type by PDG code
      * name STRING - set the particle by canonical name (pdgcode overrides)
-     * vertex FLOAT,FLOAT,FLAOT - set the gun's vertex 
-     * direction FLOAT,FLOAT,FLAOT - set the gun's direction 
+     * vertex FLOAT,FLOAT,FLOAT - set the gun's vertex 
+     * direction FLOAT,FLOAT,FLOAT - set the gun's direction 
      * energy FLOAT - set the particle's kinetic energy (in the s.o.u.: MeV)
      * pol FLOAT,FLOAT,FLOAT - set the particle's polarization
      * count INT - set the per-event particle multiplicity 
+     * spread FLOAT - set the angular spread of the beam
      */
-    virtual void SetKinDesc(const char* kindesc);
+    virtual void SetKinDesc(const char* kindesc) {
+	m_kindesc = kindesc;
+    }
 
 
     // Required interface
     void GeneratePrimaries(G4Event*);
 
 private:
+    void ApplyKinDesc();
 
     Cowbells::Timerator* m_timer;
     G4ParticleGun* m_gun;
     int m_count;
+
+    const char* m_kindesc;
 
 };
 

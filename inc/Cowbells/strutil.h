@@ -48,6 +48,10 @@ namespace Cowbells {
 
     /// Return named URI query argument as a double
     double uri_double(const std::string& argstr, const std::string& name, double def = 0.0);
+
+    /// Return a direction from the URL, honoring theta/phi parameters
+    G4ThreeVector uri_direction(const std::string& argstr);
+
 }
 
 

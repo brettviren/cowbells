@@ -2,6 +2,8 @@
 #include <cassert>
 #include <algorithm>
 
+#include <Randomize.hh>
+
 using namespace std;
 
 std::string Cowbells::lower(const std::string str)
@@ -114,4 +116,40 @@ double Cowbells::uri_double(const std::string& argstr, const std::string& name, 
     string found = Cowbells::get_startswith_rest(argstr, find, "&");
     if (!found.size()) { return def; }
     return atof(found.c_str());
+}
+
+
+/// Return a direction based on URI
+G4ThreeVector Cowbells::uri_direction(const std::string& argstr)
+{
+    G4ThreeVector init = Cowbells::uri_threevector(argstr, "direction",  G4ThreeVector(0,0,1));
+    double spread = Cowbells::uri_double(argstr, "spread", 0.0);
+
+    if (spread == 0.0) {
+	return init;
+    }
+    
+    double costh = cos(spread);
+    costh = costh + (1-costh)* G4UniformRand();
+    double sinth = sqrt(1-costh*costh);
+
+    double rphi = 2*3.14159 * G4UniformRand();
+    double cosphi = cos(rphi);
+    double sinphi = sin(rphi);
+
+    cout << "spread=" << spread
+	 << " rphi=" << rphi
+	 << " costh=" << costh
+	 << " cosphi=" << cosphi
+	 << endl;
+
+    G4ThreeVector dir;
+    dir.set(sinth*cosphi,sinth*sinphi,costh);
+
+    // rotate along Y-axis by the mean direction's theta
+    dir.rotateY(acos(init.z()));
+    // rotate along Z-axis by the mean direction's phi
+    dir.rotateZ(atan2(init.y(), init.x()));
+
+    return dir;
 }
