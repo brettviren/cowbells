@@ -20,14 +20,16 @@ class Builder(base.Builder):
 
     # From "1000 liter prototype 20130702 Detector Concept document from David
     default_params = {
-        'env_thickness': 100*mm,
+        'env_thickness': 10*mm,
+        'gap_thickness': 10*mm,
         'cyl_diameter': 44.7*inch,
         'cyl_height': 45.0*inch,
         'wall_thickness': 0.75*inch, # or 0.375, 0.500, 0.750, 1.000
         'lid_thickness': 25*mm,      # or 9, 12, 18 or 25 mm
         }
     default_parts = {
-        'Envelope': 'Air',
+        'Envelope': 'Bialkali',
+        'Gap': 'Air',
         'Aquarium': 'Acrylic',
         'Sample': 'Water',
         }
@@ -41,13 +43,20 @@ class Builder(base.Builder):
         inner_radius = outer_radius - parms.wall_thickness
         inner_hheight =  0.5*parms.cyl_height
         outer_hheight = inner_hheight + parms.lid_thickness
-        env_radius = outer_radius + parms.env_thickness
-        env_hheight = outer_hheight + parms.lid_thickness + parms.env_thickness
+        gap_radius =   outer_radius + parms.gap_thickness
+        gap_hheight = outer_hheight + parms.gap_thickness
+        env_radius =     gap_radius + parms.env_thickness
+        env_hheight =   gap_hheight + parms.env_thickness
         
         shape = Tubs(self.shapename('Envelope'), 
                      dz = env_hheight, rmax = env_radius)
         lv = LogicalVolume(self.lvname('Envelope'),
                            matname = parts.Envelope, shape = shape)
+
+        shape = Tubs(self.shapename('Gap'), 
+                     dz = gap_hheight, rmax = gap_radius)
+        LogicalVolume(self.lvname('Gap'),
+                      matname = parts.Gap, shape = shape)
 
         shape = Tubs(self.shapename('Aquarium'), 
                      dz = outer_hheight, rmax = outer_radius)
@@ -64,12 +73,22 @@ class Builder(base.Builder):
     def place(self):
         'Do internal placements.'
 
-        p = self.pp()[0]
-
+        PhysicalVolume(self.pvname('Gap'),
+                       self.lvname('Gap'),self.lvname('Envelope'))
         PhysicalVolume(self.pvname('Aquarium'),
-                       self.lvname('Aquarium'),self.lvname('Envelope'))
+                       self.lvname('Aquarium'),self.lvname('Gap'))
         PhysicalVolume(self.pvname('Sample'),
                        self.lvname('Sample'),self.lvname('Aquarium'))
 
         #self._surface()
         return
+
+    def sensitive(self):
+        from cowbells.geom import sensitive
+
+        what = 'Envelope'
+        sdname = self.sensname(what)
+        hcname = self.hitcolname(what)
+        lvname = self.lvname(what)
+        sd = sensitive.SensitiveDetector(sdname,hcname,lvname)
+        print sdname, 'touchables:', sd.touchables()
