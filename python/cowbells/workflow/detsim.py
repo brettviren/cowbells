@@ -33,7 +33,9 @@ output_parameters = ParameterSet(
 
 @bein.program
 def cbexe(**kwds):
-    cmdstr = "{cowbellsexe} -n {nevents} -p {physics} -m {outmod} -k kin://{kin}?vertex={x},{y},{z}&name={particle}&direction={dx},{dy},{dz}&energy={energy} -o {simfile} {cb_extra_args} {geofile}"
+    cmdstr = '{cowbellsexe} -n {nevents} -p {physics} -m {outmod} -k '
+    cmdstr += '-o {simfile} {cb_extra_args} {geofile}'
+    cmdstr += " \'kin://{kin}?vertex={x},{y},{z}&particle={particle}&direction={dx},{dy},{dz}&energy={energy}\' "
     cmdstr = cmdstr.format(**kwds)
     cmd = cmdstr.split()
     print cmd

@@ -60,7 +60,7 @@ private:
     G4ParticleGun* m_gun;
     int m_count;
 
-    const char* m_kindesc;
+    std::string m_kindesc;
 
 };
 

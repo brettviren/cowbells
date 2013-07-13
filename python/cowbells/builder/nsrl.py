@@ -167,7 +167,7 @@ class Builder_13a(base.Builder):
     pass
 
 
-def Builder(experiment, **kwds):
+def Builder(experiment="13a", **kwds):
     if experiment.lower() in ["12c"]:
         return Builder_12c(**kwds)
     return Builder_13a(**kwds)

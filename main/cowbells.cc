@@ -63,6 +63,9 @@ G4VUserPrimaryGeneratorAction* make_generator(Json::Value cfg, const char* okin)
     if (okin) {                 // command line take precedence
         cerr << "Using command line option: \"" << okin << "\"" << endl;
         vector<string> kin = uri_split(opt(oKIN));
+	//for (size_t ind=0; ind< kin.size(); ++ind) {
+	//    cerr << ind << ": " << kin[ind] << endl;
+	//}
         if (!kin.size()) {
             cerr << "Bad kinematics URL: \"" << okin << "\"" << endl;
             return 0;

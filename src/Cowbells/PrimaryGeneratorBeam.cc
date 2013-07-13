@@ -13,6 +13,7 @@ Cowbells::PrimaryGeneratorBeam::PrimaryGeneratorBeam(const char* kindesc)
     : G4VUserPrimaryGeneratorAction()
     , m_timer(new Cowbells::Timerator)
     , m_gun(0)
+    , m_kindesc("")
 {
     if (kindesc) this->SetKinDesc(kindesc);
 }
