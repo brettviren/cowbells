@@ -150,6 +150,7 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
     G4VPhysicalVolume* pv = touch->GetVolume();
     G4LogicalVolume* lv = pv->GetLogicalVolume();
 
+    if (!pass_qe(track)) { return true; }
     if (false) {
         cerr << " PV:" << pv->GetName() 
 	     << " LV:" << lv->GetName()
@@ -167,7 +168,6 @@ G4bool Cowbells::SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistor
              << " v=[" << pos.x() << "," << pos.y() << "," << pos.z() << "]"
              << endl;
     }
-    if (!pass_qe(track)) { return true; }
 
 
     if (!fHC) {

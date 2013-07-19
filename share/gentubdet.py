@@ -31,8 +31,8 @@ def gen(args):
     default.all()
 
     worldb = world.Builder()
-    tdb = tubdet.Builder( TubBottom = args.tub, TubSide = args.tub,
-                          TubLid = args.tub, Sample = args.sample )
+    tdb = tubdet.Builder( Bottom = args.tub, Side = args.tub,
+                          Lid = args.tub, Sample = args.sample )
 
     worldlv = worldb.top()      # needs to come first
     td = tdb.top()
