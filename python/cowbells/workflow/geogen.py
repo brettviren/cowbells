@@ -5,9 +5,36 @@
 #from btdtwf.son.nodes import wrap_connection_keywords, wrap_format_keywords
 
 
+import os
 import sys
 import ConfigParser
 import btdtwf
+import ConfigParser
+
+def make_simple_config(ignored, **kwds):
+    cfgfilename = kwds.get('cfgfile','test.cfg')
+    print 'make_config("%s")' % cfgfilename
+
+    cfg = ConfigParser.SafeConfigParser()
+    cfg.optionxform = str       # why would we want to lose case?
+    section = 'defaults'
+    cfg.add_section(section)
+    cfg.set(section, 'section', 'geometry test')
+
+    section = 'geometry test'
+    cfg.add_section(section)
+    cfg.set(section, 'builder', 'cowbells.builder.nsrl')
+    cfg.set(section, 'builder_options', 'nsrl water')
+    cfg.set(section, 'geofile', 'nsrl-{sample}.json')
+    section = 'nsrl water'
+    cfg.add_section(section)
+    cfg.set(section, 'sample', 'Water')
+
+    with open(cfgfilename,'w') as fp:
+        cfg.write(fp)
+        print 'writing %s in %s' % (cfgfilename, os.getcwd())
+    return cfgfilename
+
 
 def parse_config(filename, **params):
     '''Parse configuration file to provide direction for generating
