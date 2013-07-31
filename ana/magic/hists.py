@@ -141,6 +141,17 @@ class BaseHistogramSource(DictMixin, DefaultParams):
         sample = self.val('sample').lower()
         return self.sample2material[sample]
 
+
+# TC's are hcid == 0
+# PMTs are hcid == 1
+def pass_double_trigger(entry):
+    count = defaultdict(int)
+    for hit in entry.event.hc:
+        count[(hit.hcId(),hit.volId())] += 1
+    if count[(0,0)] > 0 and count[(0,1)] > 0:
+        return True
+    return False
+
 class PerChannel(BaseHistogramSource):
     '''
     Make some timing/charge plots based on readout and physics channels.
@@ -218,6 +229,8 @@ class PerChannel(BaseHistogramSource):
 
     def fill(self):
         for entry in self._tree:
+            if not pass_double_trigger(entry):
+                continue
             charges = defaultdict(int)
             for hit in entry.event.hc:
                 hcid, volid = hit.hcId(), hit.volId()

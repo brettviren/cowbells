@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+'''
+import magic, hists
+p = magic.Plots(hist_sources=[hists.DeDxPlots])
+p.plots()
+'''
+
                 
 import os
 
@@ -47,8 +53,8 @@ class Plots(DefaultParams):
     opt = 'update'
     out_dir = 'magic_plots'
     out_root = 'magic_plots.root'
-    read_cache = True
-    print_overwrite = False
+    read_cache = True           # If False: ignore any previously written
+    print_overwrite = False     # If True: re-print even if print file already exists
 
     hist_sources = [StepDisplay, PerChannel, DeDxPlots]
 
