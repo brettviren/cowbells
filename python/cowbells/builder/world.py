@@ -22,7 +22,7 @@ class Builder(base.Builder):
         'size' : 10*meter
         }
     default_parts = {
-        'World': 'Air'
+        'World': 'OpaqueAir'
         }
 
     def make_logical_volumes(self):

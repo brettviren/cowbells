@@ -103,7 +103,7 @@ void Cowbells::DataRecorder::close()
 
 void Cowbells::DataRecorder::add_event(const G4Event* event)
 {
-    //cerr << "Filling tree" << endl;
+    cerr << "Filling tree" << endl;
 
     if (m_save_kine) {
         int nprim = event->GetNumberOfPrimaryVertex();
@@ -173,7 +173,7 @@ void Cowbells::DataRecorder::add_event(const G4Event* event)
     m_event->clear();
     m_track2stack_index.clear();
 
-    if (false) {
+    if (true) {
         cerr << "Filled tree with " << nhits_total << " hits in "
              << m_hcnames.size() << " collections"
              << endl;
@@ -296,6 +296,17 @@ void Cowbells::DataRecorder::add_step(const G4Step* step)
     cb_step.enoni = step->GetNonIonizingEnergyDeposit();
     cb_step.dist = step->GetStepLength();
     cb_step.dt = step->GetDeltaTime();
+
+    if (false) {
+	cerr << "Step: "
+	     << " mat=" << cb_step.mat1
+	     << " track=" << cb_step.trackid
+	     << " parent=" << cb_step.parentid
+	     << " pdg="<< cb_step.pdgid 
+	     << " #" << cb_step.stepnum
+	     << " e=" << cb_step.energy1
+	     << endl;
+    }
 
     G4ThreeVector r1 = prepoint->GetPosition();
     G4ThreeVector r2 = pstpoint->GetPosition();

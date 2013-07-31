@@ -35,6 +35,8 @@ def materials():
     '''
     m = geom.materials.Material
 
+    # Retain the order - only append new entries
+
     m('Air',0.00129*gpercm3, elelist=[('n',0.7), ('o', 0.3)])
     m('Water', 1.0*gpercm3, elelist=[('h',2),        ('o', 1)])
     m('Teflon', 2.2*gpercm3, elelist=[('C',0.759814), ('F',0.240186)])
@@ -61,6 +63,8 @@ def materials():
                                      ('Na2O',0.040),('Al2O3',0.024)])
 
     m('Lead', 11.35*gpercm3, elelist=[('Pb',1.0)])
+
+    m('OpaqueAir',0.00129*gpercm3, elelist=[('n',0.7), ('o', 0.3)])
     return
 
 def optical():

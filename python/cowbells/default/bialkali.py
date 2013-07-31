@@ -33,7 +33,7 @@ full_eff = [1.0, 1.0]
 full_eff_en = [1.55*eV, 6.2*eV]
 
 
-abslength = [1*nm]*4
+abslength = [0.1*nm]*4
 rindex = [2.9]*4
 kindex = [1.5]*4
 index_energy = [x*eV for x in [1.55,6.20,10.33,15.5]]
@@ -45,7 +45,7 @@ def _optical(material = 'Bialkali'):
     geom.optical.MaterialProperty(material, 'KINDEX',    x=index_energy, y=kindex);
     geom.optical.MaterialProperty(material, 'QE', x=eff_energy, y=efficiency);
     #geom.optical.MaterialProperty(material, 'QE', x=full_eff_en, y=full_eff);
-    #geom.optical.MaterialProperty(material, 'ABSLENGTH', x=abslength, y=eff_energy);
+    geom.optical.MaterialProperty(material, 'ABSLENGTH', x=abslength, y=eff_energy);
     return
 def optical(material = None):
     material = material or ['Bialkali', 'TCBialkali']
