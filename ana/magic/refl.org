@@ -65,3 +65,173 @@ This makes the plots if they are not already made
 #+BEGIN_LATEX
 #+END_LATEX
 
+** Require trigger counters
+
+Requiring trigger counters and cataloging hits the 
+
+#+BEGIN_EXAMPLE
+Refl 0.00 (inverted=True):
+	h_ud_hittime n=    4405 avg=   18.36 rms=  0.0485
+	h_us_hittime n=       5 avg=   18.70 rms=  0.0000
+Refl 0.00 (inverted=False):
+	h_ud_hittime n=  333542 avg=   18.37 rms=  0.0389
+	h_us_hittime n=    1895 avg=   18.81 rms=  0.3953
+Refl 0.02 (inverted=True):
+	h_ud_hittime n=    3961 avg=   18.36 rms=  0.0517
+	h_us_hittime n=      11 avg=   18.69 rms=  0.5247
+Refl 0.02 (inverted=False):
+	h_ud_hittime n=  342873 avg=   18.37 rms=  0.0415
+	h_us_hittime n=     998 avg=   18.54 rms=  0.3637
+Refl 0.05 (inverted=True):
+	h_ud_hittime n=    4381 avg=   18.37 rms=  0.0520
+	h_us_hittime n=      20 avg=   18.94 rms=  0.1596
+Refl 0.05 (inverted=False):
+	h_ud_hittime n=  354535 avg=   18.38 rms=  0.0445
+	h_us_hittime n=    1635 avg=   18.67 rms=  0.3667
+Refl 0.10 (inverted=True):
+	h_ud_hittime n=    5558 avg=   18.37 rms=  0.0593
+	h_us_hittime n=      61 avg=   18.92 rms=  0.2116
+Refl 0.10 (inverted=False):
+	h_ud_hittime n=  377669 avg=   18.38 rms=  0.0486
+	h_us_hittime n=    3836 avg=   18.88 rms=  0.2767
+
+#+END_EXAMPLE
+
+Number of hits per 10k events for four reflectivity when requiring
+both trigger counters hit (norm) or not (anti) in the up stream (us)
+and down stream (ds) PMTs
+
+
+| ref% | ds/anti | us/anti | Ranti | ds/norm | us/norm | Rnorm |  Rds |  Rus |
+|------+---------+---------+-------+---------+---------+-------+------+------|
+| 0.00 |    4405 |       5 |  0.11 |  333542 |    1895 |  0.57 | 1.32 | 0.26 |
+| 0.02 |    3961 |      11 |  0.28 |  342873 |     998 |  0.29 | 1.16 | 1.10 |
+| 0.05 |    4381 |      20 |  0.46 |  354535 |    1635 |  0.46 | 1.24 | 1.22 |
+| 0.10 |    5558 |      61 |  1.10 |  377669 |    3836 |  1.02 | 1.47 | 1.59 |
+|------+---------+---------+-------+---------+---------+-------+------+------|
+#+TBLFM: $4=100*$3/$2;%.2f :: $7=100*$6/$5;%.2f :: $8=100*$2/$5;%.2f :: $9=100*$3/$6;%.2f
+
+
+* Generate a second 10k sample
+
+Make more events to see if the non-monotonicity at low reflection is some physical fluctuation in the event sample, and to fill in the gapes between data points. 
+
+Use:
+
+#+BEGIN_SRC sh :eval no
+for ref in 0.01 0.03 0.06 0.11
+do
+    name=13a-water-ref$ref
+
+    gennsrl.py $name ${name}.json reflectivity=$ref
+    cowbells.exe -m hits -n 10000 -p em,op \
+                 -k 'kin://beam?vertex=0,0,-5100&name=proton&direction=0,0,1&energy=2000' \
+                 -o ${name}.root ${name}.json > log.$name 2>&1 &
+done
+#+END_SRC
+
+#+BEGIN_EXAMPLE
+
+Refl 0.01 (inverted=True):
+	h_ds_hittime n=    4707 avg=   18.36 rms=  0.0583
+	h_us_hittime n=      22 avg=   18.38 rms=  0.4355
+Refl 0.01 (inverted=False):
+	h_ds_hittime n=  345665 avg=   18.38 rms=  0.0410
+	h_us_hittime n=     996 avg=   18.29 rms=  0.3120
+Refl 0.03 (inverted=True):
+	h_ds_hittime n=    4828 avg=   18.37 rms=  0.0557
+	h_us_hittime n=      15 avg=   18.57 rms=  0.4016
+Refl 0.03 (inverted=False):
+	h_ds_hittime n=  354386 avg=   18.38 rms=  0.0430
+	h_us_hittime n=    1293 avg=   18.44 rms=  0.3972
+Refl 0.06 (inverted=True):
+	h_ds_hittime n=    5351 avg=   18.37 rms=  0.0614
+	h_us_hittime n=      29 avg=   18.36 rms=  0.5319
+Refl 0.06 (inverted=False):
+	h_ds_hittime n=  368266 avg=   18.38 rms=  0.0455
+	h_us_hittime n=    2071 avg=   18.66 rms=  0.4009
+Refl 0.11 (inverted=True):
+	h_ds_hittime n=    5296 avg=   18.38 rms=  0.0578
+	h_us_hittime n=      61 avg=   18.90 rms=  0.2441
+Refl 0.11 (inverted=False):
+	h_ds_hittime n=  390911 avg=   18.39 rms=  0.0491
+	h_us_hittime n=    4644 avg=   18.83 rms=  0.3597
+
+#+END_EXAMPLE
+
+
+| ref% | ds anti | us anti | Ranti | ds norm | us norm | Rnorm |  Rds |  Rus |
+|------+---------+---------+-------+---------+---------+-------+------+------|
+| 0.00 |    4405 |       5 |  0.11 |  333542 |    1895 |  0.57 | 1.32 | 0.26 |
+| 0.01 |    4707 |      22 |  0.47 |  345665 |     996 |  0.29 | 1.36 | 2.21 |
+| 0.02 |    3961 |      11 |  0.28 |  342873 |     998 |  0.29 | 1.16 | 1.10 |
+| 0.03 |    4828 |      15 |  0.31 |  354386 |    1293 |  0.36 | 1.36 | 1.16 |
+| 0.05 |    4381 |      20 |  0.46 |  354535 |    1635 |  0.46 | 1.24 | 1.22 |
+| 0.06 |    5351 |      29 |  0.54 |  368266 |    2071 |  0.56 | 1.45 | 1.40 |
+| 0.10 |    5558 |      61 |  1.10 |  377669 |    3836 |  1.02 | 1.47 | 1.59 |
+| 0.11 |    5296 |      61 |  1.15 |  390911 |    4644 |  1.19 | 1.35 | 1.31 |
+|------+---------+---------+-------+---------+---------+-------+------+------|
+#+TBLFM: $4=100*$3/$2;%.2f :: $7=100*$6/$5;%.2f :: $8=100*$2/$5;%.2f :: $9=100*$3/$6;%.2f
+
+
+* Generate another 0% sample
+
+Is that uptick at 0% a statistical fluctuations?
+
+#+BEGIN_SRC sh :eval no
+for ref in 0.02
+do
+    name=13a-water-ref$ref
+
+    gennsrl.py $name ${name}.json reflectivity=$ref
+    cowbells.exe --seed 345678912 \
+                 -m hits -n 10000 -p em,op \
+                 -k 'kin://beam?vertex=0,0,-5100&name=proton&direction=0,0,1&energy=2000' \
+                 -o ${name}.root ${name}.json > log.$name 2>&1 &
+done
+
+#+END_SRC
+
+#+BEGIN_EXAMPLE
+Refl 0.00 (inverted=True):
+h_ds_hittime n=    4523 avg=   18.37 rms=  0.0518
+h_us_hittime n=      16 avg=   18.14 rms=  0.3073
+
+Refl 0.00 (inverted=False):
+h_ds_hittime n=  342181 avg=   18.38 rms=  0.0400
+h_us_hittime n=     893 avg=   18.24 rms=  0.2416
+
+Refl 0.001 (inverted=True):
+h_ds_hittime n=    4426 avg=   18.37 rms=  0.0519
+h_us_hittime n=      12 avg=   18.33 rms=  0.3663
+
+Refl 0.001 (inverted=False):
+h_ds_hittime n=  343039 avg=   18.38 rms=  0.0400
+h_us_hittime n=     997 avg=   18.25 rms=  0.2601
+
+Refl 0.01 (inverted=True):
+h_ds_hittime n=    4707 avg=   18.36 rms=  0.0583
+h_us_hittime n=      22 avg=   18.38 rms=  0.4355
+
+Refl 0.01 (inverted=False):
+h_ds_hittime n=  345665 avg=   18.38 rms=  0.0410
+h_us_hittime n=     996 avg=   18.29 rms=  0.3120
+
+Refl 0.02 (inverted=True):
+h_ds_hittime n=    4429 avg=   18.37 rms=  0.0541
+h_us_hittime n=      29 avg=   18.34 rms=  0.2959
+
+Refl 0.02 (inverted=False):
+h_ds_hittime n=  351209 avg=   18.38 rms=  0.0421
+h_us_hittime n=    1114 avg=   18.37 rms=  0.3584
+#+END_EXAMPLE
+
+
+|  ref% | ds anti | us anti | Ranti | ds norm | us norm | Rnorm |  Rds |  Rus |
+|-------+---------+---------+-------+---------+---------+-------+------+------|
+|  0.00 |    4523 |      16 |  0.35 |  342181 |     893 |  0.26 | 1.32 | 1.79 |
+| 0.001 |    4426 |      12 |  0.27 |  343039 |     997 |  0.29 | 1.29 | 1.20 |
+|  0.01 |    4707 |      22 |  0.47 |  345665 |     996 |  0.29 | 1.36 | 2.21 |
+|  0.02 |    4429 |      29 |  0.65 |  351209 |    1114 |  0.32 | 1.26 | 2.60 |
+|-------+---------+---------+-------+---------+---------+-------+------+------|
+#+TBLFM: $4=100*$3/$2;%.2f :: $7=100*$6/$5;%.2f :: $8=100*$2/$5;%.2f :: $9=100*$3/$6;%.2f

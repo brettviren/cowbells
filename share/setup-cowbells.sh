@@ -2,6 +2,9 @@
 
 # An environment setup script for a locally built cowbells
 
+export cowbells_source_dir=$(dirname $(dirname $(readlink -f $BASH_SOURCE)))
+
+
 isinpath () {
     local thing=$1 ; shift
 
@@ -35,12 +38,8 @@ pathadd () {
     echo $ret
 }
 
-cowbells-source-dir () {
-    echo $(dirname $(dirname $(readlink -f $BASH_SOURCE)))
-}
-
 cowbells-build-dir () {
-    local base=$(dirname $(cowbells-source-dir))
+    local base=$(dirname $cowbells_source_dir)
     local maybe
     for maybe in cowbells-build build ; do
 	if [ -d "$base/$maybe" ] ; then
@@ -52,7 +51,7 @@ cowbells-build-dir () {
 
 cowbells-grinst-dir () {
     local maybe
-    for maybe in ./grinst $HOME/grinst $(dirname $(cowbells-source-dir)/grinst) ; do
+    for maybe in ./grinst $HOME/grinst $(dirname ${cowbells_source_dir}/grinst) ; do
 	if [ -d "$maybe" ] ; then
 	    echo $(readlink -f $maybe)
 	    return
@@ -84,8 +83,11 @@ cowbells-virtualenv () {
     fi
 
     local maybe
-    for maybe in $HOME/venv/cowbells/bin ./venv/bin $(dirname $(cowbells-source-dir))/bin ; do
+    for maybe in $HOME/venv/cowbells/bin ./venv/bin \
+                 $(dirname ${cowbells_source_dir})/venv/bin ; do
+
 	if [ -d "$maybe" ] ; then
+	    echo "Using virtual env in $maybe"
 	    source $maybe/activate
 	    return
 	fi
@@ -94,8 +96,20 @@ cowbells-virtualenv () {
     return
 }
 
+cowbells-build () {
+    local srcdir=$cowbells_source_dir
+    local builddir=$1 ; shift
+    if [ ! -d "$builddir" ] ; then
+	builddir=$(cowbells-build-dir)
+    fi
+    pushd $builddir > /dev/null 2>&1
+    cmake -DHEPMC_DIR="$hepmc_install_dir" "$cowbells_source_dir"
+    make
+    popd > /dev/null 2>&1
+}
+
 cowbells-setup () {
-    local srcdir=$(cowbells-source-dir)
+    local srcdir=$cowbells_source_dir
     local builddir=$1 ; shift
     if [ ! -d "$builddir" ] ; then
 	builddir=$(cowbells-build-dir)
@@ -136,3 +150,4 @@ cowbells-setup () {
 	fi
     done
 }
+

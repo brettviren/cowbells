@@ -8,23 +8,40 @@ import math
 import ROOT
 import util
 
+from collections import defaultdict
+
 canvas= ROOT.TCanvas("refl","refl",850,1100)
 
 reflectivities = ['0.00', '0.02', '0.05', '0.10', '0.25', '0.50', '1.00']
+reflectivities10k = ['0.00', '0.02', '0.05', '0.10']
+#reflectivities10k2 = ['0.01', '0.03', '0.06', '0.11']
+reflectivities10k2 = ['0.00', '0.001', '0.01', '0.02']
 def parameters(**kwds):
     return util.format_dict(dict(
             simname = 'gen-nsrl-reflections',
             runname = '13a',
             sample = 'water',
-            data_dir = '/home/bviren/work/wbls/refactor/run/{simname}',
+            data_dir = '/home/bviren/work/wbls/refactor/run/{simname}/repeat',
             tree_file = '{data_dir}/{runname}-{sample}-ref{reflectivity}.root',
             out_dir = 'images/refl',
             **kwds))
+# TC's are hcid == 0
+# PMTs are hcid == 1
+def pass_double_trigger(entry):
+    count = defaultdict(int)
+    for hit in entry.event.hc:
+        count[(hit.hcId(),hit.volId())] += 1
+    if count[(0,0)] > 0 and count[(0,1)] > 0:
+        return True
+    return False
+
 
 class HistCollection(object):
 
     def __init__(self, **kwds):
+        print kwds
         self.opts = util.format_dict(kwds)
+        print self.opts
         from cowbells.ana.util import make_file_tree
 
         tree_file = self.opts.get('tree_file')
@@ -41,6 +58,10 @@ class HistCollection(object):
 
     def format(self, string, **kwds):
         d = dict(self.opts)
+        if self.opts.get('invert'):
+            d['invert'] = 'reversed'
+        else:
+            d['invert'] = 'normal'
         d.update(kwds)
         d = util.format_dict(d)
         try:
@@ -67,21 +88,21 @@ class UsDsHistCollection(HistCollection):
     Make various plots for a given tree for both upstream and downstream PMTs
     '''
     to_plot = [('nhits',(200,0,200)),
-               ('hittime', (200, 18, 22)),
+               ('hittime', (300, 16, 22)),
                ('meantime', (200, 18, 20)),
                ('rmstime', (200,0,4)),
                ('earliest_hit', (200, 16, 20)),
                ('earliest_diff', (200, -2, 2)),
                ]
 
-    out_pattern = 'images/refl/{runname}-{sample}-ref{reflectivity}-{ud}.pdf'
+    out_pattern = 'images/refl/{runname}-{sample}-ref{reflectivity}-{ud}-{invert}.pdf'
 
     def book(self):
         self._us = {}
         self._ds = {}
         self.start_event(None)
         for variable, desc1d in self.to_plot:
-            for ud, UD, hists in [('us','Upstream',self._us), ('ud','Downstream', self._ds)]:
+            for ud, UD, hists in [('us','Upstream',self._us), ('ds','Downstream', self._ds)]:
                 h = self.book_one('h_{ud}_{variable}', '{UD} {variable} ref={reflectivity}',
                                   desc1d=desc1d, ud=ud, UD=UD, variable=variable)
                 hists[variable] = h
@@ -151,9 +172,26 @@ class UsDsHistCollection(HistCollection):
         if files: return files
         return self.make_plots()
 
+    def fill(self):
+        for t in self.tree:
+            self.start_event(t)
+            if self.opts.get('invert') == pass_double_trigger(t):
+                continue
+            for hit in t.event.hc:
+                if hit.hcId() != 1:
+                    continue
+                if hit.volId()==0:  # downstream
+                    self.ds(hit)
+                if hit.volId()==1:  # upstream
+                    self.us(hit)
+                continue
+            self.end_event(t)
+            continue
+        return 
+
     def make_plots(self):
 
-        updown_hit_visit(self.tree,self)
+        self.fill()
 
         ret = []
         for ud, _ud in [('us',self._us), ('ds',self._ds)]:
@@ -172,24 +210,30 @@ class UsDsHistCollection(HistCollection):
         return parts
             
 
-def updown_hit_visit(tree, visitor):
-    for t in tree:
-        visitor.start_event(t)
-        for hit in t.event.hc:
-            if hit.hcId() != 1:
-                continue
-            if hit.volId()==0:  # downstream
-                visitor.ds(hit)
-            if hit.volId()==1:  # upstream
-                visitor.us(hit)
-            continue
-        visitor.end_event(t)
-        continue
-    return visitor
 
-def make_usds(ref='0.10'):
+def make_usds(ref='0.10', invert=False, **extra):
     if not isinstance(ref, basestring):
         ref = '%0.2f' % ref
     d = parameters(reflectivity=ref)
-    usds = UsDsHistCollection(**d)
+    d.update(extra)
+    usds = UsDsHistCollection(invert=invert, **d)
     return usds
+    
+def stats(hc):
+    for name, hist in hc.hists.items():
+        print '\t%s n=%8d avg=%8.2f rms=%8.4f' % (name, hist.GetEntries(), hist.GetMean(), hist.GetRMS())
+
+def do_all():
+    outfp = ROOT.TFile.Open('refl_hists.root','recreate')
+    for ref in reflectivities10k2:
+        for invert in [True, False]:
+            usds = make_usds(ref, invert=invert)
+            files = usds.make_plots()
+            print 'Refl %s (inverted=%s):' % (ref, invert)
+            stats(usds)
+            print files
+            subdir_name = usds.format('{invert}_{reflectivity}')
+            subdir = outfp.mkdir(subdir_name)
+            subdir.cd()
+            for h in usds.hists.values():
+                h.Write()

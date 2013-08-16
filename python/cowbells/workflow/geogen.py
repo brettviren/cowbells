@@ -2,14 +2,10 @@
 '''
 
 '''
-#from btdtwf.son.nodes import wrap_connection_keywords, wrap_format_keywords
-
-
 import os
 import sys
 import ConfigParser
 import btdtwf
-import ConfigParser
 
 def make_simple_config(ignored, **kwds):
     cfgfilename = kwds.get('cfgfile','test.cfg')
@@ -131,6 +127,9 @@ def geometry_generator(connections, **defaults):
         cfg_filename = node()
         params = parse_config(cfg_filename, **params)
     return generate_geometry_file(**params)
-
-
+    
+def node_constructor(**kwds):
+    print 'GEOGEN:',kwds
+    return btdtwf.son.nodes.CallableNode(geometry_generator, **kwds)
+        
 

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export cowbells_share_dir=$(dirname $(readlink -f $BASH_SOURCE))
+/bin/bash --init-file $cowbells_share_dir/cowbells-init.sh

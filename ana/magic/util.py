@@ -73,6 +73,8 @@ def format_dict(dat, formatter = str.format, **kwds):
                     new_v = formatter(v, **kwds)
                 except KeyError:
                     continue        # maybe next time
+            else:
+                new_v = v
             changed = True
             formatted[k] = new_v
             kwds[k] = new_v
