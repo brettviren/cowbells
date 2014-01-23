@@ -74,5 +74,9 @@ REFLEX_GENERATE_DICTIONARY(cowbells ${PROJECT_SOURCE_DIR}/dict/selection.h SELEC
 add_library(cowbellsDict SHARED cowbells_dict.cpp)
 target_link_libraries(cowbellsDict cowbells ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Reflex)
 
-
-
+install(TARGETS cowbellsDict cowbells json DESTINATION lib)
+install(TARGETS cowbells.exe DESTINATION bin)
+FILE(GLOB CowbellsIncludes "${CMAKE_CURRENT_SOURCE_DIR}/inc/Cowbells/*.h")
+FILE(GLOB JsonIncludes "${CMAKE_CURRENT_SOURCE_DIR}/inc/json/*.h")
+install(FILES ${CowbellsIncludes} DESTINATION include/Cowbells)
+install(FILES ${JsonIncludes} DESTINATION include/json)
