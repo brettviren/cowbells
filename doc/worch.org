@@ -1,0 +1,87 @@
+#+TITLE: Install Cowbells and Dependencies with worch
+#+AUTHOR: Brett Viren
+#+EMAIL: bv@bnl.gov
+
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="style.css" />
+
+The recommended way to install Cowbells and dependencies is via the [[https://github.com/brettviren/worch][worch]] tool.  Cowbells comes with the file [[../worch.cfg]] which contains all information to build the software stack.  It includes building [[http://modules.sf.net][Environment Modules]] (EM) for each package to assist in setting up the required user shell environment.  This mechanism allows multiple versions of the stack to be installed.
+
+* Installation
+
+To install cowbells and all the dependencies:
+
+#+BEGIN_EXAMPLE
+$ git clone https://github.com/brettviren/worch.git
+$ cd worch
+$ wget https://raw2.github.com/brettviren/cowbells/master/worch.cfg
+$ ./waf --version  # one time called needed to unpack waf
+$ ./waf --prefix=/path/to/install \
+        --orch-config=worch.cfg \
+          configure build
+#+END_EXAMPLE
+
+All temporary files will be put a =worch/tmp/= sub-directory.  These may be removed after a successful installation however if a re-install is attempted they will be remade.  Any failures will be announced with a log file giving details. The final installation location is as specified with the =--prefix= flag.
+
+* Setup for use
+
+To configure your shell session you must source one shell-specific file and define one environment variable.
+
+For bash:
+#+BEGIN_EXAMPLE
+source /path/to/install/Modules/3.2.10/init/bash
+export MODULEPATH=/path/to/install/modules
+#+END_EXAMPLE
+
+For tcsh:
+#+BEGIN_EXAMPLE
+source /path/to/install/Modules/3.2.10/init/tcsh
+setenv MODULEPATH /path/to/install/modules
+#+END_EXAMPLE
+
+Notes:
+
+- The version string in the path may differ depending on what is listed in the =worch.cfg= file
+- The =MODULEPATH= variable may be a ":"-separated list. If you use other EM areas then include them as well.
+- These two lines can safely be added to shell init scripts (=.bashrc= or =.cshrc=) as loading it is fast and does not significantly modify the environment.
+- There are EM initialization files available for other shells and interpreters
+
+To list what EM are available one can now do:
+
+#+BEGIN_EXAMPLE
+$ module avail
+#+END_EXAMPLE
+
+To activate cowbells environment do:
+
+#+BEGIN_EXAMPLE
+$ module load cowbells
+#+END_EXAMPLE
+
+If you have multiple versions installed they can be selected by appending a version string
+
+#+BEGIN_EXAMPLE
+$ module load cowbells/X.Y.Z
+#+END_EXAMPLE
+
+* Development
+
+This mechanism is designed to help install releases of cowbells and its dependencies from source.  Development requires an easy way to update the cowbells source code, rebuild it and test it.  The following approaches are possible:
+
+** HEAD release
+
+Install a "release" of cowbells which does not use a particular tag (or explicitly uses =HEAD=).  This will allow an installation to appear largely identical to a release installation but allow continuous updating.  After modifying the =worch.cfg= file to set this version one will likely have to force a rebuild by removing the related "control" files that indicate successful completion of cowbells-related steps.
+
+FIXME: not yet tested
+#+BEGIN_EXAMPLE
+$ emacs worch.cfg
+$ rm tmp/control/cowbells_*
+$ ./waf --prefix=/path/to/install \
+        --orch-config=worch.cfg \
+          configure build
+#+END_EXAMPLE
+
+Only cowbells should rebuild.
+
+** Local build
+
+One can leverage an installed release for everything except cowbells and build cowbells by hand.  This may provide a somewhat faster develop/build/test loop than making a "HEAD release".  

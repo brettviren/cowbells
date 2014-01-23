@@ -1,0 +1,27 @@
+#+TITLE: Building Cowbells and Dependencies with grinst
+#+AUTHOR: Brett Viren
+#+EMAIL: bv@bnl.gov
+
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="style.css" />
+
+Grinst is a set of bash scripts to help automate building a suite of package.  At this point using grinst is considered obsolete.
+
+* Installing with Grinst
+
+The =grinst= project can be used to pre-build the necessary code:
+
+  https://github.com/brettviren/grinst
+
+Clone the repository and edit the =g4root.grinst= file to set the
+target build and installation areas then do:
+
+#+BEGIN_EXAMPLE
+./grinst.sh g4root.grinst install all
+#+END_EXAMPLE
+
+To setup the environment for building and running cowbells do
+
+#+BEGIN_EXAMPLE
+eval $(./grinst.sh cowbells.grinst setup all)
+#+END_EXAMPLE
+

@@ -1,4 +1,4 @@
-#+TITLE: Cowbells simulation a simple but flexible Geant4-based detector simulation.
+#+TITLE: Cowbells - a simple but flexible ROOT/Geant4-based detector simulation.
 #+AUTHOR: Brett Viren
 #+EMAIL: bv@bnl.gov
 
@@ -9,6 +9,8 @@
 #+LATEX_HEADER:   colorlinks=true,
 #+LATEX_HEADER:   linkcolor=black
 #+LATEX_HEADER: }
+
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="doc/style.css" />
 
 #+DESCRIPTION:
 #+KEYWORDS:
@@ -24,13 +26,7 @@
 
 #+MACRO: fixme *FIXME*: /$1/
 
-The Cowbells package started as a green-field Geant4-based simulation
-of the cosmic-ray test stand constructed for research and development
-on water-based liquid scintilator at Brookhaven National Laboratory.
-It was extended to handle the configuration used for beam tests at the
-NASA Space Radiation Lab at BNL and then made general enough to
-support any, with some small development, novel detector
-configurations.
+The Cowbells package started as a green-field Geant4-based simulation of the cosmic-ray test stand constructed for research and development on water-based liquid scintilator at Brookhaven National Laboratory.  It was extended to handle the configuration used for beam tests at the NASA Space Radiation Lab at BNL and then made general enough to support any, with some small development, novel detector configurations.
 
 
 * Installation
@@ -39,40 +35,28 @@ Cowbells is available from https://github.com/brettviren/cowbells.
 
 ** Prereq
 
-Cmake, HepMC, Geant4, ROOT and a recent Python are needed.  
+- HepMC, Geant4, ROOT and a recent Python are needed.  
+- CMake is suggested if not strictly needed to install Geant4 and ROOT.
+- IPython is recommended if any interactive Python sessions will be desired. 
 
-*** Grinst
+** Automated builds
 
-The =grinst= project can be used to pre-build the necessary code:
+There are some methods available to assist in building cowbells and its dependencies.
 
-  https://github.com/brettviren/grinst
+- worch :: a [[https://code.google.com/p/waf/][waf]]-based build system.  This is currently the recommended method.  See [[./doc/worch.org]]
+- grinst :: a set of bash scripts.  This is now obsolete but may still be usable.  see [[./doc/grinst.org]]
 
-Clone the repository and edit the =g4root.grinst= file to set the
-target build and installation areas then do:
+** Manually Build Cowbells
 
-#+BEGIN_EXAMPLE
-./grinst.sh g4root.grinst install all
-#+END_EXAMPLE
-
-To setup the environment for building and running cowbells do
-
-#+BEGIN_EXAMPLE
-eval $(./grinst.sh cowbells.grinst setup all)
-#+END_EXAMPLE
-
-** Build Cowbells
-
-Cowbells is built with cmake.
-
-It needs to be told where to find the major package dependencies.
-This example assumes they have been built with =grinst= and the
-environment has been setup as above.
+Cowbells is built with cmake.  If you do not elect to build it automatically with one of the methods above it can be built by hand as described in this section.  Also, see [[./doc/worch.org]] for how to manually build cowbells against a worch-built set of dependencies.
 
 #+BEGIN_EXAMPLE
 cd /path/to/build/area/
-cmake -DHEPMC_DIR=$hepmc_install_dir /path/to/source_dir
+cmake [-D...] /path/to/source_dir
 make 
 #+END_EXAMPLE
+
+The locations for the dependencies may be given as =-D= directives.  FIXME: give concrete example.
 
 
 * Configuration 
