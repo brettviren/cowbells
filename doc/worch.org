@@ -63,6 +63,13 @@ If you have multiple versions installed they can be selected by appending a vers
 $ module load cowbells/X.Y.Z
 #+END_EXAMPLE
 
+You can now run cowbells:
+
+#+BEGIN_EXAMPLE
+$ cowbells.exe --help
+#+END_EXAMPLE
+
+
 * Development
 
 This mechanism is designed to help install releases of cowbells and its dependencies from source.  Development requires an easy way to update the cowbells source code, rebuild it and test it.  The following approaches are possible:
