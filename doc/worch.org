@@ -89,8 +89,46 @@ $ ./waf --prefix=/path/to/install \
           configure build
 #+END_EXAMPLE
 
-Only cowbells should rebuild.
+Only cowbells should rebuilt.  Setting up the user environment in the manner above should give something like:
+
+#+BEGIN_EXAMPLE
+$ module avail
+
+----------------------- /path/to/install/modules ---------------------------------
+cmake/2.8.11/modulefile    gccxml/20130920/modulefile ipython/1.1.0/modulefile   root/5.34.14/modulefile
+cowbells/HEAD/modulefile   geant/4.9.6.p02/modulefile python/2.7.5/modulefile    xercesc/3.1.1/modulefile
+
+$ module load cowbells/HEAD
+#+END_EXAMPLE
+
+Once a normal release is converted to HEAD release with the above, a faster update turn around can be had by just removing the control files.
+
+#+BEGIN_EXAMPLE
+$ rm tmp/controls/cowbells_* 
+$ ./waf
+#+END_EXAMPLE
+
+Note, this approach still requires one to commit/push to the HEAD in order to get updates installed.  An even faster approach can be had using a Local build as described in the next section.
 
 ** Local build
 
-One can leverage an installed release for everything except cowbells and build cowbells by hand.  This may provide a somewhat faster develop/build/test loop than making a "HEAD release".  
+A "HEAD Release" is a method that lets one install the latest commits pushed to the HEAD of the master branch in git.  A "Local build" allows one to directly build, install and use the cowbells code that is being modified while still leveraging the dependencies installed for a release ("HEAD" or a real versioned release).  
+
+FIXME: not tested
+#+BEGIN_EXAMPLE
+$ mkdir -p /path/to/some/where
+$ cd /path/to/some/where
+$ mkdir -p modules/cowbells/devel
+$ cp /path/to/install/modules/cowbells/<version>/modulefile modules/cowbells/devel/
+$ emacs modules/cowbells/devel/modulefile  # set paths correct
+$ MODULEPATH=`pwd`:$MODULEPATH
+$ module unload cowbells 
+$ module load cowbells/devel
+$ git clone https://github.com/brettviren/cowbells.git
+$ mkdir build
+$ cd build
+$ cmake ../cowbells -DCMAKE_INSTALL_PREFIX=/path/to/some/where/modules/cowbells/devel/
+$ make && make install
+#+END_EXAMPLE
+
+FIXME: why not point the modulefile directly to the =build/= area?
