@@ -78,10 +78,12 @@ This mechanism is designed to help install releases of cowbells and its dependen
 
 Install a "release" of cowbells which does not use a particular tag (or explicitly uses =HEAD=).  This will allow an installation to appear largely identical to a release installation but allow continuous updating.  After modifying the =worch.cfg= file to set this version one will likely have to force a rebuild by removing the related "control" files that indicate successful completion of cowbells-related steps.
 
-FIXME: not yet tested
 #+BEGIN_EXAMPLE
 $ emacs worch.cfg
-$ rm tmp/control/cowbells_*
+$ rm tmp/control/cowbells_* \
+     tmp/sources/cowbells-* \
+     tmp/builds/cowbells-* \
+     tmp/downloads/cowbells.git
 $ ./waf --prefix=/path/to/install \
         --orch-config=worch.cfg \
           configure build
