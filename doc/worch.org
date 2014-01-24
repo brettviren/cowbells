@@ -116,14 +116,22 @@ A "HEAD Release" is a method that lets one install the latest commits pushed to 
 
 FIXME: not tested
 #+BEGIN_EXAMPLE
+# make work area
 $ mkdir -p /path/to/some/where
 $ cd /path/to/some/where
+
+# make local installation area that follows EM conventions
 $ mkdir -p modules/cowbells/devel
 $ cp /path/to/install/modules/cowbells/<version>/modulefile modules/cowbells/devel/
-$ emacs modules/cowbells/devel/modulefile  # set paths correct
-$ MODULEPATH=`pwd`:$MODULEPATH
-$ module unload cowbells 
+# change paths so everything is under modules/cowbells/devel/
+$ emacs modules/cowbells/devel/modulefile  
+
+# Modify EM environment - assumes you set up as above
+$ MODULEPATH=`pwd`/modules:$MODULEPATH
+$ module unload cowbells    # if setup from above
 $ module load cowbells/devel
+
+# Get code and setup for building
 $ git clone https://github.com/brettviren/cowbells.git
 $ mkdir build
 $ cd build
@@ -131,4 +139,9 @@ $ cmake ../cowbells -DCMAKE_INSTALL_PREFIX=/path/to/some/where/modules/cowbells/
 $ make && make install
 #+END_EXAMPLE
 
-FIXME: why not point the modulefile directly to the =build/= area?
+At this point you can run the newly built =cowbells.exe= and modify the code and repeat the =make && make install= commands after making local edits.
+
+*** Avoid =make install=
+
+To have an even faster edit/build/test loop on can set up to use the binaries resulting from just a =make=.  Proceed exactly as above but when the local =modulefile=  is edited, point the settings at the =build/= directory instead of the install directory.
+
