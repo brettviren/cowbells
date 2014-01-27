@@ -113,7 +113,15 @@
 \section{Installation}
 
 \begin{frame}[fragile]
-  \frametitle{Installation}
+  \frametitle{Manual Installation}
+
+  Prerequisites:
+  \begin{itemize}
+  \item CMake, HepMC, Geant4, ROOT and a recent Python are needed.
+  \item IPython is recommended for interactive Python sessions.
+  \end{itemize}
+
+
   To install cowbells:
 
   \begin{lstlisting}[langauge=sh]
@@ -125,9 +133,59 @@ $ make
   \end{lstlisting}
 %$
 
-  You will need to install and tell CMake where to find the various
-  dependencies.  See the \href{https://github.com/brettviren/cowbells/blob/master/README.org}{README.org} file in the source for
+  See the \href{https://github.com/brettviren/cowbells/blob/master/README.org}{README.org} file in the source for
   more details.
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Automatic Installation}
+  Install cowbells + dependencies + environment modules:
+  \begin{lstlisting}[language=sh, emph={git,cd,wget,waf}]
+$ git clone https://github.com/brettviren/worch.git
+$ cd worch
+$ wget https://raw2.github.com/brettviren/cowbells/master/worch.cfg
+$ ./waf --version  # one time called needed to unpack waf
+$ ./waf --prefix=/path/to/install \
+        --orch-config=worch.cfg \
+          configure build
+  \end{lstlisting}
+%$
+
+More information about the worch meta-build system:
+\begin{center}
+  \url{https://github.com/brettviren/worch}
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Environment Setup with Automatic Installation}
+
+  Add to \texttt{.bashrc} (or similar for other shells):
+  \begin{lstlisting}[language=sh, emph={source,export}]
+source /path/to/install/Modules/3.2.10/init/bash
+export MODULEPATH=/path/to/install/modules
+  \end{lstlisting}
+
+  \vspace{3mm}
+
+  Activate the environment:
+  \begin{lstlisting}[language=sh, emph={module}]
+$ module load cowbells    
+  \end{lstlisting}
+%$
+
+  \vspace{3mm}
+
+  Multiple version supported
+  \begin{lstlisting}[language=sh, emph={module}]
+$ module avail
+$ module load cowbells/<VERSION>
+  \end{lstlisting}
+
+  \vspace{3mm}
+
+  \footnotesize See the \href{https://github.com/brettviren/cowbells/blob/master/doc/worch.org}{worch.org} document for how to setup a development environment.
 
 \end{frame}
 
